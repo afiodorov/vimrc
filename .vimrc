@@ -144,6 +144,7 @@ let g:Tex_HotKeyMappings = 'align*,align,equation,bmatrix'
 let g:Tex_ViewRule_pdf = 'evince'
 let g:Tex_AutoFolding = 0
 filetype plugin indent on
+set omnifunc=syntaxcomplete#Complete
 syntax on
 " }}}
 
