@@ -13,6 +13,7 @@ set pastetoggle=<F4>
 set hidden " manage multiple buffers effectively
 set tags=./tags;/
 
+let g:C_Ctrl_j = 'off' 
 " remember more commands {{{
 set history=1000
 " }}}
@@ -36,23 +37,8 @@ let g:Tex_Leader=','
 let maplocalleader='`'
 " }}}
 
-" C++/C {{{
-let g:C_MapLeader=','
-nnoremap <C-\> :tab split<CR> :exe 'tj' expand('<cword>')<CR>
-nnoremap <A-]> :vsp <CR>:exec("tag ".expand("<cword>"))<CR>
-inoremap <leader>s std::
-function! s:insert_gates()
-  let gatename = substitute(toupper(expand("%:t")), "\\.", "_", "g")
-  execute "normal! i#ifndef " . gatename
-  execute "normal! o#define " . gatename . " "
-  execute "normal! Go#endif /* " . gatename . " */"
-  normal! kk
-endfunction
-autocmd BufNewFile *.{h,hpp} call <SID>insert_gates()
-" }}}
-
 " tab to switch between files quickly {{{
-nnoremap <TAB> :e#<CR>
+nnoremap <tab> :e#<CR>
 " }}}
 
 " ctags {{{
@@ -60,7 +46,16 @@ let Tlist_Ctags_Cmd = "/usr/bin/ctags"
 let Tlist_WinWidth = 50
 map <silent> <S-F8> :cd %:p:h<CR>:!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 map <F8> :TagbarToggle<cr>
-                                                             let g:tagbar_width = 30
+
+let g:tagbar_type_mkd = {
+	\ 'ctagstype' : 'markdown',
+	\ 'kinds' : [
+		\ 'h:Heading_L1',
+		\ 'i:Heading_L2',
+		\ 'k:Heading_L3'
+	\ ]
+\ }
+let g:tagbar_width = 30
 " }}}
 
 " catch trailing white spaces {{{
@@ -96,6 +91,7 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
 Bundle 'klen/python-mode'
@@ -108,6 +104,7 @@ Bundle 'L9'
 Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
+" Bundle 'c.vim'
 Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
@@ -123,10 +120,8 @@ Bundle 'jelera/vim-javascript-syntax'
 Bundle 'vim-scripts/JavaScript-Indent'
 Bundle 'pangloss/vim-javascript'
 Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'vim-scripts/simple-pairs'
-Bundle 'marijnh/tern_for_vim'
 Bundle 'digitaltoad/vim-jade'
-Bundle 'vim-scripts/cscope.vim'
+Bundle 'jiangmiao/auto-pairs'
 "
 " let Vundle manage Vundle
 " required! 
@@ -148,8 +143,7 @@ let g:Tex_CompileRule_pdf = 'pdflatex -shell-escape -file-line-error -synctex=1 
 let g:Tex_HotKeyMappings = 'align*,align,equation,bmatrix'
 let g:Tex_ViewRule_pdf = 'evince'
 let g:Tex_AutoFolding = 0
-filetype indent on
-"filetype plugin on
+filetype plugin indent on
 syntax on
 " }}}
 
@@ -165,10 +159,6 @@ inoremap <Space> <Space><C-g>u
 " for latex
 inoremap , ,<C-g>u
 inoremap ` `<C-g>u
-" }}}
-
-" Change cases to title style {{{
-nnoremap <leader>tt :s/\<\(\w\)\(\w*\)\>/\u\1\L\2/g<CR><C-O>
 " }}}
 
 " to enable the saving and restoring of screen positions {{{
@@ -190,11 +180,17 @@ set viminfo='10,\"100,:20,%,n~/viminfo
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>sl :source ~/.vim/ftplugin/tex.vim<cr>
+nnoremap <leader>sj :source ~/.vim/ftplugin/java.vim<cr>
+nnoremap <leader>ej :vsplit ~/.vim/ftplugin/java.vim<cr>
 " }}}
 
 " fast <esc> {{{
 inoremap jk <Esc>
 inoremap JK <Esc>
+" }}}
+
+" {{{ remove character return
+nnoremap <leader>sm :%s///g<CR>
 " }}}
 
 " NERDtree {{{
@@ -206,14 +202,8 @@ nnoremap <F6> :split<CR>:resize 10<CR>:ConqueTerm bash<CR>
 " }}}
 
 " buffer navigation like firefox {{{
-if has("gui_running")
-nnoremap <C-S-tab> :bprevious<CR>
-nnoremap <C-tab>   :bnext<CR>
-else
-" Switch to alternate file
-noremap <C-Tab> :bnext<cr>
-noremap <C-S-Tab> :bprevious<cr>
-endif
+noremap gt :bnext<cr>
+noremap gT :bprevious<cr>
 " }}}
 
 " Map ctrl-movement keys to window switching {{{
@@ -318,7 +308,7 @@ let g:syntastic_enable_signs=1
 let g:syntastic_cpp_checkers=['gcc', 'ycm'] 
 let g:ycm_register_as_syntastic_checker = 1
 let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_javascript_checkers = ['jslint']
+let g:syntastic_javascript_checkers = ['jslint', 'gjslint']
 "set statusline+=%#warningmsg#
 "set statusline+=%{SyntasticStatuslineFlag()}
 "set statusline+=%*
@@ -364,6 +354,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " ]]            Jump on next class or function (normal, visual, operator modes)
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
+let g:pymode = 1
 let g:pymode_rope = 0
 let g:pymode_paths = ['/home/tom/cplus/PAMpython/']
 " run key
