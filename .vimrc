@@ -99,8 +99,8 @@ Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'Lokaltog/vim-easymotion'
-Bundle 'rstacruz/sparkup', {'rtp': 'vim/'}
 Bundle 'L9'
+Bundle 'a.vim'
 Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
@@ -122,6 +122,9 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'jiangmiao/auto-pairs'
+" snipmate
+Bundle 'SirVer/ultisnips'
+Bundle "honza/vim-snippets"
 "
 " let Vundle manage Vundle
 " required! 
@@ -510,4 +513,10 @@ function! Stab()
     echohl None
   endtry
 endfunction
+" }}}
+
+" UltiSnips {{{
+let g:UltiSnipsExpandTrigger="<C-K>"
+let g:UltiSnipsJumpForwardTrigger="<C-K>"
+let g:UltiSnipsJumpBackwardTrigger="<C-L>"
 " }}}
