@@ -14,6 +14,7 @@ set hidden " manage multiple buffers effectively
 set tags=./tags;/
 
 let g:C_Ctrl_j = 'off' 
+map Q <nop>
 " remember more commands {{{
 set history=1000
 " }}}
@@ -94,7 +95,7 @@ call vundle#rc()
 Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
-Bundle 'klen/python-mode'
+"Bundle 'klen/python-mode'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -149,11 +150,6 @@ let g:Tex_AutoFolding = 0
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
 syntax on
-" }}}
-
-" c++11 syntax {{{
-au BufNewFile,BufRead *.cpp set syntax=cpp11
-au BufNewFile,BufRead *.cpp set tabstop=4 softtabstop=4 shiftwidth=4
 " }}}
 
 " better undo {{{
@@ -290,16 +286,6 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 " }}}
 
-" C++ file settings {{{
-augroup c, cpp 
-    autocmd!
-    nnoremap <leader>md :cd %:p:h/..<CR>:make debug -j4<CR>
-    nnoremap <leader>mr :cd %:p:h/..<CR>:make -j4<CR>
-    nnoremap <leader>mc :cd %:p:h/..<CR>:make clean<CR>
-    nnoremap <leader>z :cd %:p:h/..<CR>:make<CR>:!./out/%:t:r<CR>
-augroup END
-" }}}
-
 " surround repeat {{{
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 " }}}
@@ -418,10 +404,6 @@ nnoremap <leader>ep :profile pause<CR>:noautocmd qall!<CR>
 
 " markdown {{{
 let g:vim_markdown_folding_disabled=1
-" }}}
-
-" insert empty line with enter {{{
-nnoremap <CR> o<ESC>
 " }}}
 
 " paste below the line {{{
