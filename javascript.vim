@@ -2,6 +2,7 @@ nnoremap gd :TernDef<CR>
 nnoremap <leader>K :TernDocBrowse<CR>
 nnoremap <leader>r :TernRename<CR>
 nnoremap <leader>sr :TernRefs<CR>
+inoremap <leader>f function
 
 function! s:isDocShown()
 if exists("g:TernDoc_is_shown")

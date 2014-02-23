@@ -87,5 +87,7 @@ set iskeyword=@,48-57,_,-,192-255
 " }}}
 
 setlocal spell
+syntax spell toplevel
+
 let g:Tex_GotoError=0
 let g:AutoPairs = {}
