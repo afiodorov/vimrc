@@ -14,7 +14,7 @@ set hidden " manage multiple buffers effectively
 set tags=./tags;/
 
 let g:C_Ctrl_j = 'off' 
-map Q <nop>
+map Q <Nop>
 " remember more commands {{{
 set history=1000
 " }}}
@@ -47,6 +47,7 @@ let Tlist_Ctags_Cmd = "/usr/bin/ctags"
 let Tlist_WinWidth = 50
 map <silent> <S-F8> :cd %:p:h<CR>:!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
 map <F8> :TagbarToggle<cr>
+let g:tagbar_show_linenumbers = 1
 
 let g:tagbar_type_mkd = {
 	\ 'ctagstype' : 'markdown',
@@ -95,7 +96,7 @@ call vundle#rc()
 Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
-"Bundle 'klen/python-mode'
+Bundle 'klen/python-mode'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -152,6 +153,11 @@ set omnifunc=syntaxcomplete#Complete
 syntax on
 " }}}
 
+" c++11 syntax {{{
+au BufNewFile,BufRead *.cpp set syntax=cpp11
+au BufNewFile,BufRead *.cpp set tabstop=4 softtabstop=4 shiftwidth=4
+" }}}
+
 " better undo {{{
 inoremap <C-w> <C-g>u<C-w>
 inoremap <Space> <Space><C-g>u
@@ -180,8 +186,10 @@ set viminfo='10,\"100,:20,%,n~/viminfo
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>sl :source ~/.vim/ftplugin/tex.vim<cr>
-nnoremap <leader>sj :source ~/.vim/ftplugin/java.vim<cr>
-nnoremap <leader>ej :vsplit ~/.vim/ftplugin/java.vim<cr>
+nnoremap <leader>sja :source ~/.vim/ftplugin/java.vim<cr>
+nnoremap <leader>eja :vsplit ~/.vim/ftplugin/java.vim<cr>
+nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
+nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
 " }}}
 
 " fast <esc> {{{
@@ -286,22 +294,35 @@ vnoremap <silent> # :<C-U>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
 " }}}
 
+" C++ file settings {{{
+augroup c, cpp 
+    autocmd!
+    nnoremap <leader>md :cd %:p:h/..<CR>:make debug -j4<CR>
+    nnoremap <leader>mr :cd %:p:h/..<CR>:make -j4<CR>
+    nnoremap <leader>mc :cd %:p:h/..<CR>:make clean<CR>
+    nnoremap <leader>z :cd %:p:h/..<CR>:make<CR>:!./out/%:t:r<CR>
+augroup END
+" }}}
+
 " surround repeat {{{
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 " }}}
 
 " Syntastic {{{
-let g:syntastic_cpp_compiler = 'g++-4.7'
-let g:syntastic_cpp_compiler_options = ' -std=c++11'
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
+let g:ycm_register_as_syntastic_checker=0
+let g:syntastic_always_populate_loc_list=1
+
+let g:syntastic_cpp_compiler='g++-4.7'
+let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm'] 
-let g:ycm_register_as_syntastic_checker = 1
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_javascript_checkers = ['jslint', 'gjslint']
-"set statusline+=%#warningmsg#
-"set statusline+=%{SyntasticStatuslineFlag()}
-"set statusline+=%*
+
+let g:syntastic_javascript_checkers=['jslint', 'gjslint']
+
+let g:syntastic_c_compiler='gcc-4.8'
+let g:syntastic_cpp_checkers=['gcc', 'ycm']
+let g:syntastic_c_compiler_options=' -std=c99'
 " }}}
 
 " quick resize {{{
@@ -406,6 +427,10 @@ nnoremap <leader>ep :profile pause<CR>:noautocmd qall!<CR>
 let g:vim_markdown_folding_disabled=1
 " }}}
 
+" insert empty line with enter {{{
+" nnoremap <CR> o<ESC>
+" }}}
+
 " paste below the line {{{
 nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''))<CR>
 " }}}
@@ -500,5 +525,8 @@ endfunction
 " UltiSnips {{{
 let g:UltiSnipsExpandTrigger="<C-K>"
 let g:UltiSnipsJumpForwardTrigger="<C-K>"
-let g:UltiSnipsJumpBackwardTrigger="<C-L>"
+let g:UltiSnipsJumpBackwardTrigger="<C-K>"
+let g:UltiSnipsListSnippets="<C-L>"
 " }}}
+
+inoremap <C-?> <Nop>
