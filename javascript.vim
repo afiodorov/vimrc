@@ -16,3 +16,5 @@ map K :call <SID>isDocShown()<cr>
 
 set expandtab
 set tabstop=2 shiftwidth=2
+
+inoremap <leader>f function

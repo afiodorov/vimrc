@@ -95,7 +95,7 @@ call vundle#rc()
 Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
-"Bundle 'klen/python-mode'
+Bundle 'klen/python-mode'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -182,6 +182,8 @@ nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>sl :source ~/.vim/ftplugin/tex.vim<cr>
 nnoremap <leader>sj :source ~/.vim/ftplugin/java.vim<cr>
 nnoremap <leader>ej :vsplit ~/.vim/ftplugin/java.vim<cr>
+nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
+nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
 " }}}
 
 " fast <esc> {{{
