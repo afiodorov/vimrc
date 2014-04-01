@@ -1,5 +1,6 @@
 set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
+syntax on
 set autoread
 set backspace=2
 set backspace=indent,eol,start
@@ -107,6 +108,7 @@ Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
 " Bundle 'c.vim'
+Bundle 'vcscommand.vim'
 Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
@@ -150,7 +152,6 @@ let g:Tex_ViewRule_pdf = 'evince'
 let g:Tex_AutoFolding = 0
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
-syntax on
 " }}}
 
 " c++11 syntax {{{
