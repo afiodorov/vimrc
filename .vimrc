@@ -1,6 +1,5 @@
 set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
-syntax on
 set autoread
 set backspace=2
 set backspace=indent,eol,start
@@ -13,6 +12,10 @@ set noerrorbells         " don't beep
 set pastetoggle=<F4>
 set hidden " manage multiple buffers effectively
 set tags=./tags;/
+
+:silent !mkdir -p ~/tmp
+set backupdir=~/tmp/
+set directory=~/tmp/
 
 let g:C_Ctrl_j = 'off' 
 map Q <Nop>
@@ -108,7 +111,6 @@ Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
 " Bundle 'c.vim'
-Bundle 'vcscommand.vim'
 Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
@@ -152,6 +154,7 @@ let g:Tex_ViewRule_pdf = 'evince'
 let g:Tex_AutoFolding = 0
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
+syntax on
 " }}}
 
 " better undo {{{
