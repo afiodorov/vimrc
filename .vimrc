@@ -153,11 +153,6 @@ set omnifunc=syntaxcomplete#Complete
 syntax on
 " }}}
 
-" c++11 syntax {{{
-au BufNewFile,BufRead *.cpp set syntax=cpp11
-au BufNewFile,BufRead *.cpp set tabstop=4 softtabstop=4 shiftwidth=4
-" }}}
-
 " better undo {{{
 inoremap <C-w> <C-g>u<C-w>
 inoremap <Space> <Space><C-g>u
@@ -292,16 +287,6 @@ vnoremap <silent> # :<C-U>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-" }}}
-
-" C++ file settings {{{
-augroup c, cpp 
-    autocmd!
-    nnoremap <leader>md :cd %:p:h/..<CR>:make debug -j4<CR>
-    nnoremap <leader>mr :cd %:p:h/..<CR>:make -j4<CR>
-    nnoremap <leader>mc :cd %:p:h/..<CR>:make clean<CR>
-    nnoremap <leader>z :cd %:p:h/..<CR>:make<CR>:!./out/%:t:r<CR>
-augroup END
 " }}}
 
 " surround repeat {{{
