@@ -1,6 +1,5 @@
 set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
-syntax on
 set autoread
 set backspace=2
 set backspace=indent,eol,start
@@ -13,6 +12,10 @@ set noerrorbells         " don't beep
 set pastetoggle=<F4>
 set hidden " manage multiple buffers effectively
 set tags=./tags;/
+
+:silent !mkdir -p ~/tmp
+set backupdir=~/tmp/
+set directory=~/tmp/
 
 let g:C_Ctrl_j = 'off' 
 map Q <Nop>
@@ -108,7 +111,6 @@ Bundle 'FuzzyFinder'
 Bundle 'git://git.wincent.com/command-t.git'
 Bundle 'git://github.com/scrooloose/nerdtree.git'
 " Bundle 'c.vim'
-Bundle 'vcscommand.vim'
 Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
@@ -152,11 +154,7 @@ let g:Tex_ViewRule_pdf = 'evince'
 let g:Tex_AutoFolding = 0
 filetype plugin indent on
 set omnifunc=syntaxcomplete#Complete
-" }}}
-
-" c++11 syntax {{{
-au BufNewFile,BufRead *.cpp set syntax=cpp11
-au BufNewFile,BufRead *.cpp set tabstop=4 softtabstop=4 shiftwidth=4
+syntax on
 " }}}
 
 " better undo {{{
@@ -295,16 +293,6 @@ vnoremap <silent> # :<C-U>
   \gvy?<C-R><C-R>=substitute(
   \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
   \gV:call setreg('"', old_reg, old_regtype)<CR>
-" }}}
-
-" C++ file settings {{{
-augroup c, cpp 
-    autocmd!
-    nnoremap <leader>md :cd %:p:h/..<CR>:make debug -j4<CR>
-    nnoremap <leader>mr :cd %:p:h/..<CR>:make -j4<CR>
-    nnoremap <leader>mc :cd %:p:h/..<CR>:make clean<CR>
-    nnoremap <leader>z :cd %:p:h/..<CR>:make<CR>:!./out/%:t:r<CR>
-augroup END
 " }}}
 
 " surround repeat {{{
