@@ -191,6 +191,8 @@ nnoremap <leader>sja :source ~/.vim/ftplugin/java.vim<cr>
 nnoremap <leader>eja :vsplit ~/.vim/ftplugin/java.vim<cr>
 nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
+nnoremap <leader>st :source ~/.vim/ftplugin/tcl.vim<cr>
+nnoremap <leader>et :vsplit ~/.vim/ftplugin/tcl.vim<cr>
 " }}}
 
 " fast <esc> {{{
@@ -224,8 +226,8 @@ noremap <C-h> <C-w><Left>
 
 " spell dictionary {{{
 setglobal spell spelllang=en_gb
-"verbose set nospell
-syntax spell toplevel
+" verbose set nospell
+" syntax spell toplevel
 set spellfile=~/.vim/dict.add
 " }}}
 
