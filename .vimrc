@@ -17,7 +17,6 @@ set tags=./tags;/
 set backupdir=~/tmp/
 set directory=~/tmp/
 
-let g:C_Ctrl_j = 'off' 
 map Q <Nop>
 " remember more commands {{{
 set history=1000
@@ -97,6 +96,8 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+Bundle 'christoomey/vim-tmux-navigator'
+Bundle 'vcscommand.vim'
 Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
@@ -115,7 +116,7 @@ Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'fholgado/minibufexpl.vim'
-Bundle 'jcf/vim-latex'
+"Bundle 'jcf/vim-latex'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'Valloric/ListToggle'
 Bundle 'vim-scripts/taglist.vim'
@@ -128,10 +129,7 @@ Bundle 'pangloss/vim-javascript'
 Bundle 'nathanaelkane/vim-indent-guides'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'jiangmiao/auto-pairs'
-" snipmate
-Bundle 'SirVer/ultisnips'
-Bundle "honza/vim-snippets"
-"
+
 " let Vundle manage Vundle
 " required! 
 Bundle 'gmarik/vundle'
@@ -214,10 +212,10 @@ noremap gT :bprevious<cr>
 " }}}
 
 " Map ctrl-movement keys to window switching {{{
-noremap <C-k> <C-w><Up>
-noremap <C-j> <C-w><Down>
-noremap <C-l> <C-w><Right>
-noremap <C-h> <C-w><Left>
+" noremap <C-k> <C-w><Up>
+" noremap <C-j> <C-w><Down>
+" noremap <C-l> <C-w><Right>
+" noremap <C-h> <C-w><Left>
 " }}}
 
 " spell dictionary {{{
@@ -519,3 +517,5 @@ let g:UltiSnipsListSnippets="<C-L>"
 " }}}
 
 inoremap <C-?> <Nop>
+let g:BASH_Ctrl_j = 'off'
+let g:C_Ctrl_j = 'off' 
