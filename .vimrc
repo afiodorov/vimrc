@@ -202,10 +202,6 @@ nnoremap <leader>sm :%s///g<CR>
 nnoremap <F3> :NERDTreeToggle<CR>
 " }}}
 
-" ConqueTerm {{{
-nnoremap <F6> :split<CR>:resize 10<CR>:ConqueTerm bash<CR>
-" }}}
-
 " buffer navigation like firefox {{{
 noremap gt :bnext<cr>
 noremap gT :bprevious<cr>
@@ -425,8 +421,7 @@ nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''
 " terminal settings {{{
 if $COLORTERM == 'gnome-terminal'
   set t_Co=256
-  set background=dark
-  " let g:solarized_termcolors=256
+  set background=light
   set mouse=a
   colorscheme solarized
 endif
@@ -519,3 +514,8 @@ let g:UltiSnipsListSnippets="<C-L>"
 inoremap <C-?> <Nop>
 let g:BASH_Ctrl_j = 'off'
 let g:C_Ctrl_j = 'off' 
+
+" developtment {{{
+set rtp+=~/.vim/bundle/tcly/
+set rtp+=~/.vim/bundle/tcly/after
+" }}}
