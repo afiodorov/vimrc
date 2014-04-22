@@ -97,6 +97,8 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+Bundle 'matchit.zip'
+Bundle 'gregsexton/MatchTag'
 Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
@@ -224,7 +226,7 @@ noremap <C-h> <C-w><Left>
 
 " spell dictionary {{{
 setglobal spell spelllang=en_gb
-" verbose set nospell
+verbose set nospell
 " syntax spell toplevel
 set spellfile=~/.vim/dict.add
 " }}}
