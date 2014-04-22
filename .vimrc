@@ -22,6 +22,10 @@ map Q <Nop>
 set history=1000
 " }}}
 
+" faster way to access the directory of a file {{{
+cabbr <expr> %% expand('%:p:h')
+" }}}
+
 " tab completion like in command line {{{
 set wildmenu
 set wildmode=list:longest
@@ -514,8 +518,3 @@ let g:UltiSnipsListSnippets="<C-L>"
 inoremap <C-?> <Nop>
 let g:BASH_Ctrl_j = 'off'
 let g:C_Ctrl_j = 'off' 
-
-" developtment {{{
-set rtp+=~/.vim/bundle/tcly/
-set rtp+=~/.vim/bundle/tcly/after
-" }}}
