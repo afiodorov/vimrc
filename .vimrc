@@ -17,6 +17,7 @@ set tags=./tags;/
 set backupdir=~/tmp/
 set directory=~/tmp/
 
+let g:C_Ctrl_j = 'off' 
 map Q <Nop>
 " remember more commands {{{
 set history=1000
@@ -100,6 +101,8 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+Bundle 'matchit.zip'
+Bundle 'gregsexton/MatchTag'
 Bundle 'christoomey/vim-tmux-navigator'
 Bundle 'vcscommand.vim'
 Bundle 'marijnh/tern_for_vim'
@@ -206,6 +209,7 @@ nnoremap <leader>sm :%s///g<CR>
 nnoremap <F3> :NERDTreeToggle<CR>
 " }}}
 
+
 " buffer navigation like firefox {{{
 noremap gt :bnext<cr>
 noremap gT :bprevious<cr>
@@ -220,8 +224,8 @@ noremap gT :bprevious<cr>
 
 " spell dictionary {{{
 setglobal spell spelllang=en_gb
-"verbose set nospell
-syntax spell toplevel
+verbose set nospell
+" syntax spell toplevel
 set spellfile=~/.vim/dict.add
 " }}}
 
@@ -310,11 +314,6 @@ let g:syntastic_javascript_checkers=['jslint', 'gjslint']
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
-" }}}
-
-" quick resize {{{
-nnoremap <silent> <Leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
-nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 2/3)<CR>
 " }}}
 
 " ListToggle {{{
@@ -426,6 +425,7 @@ nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''
 if $COLORTERM == 'gnome-terminal'
   set t_Co=256
   set background=light
+  " let g:solarized_termcolors=256
   set mouse=a
   colorscheme solarized
 endif
@@ -514,7 +514,3 @@ let g:UltiSnipsJumpForwardTrigger="<C-K>"
 let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
-
-inoremap <C-?> <Nop>
-let g:BASH_Ctrl_j = 'off'
-let g:C_Ctrl_j = 'off' 
