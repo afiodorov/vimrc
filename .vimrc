@@ -312,11 +312,6 @@ let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
 " }}}
 
-" quick resize {{{
-nnoremap <silent> <Leader>+ :exe "resize " . (winheight(0) * 3/2)<CR>
-nnoremap <silent> <Leader>- :exe "resize " . (winheight(0) * 2/3)<CR>
-" }}}
-
 " ListToggle {{{
 let g:lt_height = 10
 " }}}
@@ -515,5 +510,3 @@ let g:UltiSnipsJumpForwardTrigger="<C-K>"
 let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
-
-inoremap <C-?> <Nop>
