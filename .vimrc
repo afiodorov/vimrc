@@ -425,7 +425,7 @@ nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''
 " terminal settings {{{
 if $COLORTERM == 'gnome-terminal'
   set t_Co=256
-  set background=dark
+  set background=light
   " let g:solarized_termcolors=256
   set mouse=a
   colorscheme solarized

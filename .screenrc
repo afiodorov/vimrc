@@ -15,3 +15,9 @@ defbce on
  
 # get rid of silly xoff stuff
 bind s split
+
+layout save default
+bind j focus down
+bind k focus up
+bind > eval writebuf "exec sh -c 'xsel -bi </tmp/screen-exchange'"
+bind < eval "exec sh -c 'xsel -bo >/tmp/screen-exchange'" readbuf
