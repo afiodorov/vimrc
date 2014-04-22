@@ -3,7 +3,7 @@ hardstatus alwayslastline
 hardstatus string '%{= kG}[%{G}%H%? %1`%?%{g}][%= %{= kw}%-w%{+b yk} %n*%t%?(%u)%? %{-}%+w %=%{g}][%{B}%m/%d %{W}%C%A%{g}]'
  
 # huge scrollback buffer
-defscrollback 5000
+defscrollback 10000
  
 # no welcome message
 startup_message off
@@ -21,3 +21,6 @@ bind j focus down
 bind k focus up
 bind > eval writebuf "exec sh -c 'xsel -bi </tmp/screen-exchange'"
 bind < eval "exec sh -c 'xsel -bo >/tmp/screen-exchange'" readbuf
+
+# mouse scrolling
+termcapinfo xterm* ti@:te@
