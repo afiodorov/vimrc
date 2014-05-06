@@ -65,7 +65,7 @@ let g:tagbar_type_mkd = {
 		\ 'k:Heading_L3'
 	\ ]
 \ }
-let g:tagbar_width = 30
+let g:tagbar_width = 50
 " }}}
 
 " catch trailing white spaces {{{
@@ -93,7 +93,6 @@ colorscheme zenburn
 endif
 endfunction
 colorscheme default 
-map <leader>cs :call <SID>toggleHighContrast()<cr>
 " }}}
 
 " Vundle {{{
@@ -178,6 +177,9 @@ let g:screen_size_by_vim_instance = 1
 
 " System register {{{
 set clipboard=unnamedplus
+if $TMUX == ''
+	set clipboard+=unnamed
+endif
 " }}}
 
 " Alt key does not focus on menu bar {{{
@@ -213,13 +215,11 @@ nnoremap <F3> :NERDTreeToggle<CR>
 " buffer navigation like firefox {{{
 noremap gt :bnext<cr>
 noremap gT :bprevious<cr>
+noremap <silent> <leader>cb :bp\|bd #<CR>
 " }}}
 
 " Map ctrl-movement keys to window switching {{{
-" noremap <C-k> <C-w><Up>
-" noremap <C-j> <C-w><Down>
-" noremap <C-l> <C-w><Right>
-" noremap <C-h> <C-w><Left>
+nnoremap <C-w><C-w> <C-w>p
 " }}}
 
 " spell dictionary {{{
