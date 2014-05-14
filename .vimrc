@@ -202,6 +202,8 @@ noremap <silent> <leader>cb :bp\|bd #<CR>
 
 " Map ctrl-movement keys to window switching {{{
 nnoremap <C-w><C-w> <C-w>p
+nnoremap <C-w><leader>l <C-w>200l
+nnoremap <C-w><leader>h <C-w>200h
 " }}}
 
 " spell dictionary {{{

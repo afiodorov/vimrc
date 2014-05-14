@@ -15,7 +15,13 @@ endif
 endfunction
 map K :call <SID>isDocShown()<cr>
 
-set expandtab
 set tabstop=2 shiftwidth=2
 
 inoremap <leader>f function
+
+" These options weill be overrriden at openbet
+set expandtab
+
+if filereadable("~/openbet/javascript.vim")
+	source ~/openbet/javascript.vim
+endif
