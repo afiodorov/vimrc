@@ -1,7 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-for file in ${DIR}/*.vim
+for file in "${DIR}"/*.vim
 do
 	filename=$(basename "${file}")
 	rm -f "${HOME}/.vim/ftplugin/${filename}"
@@ -11,7 +11,7 @@ done
 declare -A map_files=( [".bashrc"]=".aliases.bash" )
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
 
-for file in ${DIR}/.*
+for file in "${DIR}"/.*
 do
 	if [ ! -f "$file" ]; then
 		continue
