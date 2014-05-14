@@ -73,26 +73,8 @@ set listchars=tab:>-,trail:·,eol:$
 nnoremap <silent> <leader>s :set nolist!<CR>
 " }}}
 
-" turn off search highlighting{{{
-nnoremap <silent> <leader>hc :silent :nohlsearch<CR>
-" }}}
-
 " to gain back , functionality lost by remapping the comma {{{
 nnoremap <Space> , 
-" }}}
-
-" colorscheme {{{
-" Toggle the zenburn colorscheme from low to high contrast and vice versa
-function! s:toggleHighContrast()
-if exists("g:zenburn_high_Contrast")
-unlet g:zenburn_high_Contrast
-colorscheme default
-else
-let g:zenburn_high_Contrast = 1
-colorscheme zenburn
-endif
-endfunction
-colorscheme default 
 " }}}
 
 " Vundle {{{
@@ -122,7 +104,7 @@ Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'fholgado/minibufexpl.vim'
-"Bundle 'jcf/vim-latex'
+Bundle 'jcf/vim-latex'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'Valloric/ListToggle'
 Bundle 'vim-scripts/taglist.vim'
