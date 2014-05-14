@@ -1,11 +1,12 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+vimpath="${HOME}/.vim/after/ftplugin"
 for file in "${DIR}"/*.vim
 do
 	filename=$(basename "${file}")
-	rm -f "${HOME}/.vim/ftplugin/${filename}"
-	ln -s $file "${HOME}"/.vim/ftplugin/
+	rm -f "${vimpath}/${filename}"
+	ln -s $file "${vimpath}/"
 done
 
 declare -A map_files=( [".bashrc"]=".aliases.bash" )

@@ -22,6 +22,6 @@ inoremap <leader>f function
 " These options weill be overrriden at openbet
 set expandtab
 
-if filereadable("~/openbet/javascript.vim")
-	source ~/openbet/javascript.vim
+if filereadable(expand('~/workrc/javascript.vim'))
+	source ~/workrc/javascript.vim
 endif
