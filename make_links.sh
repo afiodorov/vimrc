@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 for file in ${DIR}/*.vim
 do
 	filename=$(basename "${file}")
-	rm "${HOME}/.vim/ftplugin/${filename}"
+	rm -f "${HOME}/.vim/ftplugin/${filename}"
 	ln -s $file "${HOME}"/.vim/ftplugin/
 done
 
@@ -23,9 +23,9 @@ do
 	fi
 
 	linkname=${map_files["$filename"]}
-	[[ $linkname == "" ]] && linkname="${filename}"
+	[[ -z "$linkname" ]] && linkname="${filename}"
 
 	link="${DIR}/${filename}"
-	rm "${HOME}/$linkname"
+	rm -f "${HOME}/$linkname"
 	ln -s "${link}" "${HOME}/${linkname}"
 done
