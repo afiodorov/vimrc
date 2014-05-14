@@ -1,5 +1,5 @@
 set nocompatible
-set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME
+set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,~/.vim/after
 set autoread
 set backspace=2
 set backspace=indent,eol,start
