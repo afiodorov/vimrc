@@ -213,9 +213,9 @@ nnoremap <F3> :NERDTreeToggle<CR>
 
 
 " buffer navigation like firefox {{{
-noremap gt :bnext<cr>
-noremap gT :bprevious<cr>
-noremap <silent> <leader>cb :bp\|bd #<CR>
+nnoremap gt :bnext<cr>
+nnoremap gT :bprevious<cr>
+nnoremap <leader>x :bp\|bd #<CR>
 " }}}
 
 " Map ctrl-movement keys to window switching {{{
@@ -311,11 +311,11 @@ let g:syntastic_cpp_compiler='g++-4.7'
 let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm'] 
 
-let g:syntastic_javascript_checkers=['jslint', 'gjslint']
-
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
+let g:syntastic_mode_map = { 'mode': 'active',
+													 \ 'passive_filetypes': ['tcl'] }
 " }}}
 
 " ListToggle {{{
@@ -516,3 +516,8 @@ let g:UltiSnipsJumpForwardTrigger="<C-K>"
 let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
+
+vnoremap <leader>rq :w !xargs -0 run_query.sh danske<CR>
+nnoremap <leader>rq :w !xargs -0 run_query.sh danske<CR>
+
+set nowritebackup
