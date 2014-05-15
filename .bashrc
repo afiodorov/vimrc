@@ -4,6 +4,11 @@ export HISTCONTROL="erasedups:ignoreboth"
 export TERM=xterm-256color
 export EDITOR=vim
 
+export PATH=/home/tfiodoro/bin:$PATH
+export PATH=/home/tfiodoro/.local/bin:$PATH
+
+alias "xclip=xclip -selection clipboard"
+
 function toggle_capture() {
 	if [ "$G_OUTPUT_ALWAYS_CAPTURED" == "true" ]; then
 		G_OUTPUT_ALWAYS_CAPTURED=false

@@ -9,7 +9,7 @@ do
 	ln -s $file "${vimpath}/"
 done
 
-declare -A map_files=( [".bashrc"]=".aliases.bash" )
+declare -A map_files=( [".bashrc"]=".bash_aliases" )
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
 
 for file in "${DIR}"/.*
