@@ -19,12 +19,10 @@ set tabstop=2 shiftwidth=2
 
 inoremap <leader>f function
 
-" These options weill be overriden at openbet
-set expandtab
-
 if filereadable(expand('~/workrc/javascript.vim'))
 	source ~/workrc/javascript.vim
 else
+	" These options weill be overriden at work
 	set expandtab
 	let g:syntastic_javascript_checkers=['jslint', 'gjslint']
 endif
