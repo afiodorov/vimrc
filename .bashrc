@@ -1,3 +1,5 @@
+set -o vi
+
 shopt -s histappend
 export HISTCONTROL="erasedups:ignoreboth"
 
