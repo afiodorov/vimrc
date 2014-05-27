@@ -6,6 +6,8 @@ export EDITOR=vim
 
 export PATH=/home/tfiodoro/bin:$PATH
 export PATH=/home/tfiodoro/.local/bin:$PATH
+export PATH=/space/.local/bin:$PATH
+export PATH=/home/tfiodoro/.gem/ruby/2.1.0/bin:$PATH
 
 alias "xclip=xclip -selection clipboard"
 

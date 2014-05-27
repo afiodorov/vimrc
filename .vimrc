@@ -90,7 +90,7 @@ Bundle 'marijnh/tern_for_vim'
 Bundle 'altercation/vim-colors-solarized.git'
 "Bundle 'davidhalter/jedi-vim'
 Bundle 'klen/python-mode'
-Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+"Bundle 'Lokaltog/powerline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'Lokaltog/vim-easymotion'
@@ -104,7 +104,7 @@ Bundle 'tpope/vim-repeat'
 Bundle 'scrooloose/syntastic'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'fholgado/minibufexpl.vim'
-Bundle 'jcf/vim-latex'
+"Bundle 'jcf/vim-latex'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'Valloric/ListToggle'
 Bundle 'vim-scripts/taglist.vim'
@@ -485,7 +485,13 @@ let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
 
-vnoremap <leader>rq :w !xargs -0 run_query.sh danske<CR>
-nnoremap <leader>rq :w !xargs -0 run_query.sh danske<CR>
+vnoremap <leader>rq :w /tmp/tmp.sql<CR>:!run_query.sh /tmp/tmp.sql 
+nnoremap <leader>rq :w /tmp/tmp.sql<CR>:!run_query.sh /tmp/tmp.sql 
 
 set nowritebackup
+
+" Powerline
+set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
+
+" Always show statusline
+set laststatus=2
