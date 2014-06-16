@@ -78,50 +78,51 @@ nnoremap <Space> ,
 " }}}
 
 " Vundle {{{
+set nocompatible
 filetype off
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'
 
-Bundle 'sukima/xmledit'
-Bundle 'matchit.zip'
-Bundle 'gregsexton/MatchTag'
-Bundle 'christoomey/vim-tmux-navigator'
-Bundle 'vcscommand.vim'
-Bundle 'marijnh/tern_for_vim'
-Bundle 'altercation/vim-colors-solarized.git'
-"Bundle 'davidhalter/jedi-vim'
-Bundle 'klen/python-mode'
-"Bundle 'Lokaltog/powerline'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-surround'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'L9'
-Bundle 'a.vim'
-Bundle 'FuzzyFinder'
-Bundle 'git://git.wincent.com/command-t.git'
-Bundle 'git://github.com/scrooloose/nerdtree.git'
-" Bundle 'c.vim'
-Bundle 'tpope/vim-repeat'
-Bundle 'scrooloose/syntastic'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'fholgado/minibufexpl.vim'
-"Bundle 'jcf/vim-latex'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'Valloric/ListToggle'
-Bundle 'vim-scripts/taglist.vim'
-Bundle 'vim-scripts/Gundo'
-Bundle 'majutsushi/tagbar'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'jelera/vim-javascript-syntax'
-Bundle 'vim-scripts/JavaScript-Indent'
-Bundle 'pangloss/vim-javascript'
-Bundle 'nathanaelkane/vim-indent-guides'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'jiangmiao/auto-pairs'
+Plugin 'sukima/xmledit'
+Plugin 'matchit.zip'
+Plugin 'gregsexton/MatchTag'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'vcscommand.vim'
+Plugin 'marijnh/tern_for_vim'
+Plugin 'altercation/vim-colors-solarized.git'
+"Plugin 'davidhalter/jedi-vim'
+Plugin 'klen/python-mode'
+Plugin 'bling/vim-airline'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'L9'
+Plugin 'a.vim'
+Plugin 'FuzzyFinder'
+Plugin 'kien/ctrlp.vim'
+Plugin 'git://github.com/scrooloose/nerdtree.git'
+"Plugin 'c.vim'
+Plugin 'tpope/vim-repeat'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'fholgado/minibufexpl.vim'
+"Plugin 'jcf/vim-latex'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'Valloric/ListToggle'
+Plugin 'vim-scripts/taglist.vim'
+Plugin 'vim-scripts/Gundo'
+Plugin 'majutsushi/tagbar'
+Plugin 'plasticboy/vim-markdown'
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'vim-scripts/JavaScript-Indent'
+Plugin 'pangloss/vim-javascript'
+Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'digitaltoad/vim-jade'
+Plugin 'jiangmiao/auto-pairs'
 
-" let Vundle manage Vundle
-" required! 
-Bundle 'gmarik/vundle'
+call vundle#end()            " required
+filetype plugin indent on    " required
 " }}}
 
 " vim-latex {{{
@@ -214,11 +215,6 @@ set spellfile=~/.vim/dict.add
 
 " quick save {{{
 nnoremap <leader>w :update<cr>
-" }}}
-
-" highlighting long lines {{{
-highlight OverLength ctermbg=red ctermfg=darkred guibg=#FFD9D9
-nnoremap <silent> <leader>hl :match OverLength /\%81v.\+/<CR>
 " }}}
 
 " Vimscript file settings {{{
@@ -391,17 +387,20 @@ nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''
 " }}}
 
 " terminal settings {{{
-if $COLORTERM == 'gnome-terminal'
-  set t_Co=256
-  set background=light
-  " let g:solarized_termcolors=256
-  set mouse=a
-  colorscheme solarized
-endif
+set t_Co=256
+set background=light
+" let g:solarized_termcolors=256
+set mouse=a
+colorscheme solarized
 " }}}
 
 " command-t refresh {{{
-nnoremap <F5> :CommandTFlush<CR>
+"nnoremap <F5> :CommandTFlush<CR>
+" }}}
+
+" ctrlp {{{
+nnoremap <leader>b :CtrlPBuffer<CR>
+let g:ctrlp_map = '<leader>t'
 " }}}
 
 " youcompleteme go to definition {{{
@@ -484,15 +483,15 @@ let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
 
-set nowritebackup
-
-" Powerline
-set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
-
-" Always show statusline
-set laststatus=2
-
-
 if filereadable(expand('~/workrc/vimrc.vim'))
 	source ~/workrc/vimrc.vim
 endif
+" Vim-airline {{{
+" Always show statusline
+set laststatus=2
+let g:airline#extensions#tabline#enabled = 0
+" }}}
+
+set rtp+=~/.fzf
+set nowritebackup
+set colorcolumn=80

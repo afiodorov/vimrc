@@ -2,6 +2,7 @@
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 vimpath="${HOME}/.vim/after/ftplugin"
+mkdir -p "${vimpath}"
 for file in "${DIR}"/*.vim
 do
 	filename=$(basename "${file}")
@@ -9,7 +10,17 @@ do
 	ln -s $file "${vimpath}/"
 done
 
-declare -A map_files=( [".bashrc"]=".bash_aliases" )
+ymlpath="${HOME}/.tmuxinator"
+mkdir -p "${ymlpath}"
+for file in "${DIR}"/*.yml
+do
+	filename=$(basename "${file}")
+	rm -f "${ymlpath}/${filename}"
+	ln -s $file "${ymlpath}/"
+done
+
+declare -A map_files
+map_files[".bashrc"]=".bash_aliases"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
 
 for file in "${DIR}"/.*
@@ -27,6 +38,8 @@ do
 	[[ -z "$linkname" ]] && linkname="${filename}"
 
 	link="${DIR}/${filename}"
-	rm -f "${HOME}/$linkname"
-	ln -s "${link}" "${HOME}/${linkname}"
+	target="${HOME}/$linkname"
+	mkdir -p $(dirname "${target}")
+	rm -f "${target}"
+	ln -s "${link}" "${target}"
 done
