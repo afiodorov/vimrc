@@ -12,6 +12,7 @@ export PATH=/space/.local/bin:$PATH
 export PATH=/home/tfiodoro/.gem/ruby/2.1.0/bin:$PATH
 
 alias "xclip=xclip -selection clipboard"
+alias cvs="cvs -q"
 
 function toggle_capture() {
 	if [ "$G_OUTPUT_ALWAYS_CAPTURED" == "true" ]; then
