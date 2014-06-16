@@ -401,6 +401,7 @@ colorscheme solarized
 " ctrlp {{{
 nnoremap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_map = '<leader>t'
+let g:ctrlp_max_height=35
 " }}}
 
 " youcompleteme go to definition {{{
