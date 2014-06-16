@@ -82,6 +82,7 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+Bundle 'sukima/xmledit'
 Bundle 'matchit.zip'
 Bundle 'gregsexton/MatchTag'
 Bundle 'christoomey/vim-tmux-navigator'
@@ -195,8 +196,6 @@ nnoremap <F3> :NERDTreeToggle<CR>
 
 
 " buffer navigation like firefox {{{
-nnoremap gt :bnext<cr>
-nnoremap gT :bprevious<cr>
 nnoremap <leader>x :bp\|bd #<CR>
 " }}}
 
@@ -485,9 +484,6 @@ let g:UltiSnipsJumpBackwardTrigger="<C-K>"
 let g:UltiSnipsListSnippets="<C-L>"
 " }}}
 
-vnoremap <leader>rq :w /tmp/tmp.sql<CR>:!run_query.sh /tmp/tmp.sql 
-nnoremap <leader>rq :w /tmp/tmp.sql<CR>:!run_query.sh /tmp/tmp.sql 
-
 set nowritebackup
 
 " Powerline
@@ -495,3 +491,8 @@ set rtp+=$HOME/.local/lib/python2.7/site-packages/powerline/bindings/vim/
 
 " Always show statusline
 set laststatus=2
+
+
+if filereadable(expand('~/workrc/vimrc.vim'))
+	source ~/workrc/vimrc.vim
+endif
