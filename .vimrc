@@ -84,6 +84,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
+Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
 Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
