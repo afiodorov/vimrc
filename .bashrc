@@ -2,6 +2,7 @@ set -o vi
 
 shopt -s histappend
 export HISTCONTROL="erasedups:ignoreboth"
+HISTIGNORE="ls:exit:pwd:clear"
 
 export TERM=xterm-256color
 export EDITOR=vim
@@ -13,7 +14,15 @@ export PATH=/home/tfiodoro/.gem/ruby/2.1.0/bin:$PATH
 
 alias "xclip=xclip -selection clipboard"
 alias cvs="cvs -q"
+alias meld="PATH=/usr/bin/ meld"
 
+for name in `tmux ls -F '#{session_name}'`; do
+  tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
+done
+
+function setdisplay() {
+	export DISPLAY="localhost:""$1"".0"
+}
 function toggle_capture() {
 	if [ "$G_OUTPUT_ALWAYS_CAPTURED" == "true" ]; then
 		G_OUTPUT_ALWAYS_CAPTURED=false
