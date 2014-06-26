@@ -1,8 +1,8 @@
 set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,~/.vim/after
 set autoread
-set backspace=2
 set backspace=indent,eol,start
+set scrolloff=1
 set autoindent
 set undolevels=1000
 set title " change terminal's title
@@ -84,6 +84,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
+Plugin 'tcl.vim'
 Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
 Plugin 'matchit.zip'
@@ -498,3 +499,5 @@ let g:airline#extensions#tabline#enabled = 0
 set rtp+=~/.fzf
 set nowritebackup
 set colorcolumn=80
+
+let g:tcl_extended_syntax=1
