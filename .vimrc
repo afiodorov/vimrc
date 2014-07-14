@@ -121,7 +121,8 @@ Plugin 'vim-scripts/JavaScript-Indent'
 Plugin 'pangloss/vim-javascript'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'digitaltoad/vim-jade'
-Plugin 'jiangmiao/auto-pairs'
+"Plugin 'jiangmiao/auto-pairs'
+Plugin 'Raimondi/delimitMate'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -194,7 +195,7 @@ nnoremap <leader>sm :%s///g<CR>
 " }}}
 
 " NERDtree {{{
-nnoremap <F3> :NERDTreeToggle<CR>
+nnoremap <F3> :NERDTreeToggle %:p:h<CR>
 " }}}
 
 
@@ -279,7 +280,9 @@ let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
-let g:syntastic_mode_map = {'mode': 'active'}
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tcl'] }
+
+let g:syntastic_tcl_nagelfar_args='~/nagelfar_headers/*'
 " }}}
 
 " ListToggle {{{
@@ -500,4 +503,18 @@ set nowritebackup
 set colorcolumn=80
 
 let g:tcl_extended_syntax=1
-let g:syntastic_tcl_nagelfar_conf='~/nagelfar_headers/*'
+
+nnoremap <silent> <leader>yf :let @+=expand("%")<CR>
+nnoremap <leader>gr :exec 'Gread '.expand("%")<CR>
+autocmd FocusGained silent :redraw!
+
+nnoremap <leader>d :redraw!<CR>
+
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()

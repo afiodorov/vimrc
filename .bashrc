@@ -74,9 +74,9 @@ fkill() {
 # fbr - checkout git branch
 fbr() {
   local branches branch
-  branches=$(git branch) &&
+  branches=$(git branch "$@") &&
   branch=$(echo "$branches" | fzf +s +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //")
+  git checkout $(echo "$branch" | sed "s/.* //" | xargs basename)
 }
 
 # fco - checkout git commit
