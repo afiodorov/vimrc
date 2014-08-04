@@ -12,9 +12,16 @@ export PATH=/home/tfiodoro/.local/bin:$PATH
 export PATH=/space/.local/bin:$PATH
 export PATH=/home/tfiodoro/.gem/ruby/2.1.0/bin:$PATH
 
-alias "xclip=xclip -selection clipboard"
-alias cvs="cvs -q"
+export PYTHONPATH=$PYTHONPATH:~/python-modules
+
+alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
+
+source ~/.bash_completion.d/python-argcomplete.sh
+
+if [ -f ~/git-completion.bash ]; then
+source ~/git-completion.bash
+fi
 
 for name in `tmux ls -F '#{session_name}'`; do
   tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions

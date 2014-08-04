@@ -17,7 +17,7 @@ set tags=./tags;/
 set backupdir=~/tmp/
 set directory=~/tmp/
 
-let g:C_Ctrl_j = 'off' 
+let g:C_Ctrl_j = 'off'
 map Q <Nop>
 " remember more commands {{{
 set history=1000
@@ -28,15 +28,15 @@ cabbr <expr> %% expand('%:p:h')
 " }}}
 
 " tab completion like in command line {{{
+set wildmode=longest,list,full
 set wildmenu
-set wildmode=list:longest
 
 " Ignore these files when completing names and in Explorer
 set wildignore=.svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif
 " }}}
 
 " case-sensitivity {{{
-set ignorecase 
+set ignorecase
 set smartcase
 " }}}
 
@@ -74,7 +74,7 @@ nnoremap <silent> <leader>s :set nolist!<CR>
 " }}}
 
 " to gain back , functionality lost by remapping the comma {{{
-nnoremap <Space> , 
+nnoremap <Space> ,
 " }}}
 
 " Vundle {{{
@@ -84,6 +84,7 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
+Plugin 'chrisbra/csv.vim'
 Plugin 'tcl.vim'
 Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
@@ -275,7 +276,7 @@ let g:syntastic_always_populate_loc_list=1
 
 let g:syntastic_cpp_compiler='g++-4.7'
 let g:syntastic_cpp_compiler_options=' -std=c++11'
-let g:syntastic_cpp_checkers=['gcc', 'ycm'] 
+let g:syntastic_cpp_checkers=['gcc', 'ycm']
 
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
@@ -328,7 +329,8 @@ let g:pymode_run = 1
 let g:pymode_run_key = '<leader>z'
 
 " Documentation
-let g:pymode_doc = 0
+let g:pymode_doc = 1
+let g:pymode_doc_bind = 'K'
 
 " Linting
 let g:pymode_lint = 1
