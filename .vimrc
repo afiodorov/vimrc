@@ -186,11 +186,6 @@ nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
 " }}}
 
-" fast <esc> {{{
-inoremap jk <Esc>
-inoremap JK <Esc>
-" }}}
-
 " {{{ remove character return
 nnoremap <leader>sm :%s///g<CR>
 " }}}
@@ -361,6 +356,9 @@ let g:pymode_folding = 0
 
 let g:jedi#use_tabs_not_buffers = 0
 let g:jedi#popup_on_dot = 0
+
+" Debugger
+let g:pymode_breakpoint_bind = '<leader>v'
 " }}}
 
 " quick resize {{{
@@ -520,3 +518,6 @@ fun! <SID>StripTrailingWhitespaces()
 endfun
 
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+
+set foldlevelstart=-1
+set foldmethod=syntax
