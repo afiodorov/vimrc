@@ -158,20 +158,11 @@ inoremap , ,<C-g>u
 inoremap ` `<C-g>u
 " }}}
 
-" to enable the saving and restoring of screen positions {{{
-let g:screen_size_restore_pos = 1
-let g:screen_size_by_vim_instance = 1
-" }}}
-
 " System register {{{
 set clipboard=unnamedplus
 if $TMUX == ''
 	set clipboard+=unnamed
 endif
-" }}}
-
-" Alt key does not focus on menu bar {{{
-set winaltkeys=no
 " }}}
 
 set viminfo='10,\"100,:20,%,n~/viminfo
@@ -186,14 +177,9 @@ nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
 " }}}
 
-" {{{ remove character return
-nnoremap <leader>sm :%s///g<CR>
-" }}}
-
 " NERDtree {{{
 nnoremap <F3> :NERDTreeToggle %:p:h<CR>
 " }}}
-
 
 " buffer navigation like firefox {{{
 nnoremap <leader>x :bp\|bd #<CR>
@@ -382,24 +368,12 @@ nnoremap <leader>ep :profile pause<CR>:noautocmd qall!<CR>
 let g:vim_markdown_folding_disabled=1
 " }}}
 
-" insert empty line with enter {{{
-" nnoremap <CR> o<ESC>
-" }}}
-
-" paste below the line {{{
-nnoremap <silent> <leader>p :call append(line('.'), substitute(@+, '\n$', '', ''))<CR>
-" }}}
-
 " terminal settings {{{
 set t_Co=256
 set background=light
 " let g:solarized_termcolors=256
 set mouse=a
 colorscheme solarized
-" }}}
-
-" command-t refresh {{{
-"nnoremap <F5> :CommandTFlush<CR>
 " }}}
 
 " ctrlp {{{
@@ -411,28 +385,6 @@ let g:ctrlp_switch_buffer= ''
 
 " youcompleteme go to definition {{{
 nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-" }}}
-
-" cscope {{{
-"if has('cscope')
-  "nmap <S-F11> :!find . -iname '*.c' -o -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' > cscope.files<CR>
-  "\:!cscope -b -i cscope.files -f cscope.out<CR>
-  "\:cs reset<CR>
-  "set cscopetag cscopeverbose
-
-  "if has('quickfix')
-    "set cscopequickfix=s-,c-,d-,i-,t-,e-
-  "endif
-
-  "cnoreabbrev csa cs add
-  "cnoreabbrev csf cs find
-  "cnoreabbrev csk cs kill
-  "cnoreabbrev csr cs reset
-  "cnoreabbrev css cs show
-  "cnoreabbrev csh cs help
-
-  "command! -nargs=0 Cscope cs add $VIMSRC/src/cscope.out $VIMSRC/src
-"endif
 " }}}
 
 " {{{ Stab
@@ -480,13 +432,6 @@ function! Stab()
     echohl None
   endtry
 endfunction
-" }}}
-
-" UltiSnips {{{
-let g:UltiSnipsExpandTrigger="<C-K>"
-let g:UltiSnipsJumpForwardTrigger="<C-K>"
-let g:UltiSnipsJumpBackwardTrigger="<C-K>"
-let g:UltiSnipsListSnippets="<C-L>"
 " }}}
 
 if filereadable(expand('~/workrc/vimrc.vim'))
