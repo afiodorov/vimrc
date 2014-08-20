@@ -274,7 +274,7 @@ let g:syntastic_enable_signs=1
 let g:ycm_register_as_syntastic_checker=0
 let g:syntastic_always_populate_loc_list=1
 
-let g:syntastic_cpp_compiler='g++-4.7'
+let g:syntastic_cpp_compiler='g++-4.8'
 let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 
