@@ -4,7 +4,6 @@ shopt -s histappend
 export HISTCONTROL="erasedups:ignoreboth"
 HISTIGNORE="ls:exit:pwd:clear"
 
-export TERM=xterm-256color
 export EDITOR=vim
 
 export PATH=/home/tfiodoro/bin:$PATH
@@ -17,10 +16,12 @@ export PYTHONPATH=$PYTHONPATH:~/python-modules
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
 
-source ~/.bash_completion.d/python-argcomplete.sh
+if [ -f ~/.bash_completion.d/python-argcomplete.sh ]; then
+	source ~/.bash_completion.d/python-argcomplete.sh
+fi
 
 if [ -f ~/git-completion.bash ]; then
-source ~/git-completion.bash
+	source ~/git-completion.bash
 fi
 
 for name in `tmux ls -F '#{session_name}'`; do
