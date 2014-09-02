@@ -24,10 +24,6 @@ if [ -f ~/git-completion.bash ]; then
 	source ~/git-completion.bash
 fi
 
-for name in `tmux ls -F '#{session_name}'`; do
-  tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
-done
-
 function realpath() {
   echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 }

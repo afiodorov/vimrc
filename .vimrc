@@ -370,7 +370,7 @@ let g:vim_markdown_folding_disabled=1
 
 " terminal settings {{{
 set t_Co=256
-set background=light
+set background=dark
 " let g:solarized_termcolors=256
 set mouse=a
 colorscheme solarized
