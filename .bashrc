@@ -6,10 +6,10 @@ HISTIGNORE="ls:exit:pwd:clear"
 
 export EDITOR=vim
 
-export PATH=/home/tfiodoro/bin:$PATH
-export PATH=/home/tfiodoro/.local/bin:$PATH
+export PATH=/home/${USER}/bin:$PATH
+export PATH=/home/${USER}/.local/bin:$PATH
 export PATH=/space/.local/bin:$PATH
-export PATH=/home/tfiodoro/.gem/ruby/2.1.0/bin:$PATH
+export PATH=/home/${USER}/.gem/ruby/2.1.0/bin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
 

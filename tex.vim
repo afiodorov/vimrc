@@ -13,7 +13,7 @@ set iskeyword+=:
 nmap <leader>z :w<cr><leader>ll<C-O>
 imap <f2> <Esc>:w<cr><leader>ll<C-O>a
 
-let Tlist_WinWidth = 30 
+let Tlist_WinWidth = 30
 nnoremap <F8> :TlistToggle<CR>
 
 imap <localleader>bf <Plug>Tex_MathBF
@@ -90,3 +90,8 @@ setlocal spell
 syntax spell toplevel
 let g:Tex_GotoError=0
 let g:AutoPairs = {}
+
+function! Tex_ForwardSearchLaTeX()
+  let cmd = 'evince_forward_search ' . fnamemodify(Tex_GetMainFileName(), ":p:r") .  '.pdf ' . line(".") . ' ' . expand("%:p")
+  let output = system(cmd)
+endfunction

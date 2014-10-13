@@ -110,7 +110,7 @@ Plugin 'tpope/vim-repeat'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'fholgado/minibufexpl.vim'
-"Plugin 'jcf/vim-latex'
+Plugin 'jcf/vim-latex'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
 Plugin 'vim-scripts/taglist.vim'
@@ -370,10 +370,9 @@ let g:vim_markdown_folding_disabled=1
 
 " terminal settings {{{
 set t_Co=256
-set background=dark
+set background=light
 " let g:solarized_termcolors=256
 set mouse=a
-colorscheme solarized
 " }}}
 
 " ctrlp {{{
