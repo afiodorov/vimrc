@@ -12,6 +12,7 @@ export PATH=/space/.local/bin:$PATH
 export PATH=/home/${USER}/.gem/ruby/2.1.0/bin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
+export GREP_OPTIONS='--color=always'
 
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"

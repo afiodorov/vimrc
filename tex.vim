@@ -20,6 +20,9 @@ imap <localleader>bf <Plug>Tex_MathBF
 imap <localleader>bb <Plug>Tex_MathBB
 imap <localleader>cal <Plug>Tex_MathCal
 
+nmap <C-E> <Plug>IMAP_JumpForward
+imap <C-E> <Plug>IMAP_JumpForward
+
 call IMAP(',Z','\mathbb{Z}','tex')
 call IMAP(',N','\mathbb{N}','tex')
 call IMAP(',R','\mathbb{R}','tex')
@@ -95,3 +98,5 @@ function! Tex_ForwardSearchLaTeX()
   let cmd = 'evince_forward_search ' . fnamemodify(Tex_GetMainFileName(), ":p:r") .  '.pdf ' . line(".") . ' ' . expand("%:p")
   let output = system(cmd)
 endfunction
+
+nmap <leader>ce <Plug>Tex_FastEnvironmentChange

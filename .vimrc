@@ -192,7 +192,7 @@ nnoremap <C-w><leader>h <C-w>200h
 " }}}
 
 " spell dictionary {{{
-setglobal spell spelllang=en_gb
+setglobal spell spelllang=ru_yo,en_uk
 verbose set nospell
 " syntax spell toplevel
 set spellfile=~/.vim/dict.add
@@ -465,3 +465,10 @@ autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 set foldlevelstart=-1
 set foldmethod=syntax
+
+" Cyrril {{{
+set keymap=russian-jcukenwin
+set iminsert=0
+set imsearch=0
+highlight lCursor guifg=NONE guibg=Cyan
+" }}}
