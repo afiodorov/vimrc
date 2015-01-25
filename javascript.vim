@@ -1,8 +1,9 @@
-nnoremap gd :TernDef<CR>
-nnoremap <leader>K :TernDocBrowse<CR>
-nnoremap <leader>r :TernRename<CR>
-nnoremap <leader>sr :TernRefs<CR>
-inoremap <leader>f function
+nnoremap <buffer> gd :TernDef<CR>
+nnoremap <buffer> <leader>K :TernDocBrowse<CR>
+nnoremap <buffer> <leader>r :TernRename<CR>
+nnoremap <buffer> <leader>sr :TernRefs<CR>
+inoremap <buffer> <leader>f function
+inoremap <buffer> <leader>r require
 
 function! s:isDocShown()
 if exists("g:TernDoc_is_shown")
@@ -13,16 +14,16 @@ let g:TernDoc_is_shown = 1
 execute "normal! :TernDoc\<cr>"
 endif
 endfunction
-map K :call <SID>isDocShown()<cr>
+map <buffer> K :call <SID>isDocShown()<cr>
 
 set tabstop=2 shiftwidth=2
 
-inoremap <leader>f function
+inoremap <buffer> <leader>f function
 
 if filereadable(expand('~/workrc/javascript.vim'))
 	source ~/workrc/javascript.vim
 else
 	" These options weill be overriden at work
 	set expandtab
-	let g:syntastic_javascript_checkers=['jslint', 'gjslint']
+	let g:syntastic_javascript_checkers=['jslint', 'jshint', 'gjslint']
 endif

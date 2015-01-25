@@ -85,16 +85,12 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 Plugin 'chrisbra/csv.vim'
-Plugin 'tcl.vim'
 Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
 Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'vcscommand.vim'
 Plugin 'marijnh/tern_for_vim'
-Plugin 'altercation/vim-colors-solarized.git'
-"Plugin 'davidhalter/jedi-vim'
 Plugin 'klen/python-mode'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
@@ -104,8 +100,7 @@ Plugin 'L9'
 Plugin 'a.vim'
 Plugin 'FuzzyFinder'
 Plugin 'kien/ctrlp.vim'
-Plugin 'git://github.com/scrooloose/nerdtree.git'
-"Plugin 'c.vim'
+Plugin 'scrooloose/nerdtree.git'
 Plugin 'tpope/vim-repeat'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
@@ -122,8 +117,13 @@ Plugin 'vim-scripts/JavaScript-Indent'
 Plugin 'pangloss/vim-javascript'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'digitaltoad/vim-jade'
-"Plugin 'jiangmiao/auto-pairs'
 Plugin 'Raimondi/delimitMate'
+Plugin 'bitc/vim-hdevtools'
+Plugin 'lukerandall/haskellmode-vim'
+" typescript
+Plugin 'leafgarland/typescript-vim'
+Plugin 'clausreinke/typescript-tools'
+Plugin 'jason0x43/vim-js-indent'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -170,11 +170,13 @@ set viminfo='10,\"100,:20,%,n~/viminfo
 " Editing VIMRC {{{
 nnoremap <leader>ev :vsplit $MYVIMRC<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
-nnoremap <leader>sl :source ~/.vim/ftplugin/tex.vim<cr>
-nnoremap <leader>sja :source ~/.vim/ftplugin/java.vim<cr>
-nnoremap <leader>eja :vsplit ~/.vim/ftplugin/java.vim<cr>
-nnoremap <leader>sjs :source ~/.vim/ftplugin/javascript.vim<cr>
-nnoremap <leader>ejs :vsplit ~/.vim/ftplugin/javascript.vim<cr>
+nnoremap <leader>sl :source ~/.vim/after/ftplugin/tex.vim<cr>
+nnoremap <leader>sja :source ~/.vim/after/ftplugin/java.vim<cr>
+nnoremap <leader>eja :vsplit ~/.vim/after/ftplugin/java.vim<cr>
+nnoremap <leader>sjs :source ~/.vim/after/ftplugin/javascript.vim<cr>
+nnoremap <leader>ejs :vsplit ~/.vim/after/ftplugin/javascript.vim<cr>
+nnoremap <leader>sts :source ~/.vim/after/ftplugin/typescript.vim<cr>
+nnoremap <leader>ets :vsplit ~/.vim/after/ftplugin/typescript.vim<cr>
 " }}}
 
 " NERDtree {{{
@@ -192,7 +194,7 @@ nnoremap <C-w><leader>h <C-w>200h
 " }}}
 
 " spell dictionary {{{
-setglobal spell spelllang=ru_yo,en_uk
+setglobal spell spelllang=ru_yo,en_gb
 verbose set nospell
 " syntax spell toplevel
 set spellfile=~/.vim/dict.add
@@ -252,7 +254,6 @@ silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 " Syntastic {{{
 let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
-let g:ycm_register_as_syntastic_checker=0
 let g:syntastic_always_populate_loc_list=1
 
 let g:syntastic_cpp_compiler='g++-4.8'
@@ -279,10 +280,6 @@ endfunction
 
 " set incsearch {{{
 set incsearch
-" }}}
-
-" gundo: visual tree of changes {{{
-map <leader>lc :GundoToggle<CR>
 " }}}
 
 " cd to current directory {{{
@@ -463,12 +460,18 @@ endfun
 
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
-set foldlevelstart=-1
-set foldmethod=syntax
-
 " Cyrril {{{
 set keymap=russian-jcukenwin
 set iminsert=0
 set imsearch=0
 highlight lCursor guifg=NONE guibg=Cyan
+" }}}
+
+" {{{ Haddock
+let g:haddock_browser="/usr/bin/google-chrome"
+" }}}
+
+" {{{ Typescript
+let g:ycm_semantic_triggers = {'typescript': ['.']}
+let g:ycm_complete_in_comments = 1
 " }}}
