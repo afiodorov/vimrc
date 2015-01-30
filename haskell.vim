@@ -8,3 +8,6 @@ set shiftround                  "Round spaces to nearest shiftwidth multiple
 set nojoinspaces                "Don't convert spaces to tabs
 
 nnoremap <leader>z :!ghc --make %:t<CR>:!./%:t:r<CR>
+
+setlocal omnifunc=necoghc#omnifunc
+setlocal formatprg=xargs\ pointfree

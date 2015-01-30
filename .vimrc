@@ -118,9 +118,13 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
+Plugin 'jpalardy/vim-slime'
+" Haskell
 Plugin 'bitc/vim-hdevtools'
-Plugin 'lukerandall/haskellmode-vim'
-" typescript
+Plugin 'eagletmt/neco-ghc'
+Plugin 'Shougo/vimproc'
+Plugin 'eagletmt/ghcmod-vim'
+" Typescript
 Plugin 'leafgarland/typescript-vim'
 Plugin 'clausreinke/typescript-tools'
 Plugin 'jason0x43/vim-js-indent'
@@ -177,13 +181,15 @@ nnoremap <leader>sjs :source ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>sts :source ~/.vim/after/ftplugin/typescript.vim<cr>
 nnoremap <leader>ets :vsplit ~/.vim/after/ftplugin/typescript.vim<cr>
+nnoremap <leader>sha :source ~/.vim/after/ftplugin/haskell.vim<cr>
+nnoremap <leader>eha :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
 " }}}
 
 " NERDtree {{{
 nnoremap <F3> :NERDTreeToggle %:p:h<CR>
 " }}}
 
-" buffer navigation like firefox {{{
+" delete buffer, keep the split {{{
 nnoremap <leader>x :bp\|bd #<CR>
 " }}}
 
@@ -219,19 +225,8 @@ augroup sh
 augroup END
 " }}}
 
-" delete words like in Word {{{
-inoremap <C-BS> <C-W>
-" }}}
-
 " save read-only files as root {{{
 cmap w!! %!sudo tee > /dev/null %
-" }}}
-
-" regex very magic {{{
-:command! -nargs=1 S let @/ = escape('<args>', '\')
-nnoremap <leader>/ :call EscapeBuffer()<CR>/\v<C-R>i
-nnoremap / /\V
-nnoremap <leader>sr :call EscapeBuffer()<CR>:%s/\v<C-R>i
 " }}}
 
 " Search for the selected text in visual mode {{{
@@ -270,12 +265,6 @@ let g:syntastic_tcl_nagelfar_args='~/nagelfar_headers/*'
 
 " ListToggle {{{
 let g:lt_height = 10
-" }}}
-
-" escape buffer {{{
-function! EscapeBuffer ()
-	let @i=escape(@", '\\/.*$^~[]{}()!@|')
-endfunction
 " }}}
 
 " set incsearch {{{
@@ -443,8 +432,6 @@ set rtp+=~/.fzf
 set nowritebackup
 set colorcolumn=80
 
-let g:tcl_extended_syntax=1
-
 nnoremap <silent> <leader>yf :let @+=expand("%")<CR>
 nnoremap <leader>gr :exec 'Gread '.expand("%")<CR>
 autocmd FocusGained silent :redraw!
@@ -467,11 +454,12 @@ set imsearch=0
 highlight lCursor guifg=NONE guibg=Cyan
 " }}}
 
-" {{{ Haddock
-let g:haddock_browser="/usr/bin/google-chrome"
+" {{{ Typescript
+let g:ycm_semantic_triggers = {'typescript': ['.'], 'haskell': ['.']}
+let g:ycm_complete_in_comments = 1
 " }}}
 
-" {{{ Typescript
-let g:ycm_semantic_triggers = {'typescript': ['.']}
-let g:ycm_complete_in_comments = 1
+" {{{ Vim-slime
+let g:slime_target = "tmux"
+let g:slime_paste_file = tempname()
 " }}}
