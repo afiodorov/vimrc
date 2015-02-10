@@ -7,6 +7,8 @@ set smarttab                    "Indent instead of tab at start of line
 set shiftround                  "Round spaces to nearest shiftwidth multiple
 set nojoinspaces                "Don't convert spaces to tabs
 
+setlocal iskeyword+='
+
 nnoremap <leader>z :!ghc --make %:t<CR>:!./%:t:r<CR>
 
 setlocal omnifunc=necoghc#omnifunc

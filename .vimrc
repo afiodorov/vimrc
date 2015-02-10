@@ -53,7 +53,7 @@ nnoremap <tab> :e#<CR>
 " ctags {{{
 let Tlist_Ctags_Cmd = "/usr/bin/ctags"
 let Tlist_WinWidth = 50
-map <silent> <S-F8> :cd %:p:h<CR>:!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+map <silent> <leader>rc :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --exclude=.git --exclude=node_modules .<CR>
 map <F8> :TagbarToggle<cr>
 let g:tagbar_show_linenumbers = 1
 
@@ -124,10 +124,13 @@ Plugin 'bitc/vim-hdevtools'
 Plugin 'eagletmt/neco-ghc'
 Plugin 'Shougo/vimproc'
 Plugin 'eagletmt/ghcmod-vim'
+Plugin 'lukerandall/haskellmode-vim'
 " Typescript
 Plugin 'leafgarland/typescript-vim'
 Plugin 'clausreinke/typescript-tools'
 Plugin 'jason0x43/vim-js-indent'
+" C sharp
+Plugin 'OmniSharp/omnisharp-vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -183,6 +186,8 @@ nnoremap <leader>sts :source ~/.vim/after/ftplugin/typescript.vim<cr>
 nnoremap <leader>ets :vsplit ~/.vim/after/ftplugin/typescript.vim<cr>
 nnoremap <leader>sha :source ~/.vim/after/ftplugin/haskell.vim<cr>
 nnoremap <leader>eha :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
+nnoremap <leader>scs :source ~/.vim/after/ftplugin/cs.vim<cr>
+nnoremap <leader>ecs :vsplit ~/.vim/after/ftplugin/cs.vim<cr>
 " }}}
 
 " NERDtree {{{
@@ -462,4 +467,23 @@ let g:ycm_complete_in_comments = 1
 " {{{ Vim-slime
 let g:slime_target = "tmux"
 let g:slime_paste_file = tempname()
+" }}}
+
+" Haskell {{{
+let g:haddock_browser = "/usr/bin/google-chrome"
+let g:haddock_docdir = "/home/tom/.cabal/share/doc"
+let g:ghc = "/usr/bin/ghc"
+" }}}
+
+" Csharp {{{
+let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
+"}}}
+
+" Move the preview window to the bottom of the screen {{{
+set splitbelow
+" }}}
+
+" Minibuf Explorer {{{
+" above
+let g:miniBufExplSplitBelow = 0
 " }}}
