@@ -263,7 +263,7 @@ let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
-let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['tcl'] }
+let g:syntastic_mode_map = {'mode': 'active'}
 
 let g:syntastic_tcl_nagelfar_args='~/nagelfar_headers/*'
 " }}}
@@ -477,6 +477,7 @@ let g:ghc = "/usr/bin/ghc"
 
 " Csharp {{{
 let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
+let g:ycm_csharp_server_port = 2000
 "}}}
 
 " Move the preview window to the bottom of the screen {{{
