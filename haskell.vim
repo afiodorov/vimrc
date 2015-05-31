@@ -13,3 +13,6 @@ nnoremap <leader>z :!ghc --make %:t<CR>:!./%:t:r<CR>
 
 setlocal omnifunc=necoghc#omnifunc
 setlocal formatprg=xargs\ pointfree
+
+nnoremap <leader>gt :GhcModType<CR>
+nnoremap <leader>gc :GhcModTypeClear<CR>

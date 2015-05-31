@@ -184,8 +184,8 @@ nnoremap <leader>sjs :source ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>sts :source ~/.vim/after/ftplugin/typescript.vim<cr>
 nnoremap <leader>ets :vsplit ~/.vim/after/ftplugin/typescript.vim<cr>
-nnoremap <leader>sha :source ~/.vim/after/ftplugin/haskell.vim<cr>
-nnoremap <leader>eha :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
+nnoremap <leader>shs :source ~/.vim/after/ftplugin/haskell.vim<cr>
+nnoremap <leader>ehs :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
 nnoremap <leader>scs :source ~/.vim/after/ftplugin/cs.vim<cr>
 nnoremap <leader>ecs :vsplit ~/.vim/after/ftplugin/cs.vim<cr>
 " }}}
@@ -209,10 +209,6 @@ setglobal spell spelllang=ru_yo,en_gb
 verbose set nospell
 " syntax spell toplevel
 set spellfile=~/.vim/dict.add
-" }}}
-
-" quick save {{{
-nnoremap <leader>w :update<cr>
 " }}}
 
 " Vimscript file settings {{{
@@ -309,7 +305,7 @@ let g:pymode_lint = 1
 let g:pymode_lint_hold = 0
 let g:pymode_lint_cwindow = 0
 let g:pymode_lint_signs = 1
-let g:pymode_lint_checker = "pyflakes,pep8"
+let g:pymode_lint_checker = "pep8"
 let g:pymode_lint_onfly = 1
 
 " Auto check on save
