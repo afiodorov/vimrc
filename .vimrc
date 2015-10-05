@@ -131,6 +131,8 @@ Plugin 'clausreinke/typescript-tools'
 Plugin 'jason0x43/vim-js-indent'
 " C sharp
 Plugin 'OmniSharp/omnisharp-vim'
+" Scala
+Plugin 'derekwyatt/vim-scala'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -205,7 +207,7 @@ nnoremap <C-w><leader>h <C-w>200h
 " }}}
 
 " spell dictionary {{{
-setglobal spell spelllang=ru_yo,en_gb
+setglobal spell spelllang=ru,en_gb
 verbose set nospell
 " syntax spell toplevel
 set spellfile=~/.vim/dict.add

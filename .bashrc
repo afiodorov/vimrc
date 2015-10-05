@@ -9,13 +9,14 @@ export EDITOR=vim
 export PATH=/home/${USER}/bin:$PATH
 export PATH=/home/${USER}/.local/bin:$PATH
 export PATH=/space/.local/bin:$PATH
-export PATH=/home/${USER}/.gem/ruby/2.1.0/bin:$PATH
+export PATH=/home/${USER}/.gem/ruby/2.2.0/bin:$PATH
 export PATH=/home/${USER}/.cabal/bin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
 
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
+alias eclimd="/home/${USER}/.eclipse/org.eclipse.platform_4.5.0_155965261_linux_gtk_x86_64/plugins/org.eclim_2.5.0/bin/eclimd"
 
 if [ -f ~/.bash_completion.d/python-argcomplete.sh ]; then
 	source ~/.bash_completion.d/python-argcomplete.sh
