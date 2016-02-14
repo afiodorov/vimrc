@@ -53,7 +53,7 @@ nnoremap <tab> :e#<CR>
 " ctags {{{
 let Tlist_Ctags_Cmd = "/usr/bin/ctags"
 let Tlist_WinWidth = 50
-map <silent> <leader>rc :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --exclude=.git --exclude=node_modules .<CR>
+map <silent> <f12> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --exclude=.git --exclude=node_modules .<CR>
 map <F8> :TagbarToggle<cr>
 let g:tagbar_show_linenumbers = 1
 
@@ -91,13 +91,12 @@ Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'marijnh/tern_for_vim'
-Plugin 'klen/python-mode'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
+Plugin 'gregsexton/gitv'
 Plugin 'tpope/vim-surround'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'L9'
-Plugin 'a.vim'
 Plugin 'FuzzyFinder'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree.git'
@@ -125,6 +124,8 @@ Plugin 'eagletmt/neco-ghc'
 Plugin 'Shougo/vimproc'
 Plugin 'eagletmt/ghcmod-vim'
 Plugin 'lukerandall/haskellmode-vim'
+Plugin 'tpope/vim-abolish'
+Plugin 'tpope/vim-eunuch'
 " Typescript
 Plugin 'leafgarland/typescript-vim'
 Plugin 'clausreinke/typescript-tools'
@@ -133,6 +134,13 @@ Plugin 'jason0x43/vim-js-indent'
 Plugin 'OmniSharp/omnisharp-vim'
 " Scala
 Plugin 'derekwyatt/vim-scala'
+" R
+Plugin 'jcfaria/Vim-R-plugin'
+" Python
+Plugin 'klen/python-mode'
+Plugin 'kana/vim-textobj-user'
+Plugin 'kana/vim-textobj-indent'
+Plugin 'bps/vim-textobj-python'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -168,10 +176,7 @@ inoremap ` `<C-g>u
 " }}}
 
 " System register {{{
-set clipboard=unnamedplus
-if $TMUX == ''
-	set clipboard+=unnamed
-endif
+"set clipboard=unnamedplus
 " }}}
 
 set viminfo='10,\"100,:20,%,n~/viminfo
@@ -254,16 +259,21 @@ let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
 let g:syntastic_always_populate_loc_list=1
 
+
+let g:syntastic_r_checkers=['lint']
+let g:syntastic_r_lint_styles = 'list(spacing.indentation.notabs, spacing.indentation.evenindent)'
+
 let g:syntastic_cpp_compiler='g++-4.8'
 let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
+
+
+let g:syntastic_python_checkers=['pep8', 'python']
 
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
 let g:syntastic_mode_map = {'mode': 'active'}
-
-let g:syntastic_tcl_nagelfar_args='~/nagelfar_headers/*'
 " }}}
 
 " ListToggle {{{
@@ -292,11 +302,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode = 1
-let g:pymode_rope = 0
-let g:pymode_paths = ['/home/tom/cplus/PAMpython/']
-" run key
-let g:pymode_run = 1
-let g:pymode_run_key = '<leader>z'
+let g:pymode_rope = 1
 
 " Documentation
 let g:pymode_doc = 1
@@ -328,9 +334,6 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
 " Don't autofold code
 let g:pymode_folding = 0
-
-let g:jedi#use_tabs_not_buffers = 0
-let g:jedi#popup_on_dot = 0
 
 " Debugger
 let g:pymode_breakpoint_bind = '<leader>v'
@@ -465,6 +468,7 @@ let g:ycm_complete_in_comments = 1
 " {{{ Vim-slime
 let g:slime_target = "tmux"
 let g:slime_paste_file = tempname()
+let g:slime_python_ipython = 1
 " }}}
 
 " Haskell {{{
@@ -485,4 +489,8 @@ set splitbelow
 " Minibuf Explorer {{{
 " above
 let g:miniBufExplSplitBelow = 0
+" }}}
+
+" delete dirs in netrw {{{
+let g:netrw_localrmdir='rm -r'
 " }}}

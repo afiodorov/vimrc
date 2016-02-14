@@ -18,6 +18,8 @@ alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
 alias eclimd="/home/${USER}/.eclipse/org.eclipse.platform_4.5.0_155965261_linux_gtk_x86_64/plugins/org.eclim_2.5.0/bin/eclimd"
 
+export PYTHONSTARTUP=$HOME/.pythonrc.py
+
 if [ -f ~/.bash_completion.d/python-argcomplete.sh ]; then
 	source ~/.bash_completion.d/python-argcomplete.sh
 fi
@@ -26,23 +28,10 @@ if [ -f ~/git-completion.bash ]; then
 	source ~/git-completion.bash
 fi
 
-function realpath() {
-  echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
-}
-
 function setdisplay() {
 	export DISPLAY="localhost:""$1"".0"
 }
-function toggle_capture() {
-	if [ "$G_OUTPUT_ALWAYS_CAPTURED" == "true" ]; then
-		G_OUTPUT_ALWAYS_CAPTURED=false
-		exec &>/dev/tty
-		unset PROMPT_COMMAND
-	else
-		G_OUTPUT_ALWAYS_CAPTURED=true
-		PROMPT_COMMAND='last="$(cat /tmp/last)";lasterr="$(cat /tmp/lasterr)"; exec >/dev/tty; exec > >(tee /tmp/last); exec 2>/dev/tty; exec 2> >(tee /tmp/lasterr)'
-	fi
-}
+
 
 # fe [FUZZY PATTERN] - Open the selected file with the default editor
 #   - Bypass fuzzy finder if there's only one match (--select-1)
