@@ -2,7 +2,10 @@ set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,~/.vim/after
 set autoread
 set backspace=indent,eol,start
+
+" when scrolling, keep cursor 1 lines away from screen border
 set scrolloff=1
+
 set autoindent
 set undolevels=1000
 set title " change terminal's title
@@ -11,7 +14,7 @@ set visualbell           " don't beep
 set noerrorbells         " don't beep
 set pastetoggle=<F4>
 set hidden " manage multiple buffers effectively
-set tags=./tags;/
+set tags=./tags
 
 :silent !mkdir -p ~/tmp
 set backupdir=~/tmp/
@@ -51,7 +54,7 @@ nnoremap <tab> :e#<CR>
 " }}}
 
 " ctags {{{
-let Tlist_Ctags_Cmd = "/usr/bin/ctags"
+let Tlist_Ctags_Cmd = "/usr/bin/ctags --fields=+l"
 let Tlist_WinWidth = 50
 map <silent> <f12> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --exclude=.git --exclude=node_modules .<CR>
 map <F8> :TagbarToggle<cr>
@@ -99,6 +102,7 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'L9'
 Plugin 'FuzzyFinder'
 Plugin 'kien/ctrlp.vim'
+Bundle 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'scrooloose/nerdtree.git'
 Plugin 'tpope/vim-repeat'
 Plugin 'scrooloose/syntastic'
@@ -127,8 +131,9 @@ Plugin 'lukerandall/haskellmode-vim'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-eunuch'
 " Typescript
+"
 Plugin 'leafgarland/typescript-vim'
-Plugin 'clausreinke/typescript-tools'
+Plugin 'clausreinke/typescript-tools.vim'
 Plugin 'jason0x43/vim-js-indent'
 " C sharp
 Plugin 'OmniSharp/omnisharp-vim'
@@ -260,7 +265,7 @@ let g:syntastic_enable_signs=1
 let g:syntastic_always_populate_loc_list=1
 
 
-let g:syntastic_r_checkers=['lint']
+let g:syntastic_r_checker=['lint']
 let g:syntastic_r_lint_styles = 'list(spacing.indentation.notabs, spacing.indentation.evenindent)'
 
 let g:syntastic_cpp_compiler='g++-4.8'
@@ -268,7 +273,7 @@ let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 
 
-let g:syntastic_python_checkers=['pep8', 'python']
+let g:syntastic_python_checkers=[]
 
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
@@ -303,18 +308,15 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode = 1
 let g:pymode_rope = 1
-
-" Documentation
-let g:pymode_doc = 1
-let g:pymode_doc_bind = 'K'
+let g:pymode_rope_completion = 0
 
 " Linting
 let g:pymode_lint = 1
-let g:pymode_lint_hold = 0
 let g:pymode_lint_cwindow = 0
 let g:pymode_lint_signs = 1
-let g:pymode_lint_checker = "pep8"
-let g:pymode_lint_onfly = 1
+let g:pymode_lint_checker=['pep8', 'pyflakes', 'pylint']
+
+let g:pymode_doc = 0
 
 " Auto check on save
 let g:pymode_lint_write = 1
@@ -374,10 +376,6 @@ let g:ctrlp_max_height=35
 let g:ctrlp_switch_buffer= ''
 " }}}
 
-" youcompleteme go to definition {{{
-nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-" }}}
-
 " {{{ Stab
 " put all this in your .vimrc or a plugin file
 command! -nargs=* Stab call Stab()
@@ -428,6 +426,7 @@ endfunction
 if filereadable(expand('~/workrc/vimrc.vim'))
 	source ~/workrc/vimrc.vim
 endif
+
 " Vim-airline {{{
 " Always show statusline
 set laststatus=2
@@ -437,10 +436,6 @@ let g:airline#extensions#tabline#enabled = 0
 set rtp+=~/.fzf
 set nowritebackup
 set colorcolumn=80
-
-nnoremap <silent> <leader>yf :let @+=expand("%")<CR>
-nnoremap <leader>gr :exec 'Gread '.expand("%")<CR>
-autocmd FocusGained silent :redraw!
 
 nnoremap <leader>d :redraw!<CR>
 
@@ -493,4 +488,18 @@ let g:miniBufExplSplitBelow = 0
 
 " delete dirs in netrw {{{
 let g:netrw_localrmdir='rm -r'
+" }}}
+
+" YCM {{{
+nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap K :YcmCompleter GetDoc<CR>
+nnoremap gr :YcmCompleter GoToReferences<CR>
+
+let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_filepath_completion_use_working_dir = 1
+let g:ycm_always_populate_location_list = 1
+" }}}
+
+" CtrlP-CmdPallete {{{
+nnoremap <C-x> :CtrlPCmdPalette<CR>
 " }}}

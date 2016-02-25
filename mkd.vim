@@ -9,3 +9,5 @@ set shiftwidth=4
 set expandtab
 
 let g:vim_markdown_math=1
+
+setlocal spell

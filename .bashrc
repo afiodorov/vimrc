@@ -1,8 +1,8 @@
 set -o vi
 
 shopt -s histappend
-export HISTCONTROL="erasedups:ignoreboth"
-HISTIGNORE="ls:exit:pwd:clear"
+export HISTCONTROL=erasedups:ignoreboth
+export HISTIGNORE="ls:exit:pwd:clear"
 
 export EDITOR=vim
 
