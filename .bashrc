@@ -6,13 +6,15 @@ export HISTIGNORE="ls:exit:pwd:clear"
 
 export EDITOR=vim
 
-export PATH=/home/${USER}/bin:$PATH
-export PATH=/home/${USER}/.local/bin:$PATH
-export PATH=/space/.local/bin:$PATH
-export PATH=/home/${USER}/.gem/ruby/2.2.0/bin:$PATH
-export PATH=/home/${USER}/.cabal/bin:$PATH
+export PATH=$HOME/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.gem/ruby/2.2.0/bin:$PATH
+export PATH=$HOME/.cabal/bin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
+
+export GOPATH="${HOME}/go"
+export PATH="${PATH}:${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"

@@ -93,7 +93,6 @@ Plugin 'sukima/xmledit'
 Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
 Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'marijnh/tern_for_vim'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
 Plugin 'gregsexton/gitv'
@@ -118,7 +117,6 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'vim-scripts/JavaScript-Indent'
 Plugin 'pangloss/vim-javascript'
-Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
@@ -131,9 +129,7 @@ Plugin 'lukerandall/haskellmode-vim'
 Plugin 'tpope/vim-abolish'
 Plugin 'tpope/vim-eunuch'
 " Typescript
-"
 Plugin 'leafgarland/typescript-vim'
-Plugin 'clausreinke/typescript-tools.vim'
 Plugin 'jason0x43/vim-js-indent'
 " C sharp
 Plugin 'OmniSharp/omnisharp-vim'
@@ -146,6 +142,8 @@ Plugin 'klen/python-mode'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
+" Go
+Plugin 'fatih/vim-go'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -200,6 +198,8 @@ nnoremap <leader>shs :source ~/.vim/after/ftplugin/haskell.vim<cr>
 nnoremap <leader>ehs :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
 nnoremap <leader>scs :source ~/.vim/after/ftplugin/cs.vim<cr>
 nnoremap <leader>ecs :vsplit ~/.vim/after/ftplugin/cs.vim<cr>
+nnoremap <leader>sgo :source ~/.vim/after/ftplugin/go.vim<cr>
+nnoremap <leader>ego :vsplit ~/.vim/after/ftplugin/go.vim<cr>
 " }}}
 
 " NERDtree {{{
@@ -264,6 +264,7 @@ let g:syntastic_check_on_open=1
 let g:syntastic_enable_signs=1
 let g:syntastic_always_populate_loc_list=1
 
+let g:ycm_server_log_level = 'debug'
 
 let g:syntastic_r_checker=['lint']
 let g:syntastic_r_lint_styles = 'list(spacing.indentation.notabs, spacing.indentation.evenindent)'
@@ -278,7 +279,10 @@ let g:syntastic_python_checkers=[]
 let g:syntastic_c_compiler='gcc-4.8'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 let g:syntastic_c_compiler_options=' -std=c99'
-let g:syntastic_mode_map = {'mode': 'active'}
+
+let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck', 'gofmt']
+
+let g:syntastic_mode_map = { 'mode': 'active'}
 " }}}
 
 " ListToggle {{{
@@ -437,7 +441,7 @@ set rtp+=~/.fzf
 set nowritebackup
 set colorcolumn=80
 
-nnoremap <leader>d :redraw!<CR>
+nnoremap <leader>rd :redraw!<CR>
 
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
@@ -491,7 +495,7 @@ let g:netrw_localrmdir='rm -r'
 " }}}
 
 " YCM {{{
-nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
 nnoremap K :YcmCompleter GetDoc<CR>
 nnoremap gr :YcmCompleter GoToReferences<CR>
 
