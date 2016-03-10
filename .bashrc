@@ -8,7 +8,7 @@ export EDITOR=vim
 
 export PATH=$HOME/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/.gem/ruby/2.2.0/bin:$PATH
+export PATH=$HOME/.gem/ruby/2.3.0/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules

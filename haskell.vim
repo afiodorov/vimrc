@@ -16,3 +16,4 @@ setlocal formatprg=xargs\ pointfree
 
 nnoremap <leader>gt :GhcModType<CR>
 nnoremap <leader>gc :GhcModTypeClear<CR>
+setlocal textwidth=79
