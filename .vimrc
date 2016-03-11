@@ -261,8 +261,14 @@ silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
 
 " Syntastic {{{
 let g:syntastic_check_on_open=1
+let g:syntastic_check_on_wq=0
 let g:syntastic_enable_signs=1
 let g:syntastic_always_populate_loc_list=1
+let g:syntastic_auto_loc_list=1
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
 
 let g:ycm_server_log_level = 'debug'
 
@@ -440,7 +446,7 @@ let g:airline#extensions#tabline#enabled = 0
 
 set rtp+=~/.fzf
 set nowritebackup
-set colorcolumn=80
+set colorcolumn=+1
 
 nnoremap <leader>rd :redraw!<CR>
 

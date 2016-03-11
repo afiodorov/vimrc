@@ -23,6 +23,7 @@ nmap <buffer> <leader>gt <Plug>(go-info)
 nmap <buffer> <leader>gr <Plug>(go-rename)
 
 
+setlocal textwidth=79
 setlocal tabstop=4                   "A tab is 8 spaces
 setlocal shiftwidth=4                " size of indent
 setlocal noexpandtab

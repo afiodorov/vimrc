@@ -8,8 +8,9 @@ export EDITOR=vim
 
 export PATH=$HOME/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/.gem/ruby/2.2.0/bin:$PATH
+export PATH=$HOME/.gem/ruby/2.3.0/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
+export PATH=/usr/local/sbin:$PATH
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
 
@@ -18,7 +19,6 @@ export PATH="${PATH}:${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
-alias eclimd="/home/${USER}/.eclipse/org.eclipse.platform_4.5.0_155965261_linux_gtk_x86_64/plugins/org.eclim_2.5.0/bin/eclimd"
 alias grepc="grep --color=always"
 alias vimsql="vim -c \"set ft=sql\""
 
