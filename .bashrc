@@ -19,6 +19,8 @@ export PATH="${PATH}:${GOPATH}/bin"
 alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
 alias eclimd="/home/${USER}/.eclipse/org.eclipse.platform_4.5.0_155965261_linux_gtk_x86_64/plugins/org.eclim_2.5.0/bin/eclimd"
+alias grepc="grep --color=always"
+alias vimsql="vim -c \"set ft=sql\""
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 

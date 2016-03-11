@@ -311,7 +311,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode = 1
-let g:pymode_rope = 1
+let g:pymode_rope = 0
 let g:pymode_rope_completion = 0
 
 " Linting
@@ -429,6 +429,7 @@ endfunction
 
 if filereadable(expand('~/workrc/vimrc.vim'))
 	source ~/workrc/vimrc.vim
+	let g:is_at_work = 1
 endif
 
 " Vim-airline {{{
@@ -507,3 +508,7 @@ let g:ycm_always_populate_location_list = 1
 " CtrlP-CmdPallete {{{
 nnoremap <C-x> :CtrlPCmdPalette<CR>
 " }}}
+
+if g:is_at_work
+	let g:ycm_python_binary_path = '/usr/bin/python3'
+endif
