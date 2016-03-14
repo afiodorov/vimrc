@@ -21,6 +21,7 @@ alias "x=xclip -selection clipboard"
 alias meld="PATH=/usr/bin/ meld"
 alias grepc="grep --color=always"
 alias vimsql="vim -c \"set ft=sql\""
+alias query="gcloud alpha bigquery query"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 

@@ -200,6 +200,8 @@ nnoremap <leader>scs :source ~/.vim/after/ftplugin/cs.vim<cr>
 nnoremap <leader>ecs :vsplit ~/.vim/after/ftplugin/cs.vim<cr>
 nnoremap <leader>sgo :source ~/.vim/after/ftplugin/go.vim<cr>
 nnoremap <leader>ego :vsplit ~/.vim/after/ftplugin/go.vim<cr>
+nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
+nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
 " }}}
 
 " NERDtree {{{
