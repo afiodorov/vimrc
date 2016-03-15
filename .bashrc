@@ -8,7 +8,6 @@ export EDITOR=vim
 
 export PATH=$HOME/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/.gem/ruby/2.3.0/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 export PATH=/usr/local/sbin:$PATH
 
@@ -45,63 +44,39 @@ function setdisplay() {
 	export DISPLAY="localhost:""$1"".0"
 }
 
+_should_use_fzf() {
+  set -- $COMP_LINE
+  shift
+  while [[ $1 == -* ]]; do
+    shift
+  done
 
-# fe [FUZZY PATTERN] - Open the selected file with the default editor
-#   - Bypass fuzzy finder if there's only one match (--select-1)
-#   - Exit if there's no match (--exit-0)
-fe() {
-  local file
-  file=$(fzf --query="$1" --select-1 --exit-0)
-  [ -n "$file" ] && ${EDITOR:-vim} "$file"
+  if [[ "$1" == "show" ]]; then
+  	  return 0
+  fi
+
+  return 1
 }
 
-# fd - cd to selected directory
-fd() {
-  local dir
-  dir=$(find ${1:-*} -path '*/\.*' -prune \
-                  -o -type d -print 2> /dev/null | fzf +m) &&
-  cd "$dir"
+
+_fzf_complete_tables() {
+  if ! _should_use_fzf; then
+    _bq_completer
+    return
+  else
+    [ -n "${COMP_WORDS[COMP_CWORD]}" ] && return 1
+
+    local selected fzf
+    [ ${FZF_TMUX:-1} -eq 1 ] && fzf="fzf-tmux -d ${FZF_TMUX_HEIGHT:-40%}" || fzf="fzf"
+    tput sc
+    selected=$(cat ~/tables | $fzf -m $FZF_COMPLETION_OPTS)
+    tput rc
+
+    if [ -n "$selected" ]; then
+      COMPREPLY=( "$selected" )
+      return 0
+    fi
+  fi
 }
 
-# fda - including hidden directories
-fda() {
-  local dir
-  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
-}
-
-# fh - repeat history
-fh() {
-  eval $(([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s | sed 's/ *[0-9]* *//')
-}
-
-# fkill - kill process
-fkill() {
-  ps -ef | sed 1d | fzf -m | awk '{print $2}' | xargs kill -${1:-9}
-}
-
-# fbr - checkout git branch
-fbr() {
-  local branches branch
-  branches=$(git branch "$@") &&
-  branch=$(echo "$branches" | fzf +s +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | xargs basename)
-}
-
-# fco - checkout git commit
-fco() {
-  local commits commit
-  commits=$(git log --pretty=oneline --abbrev-commit --reverse) &&
-  commit=$(echo "$commits" | fzf +s +m -e) &&
-  git checkout $(echo "$commit" | sed "s/ .*//")
-}
-
-# ftags - search ctags
-ftags() {
-  local line
-  [ -e tags ] &&
-  line=$(
-    awk 'BEGIN { FS="\t" } !/^!/ {print toupper($4)"\t"$1"\t"$2"\t"$3}' tags |
-    cut -c1-80 | fzf --nth=1,2
-  ) && $EDITOR $(cut -f3 <<< "$line") -c "set nocst" \
-                                      -c "silent tag $(cut -f2 <<< "$line")"
-}
+complete -F _fzf_complete_tables -o nospace -o default -o bashdefault bq
