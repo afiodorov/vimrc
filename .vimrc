@@ -517,6 +517,6 @@ let g:ycm_always_populate_location_list = 1
 nnoremap <C-x> :CtrlPCmdPalette<CR>
 " }}}
 
-if g:is_at_work
+if exists("g:is_at_work")
 	let g:ycm_python_binary_path = '/usr/bin/python3'
 endif
