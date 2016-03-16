@@ -18,7 +18,6 @@ export GOPATH="${HOME}/go"
 export PATH="${PATH}:${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
-alias meld="PATH=/usr/bin/ meld"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 
