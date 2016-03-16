@@ -17,3 +17,6 @@ setlocal formatprg=xargs\ pointfree
 nnoremap <leader>gt :GhcModType<CR>
 nnoremap <leader>gc :GhcModTypeClear<CR>
 setlocal textwidth=79
+
+let g:haskellmode_completion_ghc = 0
+setlocal omnifunc=necoghc#omnifunc

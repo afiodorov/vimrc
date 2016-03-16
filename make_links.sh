@@ -10,13 +10,13 @@ do
 	ln -s $file "${vimpath}/"
 done
 
-ymlpath="${HOME}/.tmuxinator"
-mkdir -p "${ymlpath}"
-for file in "${DIR}"/*.yml
+vimsyntax="${HOME}/.vim/after/syntax"
+mkdir -p "${vimsyntax}"
+for file in "${DIR}"/after/syntax/*.vim
 do
 	filename=$(basename "${file}")
-	rm -f "${ymlpath}/${filename}"
-	ln -s $file "${ymlpath}/"
+	rm -f "${vimsyntax}/${filename}"
+	ln -s $file "${vimsyntax}/"
 done
 
 declare -A map_files
