@@ -329,7 +329,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode = 1
-let g:pymode_rope = 0
+let g:pymode_rope = 1
 let g:pymode_rope_completion = 0
 
 " Linting
