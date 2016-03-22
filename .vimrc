@@ -300,7 +300,7 @@ let g:syntastic_c_compiler_options=' -std=c99'
 
 let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck', 'gofmt']
 
-let g:syntastic_mode_map = { 'mode': 'active'}
+let g:syntastic_mode_map = {'mode': 'active', 'passive_filetypes': ['python']}
 " }}}
 
 " ListToggle {{{
@@ -331,12 +331,15 @@ nnoremap <leader>cd :cd %:p:h<CR>
 let g:pymode = 1
 let g:pymode_rope = 1
 let g:pymode_rope_completion = 0
+" vim hangs without
+let g:pymode_rope_lookup_project = 0
 
 " Linting
 let g:pymode_lint = 1
+let g:pymode_lint_on_write = 1
 let g:pymode_lint_cwindow = 0
+let g:pymode_lint_checker=['pep8', 'pyflakes', 'pylint', 'pep257', 'mccabe']
 let g:pymode_lint_signs = 1
-let g:pymode_lint_checker=['pep8', 'pyflakes', 'pylint']
 
 let g:pymode_doc = 1
 let g:pymode_doc_bind = '<leader>K'
@@ -354,6 +357,7 @@ let g:pymode_breakpoint_key = '<leader>dp'
 " syntax highlighting
 let g:pymode_syntax = 1
 let g:pymode_syntax_all = 1
+let g:pymode_syntax_slow_sync = 1
 let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
