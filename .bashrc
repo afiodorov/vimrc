@@ -17,7 +17,6 @@ export GOPATH="${HOME}/go"
 export PATH="${PATH}:${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
-alias meld="PATH=/usr/bin/ meld"
 alias grepc="grep --color=always"
 alias vimsql="vim -c \"set ft=sql\""
 alias query="gcloud alpha bigquery query"
@@ -43,6 +42,28 @@ fi
 function setdisplay() {
 	export DISPLAY="localhost:""$1"".0"
 }
+
+function update-x11-forwarding
+{
+    if [ -z "$STY" -a -z "$TMUX" ]; then
+        echo $DISPLAY > ~/.display.txt
+    else
+        export DISPLAY=`cat ~/.display.txt`
+    fi
+}
+
+# This is run before every command.
+preexec() {
+    # Don't cause a preexec for PROMPT_COMMAND.
+    # Beware!  This fails if PROMPT_COMMAND is a string containing more than one command.
+    [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return
+
+    update-x11-forwarding
+
+    # Debugging.
+    #echo DISPLAY = $DISPLAY, display.txt = `cat ~/.display.txt`, STY = $STY, TMUX = $TMUX
+}
+trap 'preexec' DEBUG
 
 _should_use_fzf() {
   set -- $COMP_LINE

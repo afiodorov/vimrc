@@ -22,6 +22,12 @@ set directory=~/tmp/
 
 let g:C_Ctrl_j = 'off'
 map Q <Nop>
+
+if filereadable(expand('~/workrc/vimrc.vim'))
+	source ~/workrc/vimrc.vim
+	let g:is_at_work = 1
+endif
+
 " remember more commands {{{
 set history=1000
 " }}}
@@ -107,7 +113,6 @@ Plugin 'tpope/vim-repeat'
 Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'fholgado/minibufexpl.vim'
-Plugin 'jcf/vim-latex'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
 Plugin 'vim-scripts/taglist.vim'
@@ -120,23 +125,28 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
-" Haskell
-Plugin 'bitc/vim-hdevtools'
-Plugin 'eagletmt/neco-ghc'
-Plugin 'Shougo/vimproc'
-Plugin 'eagletmt/ghcmod-vim'
-Plugin 'lukerandall/haskellmode-vim'
-Plugin 'tpope/vim-abolish'
-Plugin 'tpope/vim-eunuch'
-" Typescript
-Plugin 'leafgarland/typescript-vim'
-Plugin 'jason0x43/vim-js-indent'
-" C sharp
-Plugin 'OmniSharp/omnisharp-vim'
-" Scala
-Plugin 'derekwyatt/vim-scala'
-" R
-Plugin 'jcfaria/Vim-R-plugin'
+
+if !exists("g:is_at_work")
+	" Latex
+	Plugin 'jcf/vim-latex'
+	" Haskell
+	Plugin 'bitc/vim-hdevtools'
+	Plugin 'eagletmt/neco-ghc'
+	Plugin 'Shougo/vimproc'
+	Plugin 'eagletmt/ghcmod-vim'
+	Plugin 'lukerandall/haskellmode-vim'
+	Plugin 'tpope/vim-abolish'
+	Plugin 'tpope/vim-eunuch'
+	" Typescript
+	Plugin 'leafgarland/typescript-vim'
+	Plugin 'jason0x43/vim-js-indent'
+	" C sharp
+	Plugin 'OmniSharp/omnisharp-vim'
+	" Scala
+	Plugin 'derekwyatt/vim-scala'
+	" R
+	Plugin 'jcfaria/Vim-R-plugin'
+endif
 " Python
 Plugin 'klen/python-mode'
 Plugin 'kana/vim-textobj-user'
@@ -319,7 +329,7 @@ nnoremap <leader>cd :cd %:p:h<CR>
 " [M            Jump on previous class or method (normal, visual, operator modes)
 " ]M            Jump on next class or method (normal, visual, operator modes)
 let g:pymode = 1
-let g:pymode_rope = 0
+let g:pymode_rope = 1
 let g:pymode_rope_completion = 0
 
 " Linting
@@ -441,11 +451,6 @@ function! Stab()
   endtry
 endfunction
 " }}}
-
-if filereadable(expand('~/workrc/vimrc.vim'))
-	source ~/workrc/vimrc.vim
-	let g:is_at_work = 1
-endif
 
 " Vim-airline {{{
 " Always show statusline
