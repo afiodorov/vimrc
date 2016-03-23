@@ -76,6 +76,14 @@ _should_use_fzf() {
   	  return 0
   fi
 
+  if [[ "$1" == "rm" ]]; then
+  	  return 0
+  fi
+
+  if [[ "$1" == "head" ]]; then
+  	  return 0
+  fi
+
   return 1
 }
 
@@ -85,12 +93,22 @@ _fzf_complete_tables() {
     _bq_completer
     return
   else
-    [ -n "${COMP_WORDS[COMP_CWORD]}" ] && return 1
+    local cur_word database
+    cur_word=${COMP_WORDS[COMP_CWORD]}
+    if [[ "$cur_word" =~ ^[a-Z]+\..* ]]; then
+            database="${cur_word%%.*}"
+    fi
+    if [ -n "${database}" ]; then
+      bq ls -n1000000 "${database}" | tail -n+3 | awk '{print "'${database}.'"$1}' > /tmp/tables
+    else
+      COMPREPLY=( $(bq ls | tail -n+3 | awk '{print $1"."}' | grep -E "^${cur_word}") )
+      return 0
+    fi
 
     local selected fzf
     [ ${FZF_TMUX:-1} -eq 1 ] && fzf="fzf-tmux -d ${FZF_TMUX_HEIGHT:-40%}" || fzf="fzf"
     tput sc
-    selected=$(cat ~/tables | $fzf -m $FZF_COMPLETION_OPTS)
+    selected=$(cat /tmp/tables | $fzf -m $FZF_COMPLETION_OPTS)
     tput rc
 
     if [ -n "$selected" ]; then
