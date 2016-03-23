@@ -16,7 +16,8 @@ endif
 endfunction
 map <buffer> K :call <SID>isDocShown()<cr>
 
-set tabstop=2 shiftwidth=2
+set tabstop=2
+set shiftwidth=2
 
 inoremap <buffer> <leader>f function
 
