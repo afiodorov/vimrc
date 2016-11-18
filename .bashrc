@@ -1,8 +1,11 @@
 set -o vi
+stty -ixon
 
 shopt -s histappend
 export HISTCONTROL=erasedups:ignoreboth
 export HISTIGNORE="ls:exit:pwd:clear"
+
+export PROMPT_DIRTRIM=2
 
 export EDITOR=vim
 
@@ -20,8 +23,16 @@ alias "x=xclip -selection clipboard"
 alias grepc="grep --color=always"
 alias vimsql="vim -c \"set ft=sql\""
 alias query="gcloud alpha bigquery query"
+alias git=hub
+alias p="GIT_DIR=~/models/.git GIT_WORK_TREE=~/models/ python3 -m"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
+
+export MLR_CSV_DEFAULT_RS=lf
+
+export MODELS_PATH=~/models
+
+alias mlr_csv="mlr -icsv --rs lf"
 
 if [ -f ~/.bash_completion.d/python-argcomplete.sh ]; then
 	source ~/.bash_completion.d/python-argcomplete.sh
@@ -34,7 +45,7 @@ fi
 SOCK="/tmp/ssh-agent-$USER-tmux"
 if test $SSH_AUTH_SOCK && [ $SSH_AUTH_SOCK != $SOCK ]
 then
-    rm -f /tmp/ssh-agent-$USER-screen
+    rm -f /tmp/ssh-agent-$USER-tmux
     ln -sf $SSH_AUTH_SOCK $SOCK
     export SSH_AUTH_SOCK=$SOCK
 fi

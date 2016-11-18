@@ -94,7 +94,7 @@ call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
 Plugin 'chrisbra/csv.vim'
-Plugin 'vim-scripts/gitignore'
+" Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
 Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
@@ -276,7 +276,7 @@ let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0
 let g:syntastic_enable_signs=1
 let g:syntastic_always_populate_loc_list=1
-let g:syntastic_auto_loc_list=1
+let g:syntastic_auto_loc_list=0
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -292,15 +292,13 @@ let g:syntastic_cpp_compiler_options=' -std=c++11'
 let g:syntastic_cpp_checkers=['gcc', 'ycm']
 
 
-let g:syntastic_python_checkers=[]
-
-let g:syntastic_c_compiler='gcc-4.8'
-let g:syntastic_cpp_checkers=['gcc', 'ycm']
-let g:syntastic_c_compiler_options=' -std=c99'
+let g:syntastic_c_compiler='gcc'
+let g:syntastic_c_checkers=['gcc', 'make']
+let g:syntastic_c_compiler_options='-std=c99'
 
 let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck', 'gofmt']
 
-let g:syntastic_mode_map = {'mode': 'active', 'passive_filetypes': ['python']}
+let g:syntastic_mode_map = {'mode': 'active'}
 " }}}
 
 " ListToggle {{{
@@ -338,7 +336,7 @@ let g:pymode_rope_lookup_project = 0
 let g:pymode_lint = 1
 let g:pymode_lint_on_write = 1
 let g:pymode_lint_cwindow = 0
-let g:pymode_lint_checker=['pep8', 'pyflakes', 'pylint', 'pep257', 'mccabe']
+let g:pymode_lint_checker=['pep8', 'pylint', 'pep257', 'pyflakes']
 let g:pymode_lint_signs = 1
 
 let g:pymode_doc = 1
@@ -369,9 +367,6 @@ let g:pymode_breakpoint_bind = '<leader>v'
 
 let g:pymode_motion = 1
 
-if exists("g:is_at_work")
-	let g:pymode_python = 'python3'
-endif
 " }}}
 
 " quick resize {{{
@@ -397,11 +392,20 @@ let g:vim_markdown_folding_disabled=1
 
 " terminal settings {{{
 set t_Co=256
-set background=light
-" let g:solarized_termcolors=256
-set mouse=a
-" }}}
+if !&diff
+    set background=light
+endif
 
+if &diff
+	highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+	highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+	highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
+	highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
+endif
+set mouse=a
+
+" }}}
+"
 " ctrlp {{{
 nnoremap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_map = '<leader>t'
@@ -536,4 +540,5 @@ nnoremap <C-x> :CtrlPCmdPalette<CR>
 
 if exists("g:is_at_work")
 	let g:ycm_python_binary_path = '/usr/bin/python3'
+	let g:pymode_python = 'python3'
 endif
