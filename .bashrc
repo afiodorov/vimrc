@@ -23,7 +23,6 @@ alias "x=xclip -selection clipboard"
 alias grepc="grep --color=always"
 alias vimsql="vim -c \"set ft=sql\""
 alias query="gcloud alpha bigquery query"
-alias git=hub
 alias p="GIT_DIR=~/models/.git GIT_WORK_TREE=~/models/ python3 -m"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
