@@ -1,29 +1,29 @@
 set -o vi
 stty -ixon
 
+pathadd() {
+	if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+		PATH="${PATH:+"$PATH:"}$1"
+	fi
+}
+
 shopt -s histappend
 export HISTCONTROL=erasedups:ignoreboth
 export HISTIGNORE="ls:exit:pwd:clear"
 
 export PROMPT_DIRTRIM=2
-
 export EDITOR=vim
 
-export PATH=$HOME/bin:$PATH
-export PATH=$HOME/.local/bin:$PATH
-export PATH=$HOME/.cabal/bin:$PATH
-export PATH=/usr/local/sbin:$PATH
+pathadd "${HOME}/bin"
+pathadd "${HOME}/.cabal/bin"
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
 
 export GOPATH="${HOME}/go"
-export PATH="${PATH}:${GOPATH}/bin"
+pathadd "${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
 alias grepc="grep --color=always"
-alias vimsql="vim -c \"set ft=sql\""
-alias query="gcloud alpha bigquery query"
-alias p="GIT_DIR=~/models/.git GIT_WORK_TREE=~/models/ python3 -m"
 
 export PYTHONSTARTUP=$HOME/.pythonrc.py
 
