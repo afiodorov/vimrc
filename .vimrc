@@ -96,7 +96,6 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'chrisbra/csv.vim'
 " Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
-Plugin 'matchit.zip'
 Plugin 'gregsexton/MatchTag'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'bling/vim-airline'
@@ -104,8 +103,6 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'gregsexton/gitv'
 Plugin 'tpope/vim-surround'
 Plugin 'Lokaltog/vim-easymotion'
-Plugin 'L9'
-Plugin 'FuzzyFinder'
 Plugin 'kien/ctrlp.vim'
 Bundle 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'scrooloose/nerdtree.git'
@@ -124,10 +121,9 @@ Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
+Plugin 'godlygeek/tabular'
 
 if !exists("g:is_at_work")
-	" Latex
-	Plugin 'jcf/vim-latex'
 	" Haskell
 	Plugin 'bitc/vim-hdevtools'
 	Plugin 'eagletmt/neco-ghc'
@@ -156,26 +152,6 @@ Plugin 'fatih/vim-go'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
-" }}}
-
-" vim-latex {{{
-set shellslash
-
-" IMPORTANT: grep will sometimes skip displaying the file name if you
-" search in a singe file. This will confuse Latex-Suite. Set your grep
-" program to always generatet a file-name.
-set grepprg=grep\ -nH\ $*
-
-let g:tex_flavor='latex'
-let g:Tex_DefaultTargetFormat='pdf'
-let g:Tex_MultipleCompileFormats='pdf'
-let g:Tex_CompileRule_pdf = 'pdflatex -shell-escape -file-line-error -synctex=1 --interaction=nonstopmode $* >/dev/null'
-let g:Tex_HotKeyMappings = 'align*,align,equation,bmatrix'
-let g:Tex_ViewRule_pdf = 'evince'
-let g:Tex_AutoFolding = 0
-filetype plugin indent on
-set omnifunc=syntaxcomplete#Complete
-syntax on
 " }}}
 
 " better undo {{{
@@ -475,11 +451,6 @@ let g:haddock_browser = "/usr/bin/google-chrome"
 let g:haddock_docdir = "/home/tom/.cabal/share/doc"
 let g:ghc = "/usr/bin/ghc"
 " }}}
-
-" Csharp {{{
-let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
-let g:ycm_csharp_server_port = 2000
-"}}}
 
 " Move the preview window to the bottom of the screen {{{
 set splitbelow
