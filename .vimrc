@@ -110,9 +110,7 @@ Plugin 'kien/ctrlp.vim'
 Bundle 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'scrooloose/nerdtree.git'
 Plugin 'tpope/vim-repeat'
-Plugin 'scrooloose/syntastic'
 Plugin 'scrooloose/nerdcommenter'
-Plugin 'fholgado/minibufexpl.vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
 Plugin 'vim-scripts/taglist.vim'
@@ -125,6 +123,7 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
+Plugin 'w0rp/ale'
 
 if !exists("g:is_at_work")
 	" Latex
@@ -269,36 +268,6 @@ vnoremap <silent> # :<C-U>
 
 " surround repeat {{{
 silent! call repeat#set("\<Plug>MyWonderfulMap", v:count)
-" }}}
-
-" Syntastic {{{
-let g:syntastic_check_on_open=1
-let g:syntastic_check_on_wq=0
-let g:syntastic_enable_signs=1
-let g:syntastic_always_populate_loc_list=1
-let g:syntastic_auto_loc_list=0
-
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
-
-let g:ycm_server_log_level = 'debug'
-
-let g:syntastic_r_checker=['lint']
-let g:syntastic_r_lint_styles = 'list(spacing.indentation.notabs, spacing.indentation.evenindent)'
-
-let g:syntastic_cpp_compiler='g++-4.8'
-let g:syntastic_cpp_compiler_options=' -std=c++11'
-let g:syntastic_cpp_checkers=['gcc', 'ycm']
-
-
-let g:syntastic_c_compiler='gcc'
-let g:syntastic_c_checkers=['gcc', 'make']
-let g:syntastic_c_compiler_options='-std=c99'
-
-let g:syntastic_go_checkers = ['go', 'golint', 'govet', 'errcheck', 'gofmt']
-
-let g:syntastic_mode_map = {'mode': 'active'}
 " }}}
 
 " ListToggle {{{
@@ -464,6 +433,8 @@ endfunction
 " Always show statusline
 set laststatus=2
 let g:airline#extensions#tabline#enabled = 0
+let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#tabline#enabled = 1
 " }}}
 
 set rtp+=~/.fzf
@@ -514,11 +485,6 @@ let g:ycm_csharp_server_port = 2000
 set splitbelow
 " }}}
 
-" Minibuf Explorer {{{
-" above
-let g:miniBufExplSplitBelow = 0
-" }}}
-
 " delete dirs in netrw {{{
 let g:netrw_localrmdir='rm -r'
 " }}}
@@ -536,6 +502,10 @@ let g:ycm_always_populate_location_list = 1
 
 " CtrlP-CmdPallete {{{
 nnoremap <C-x> :CtrlPCmdPalette<CR>
+" }}}
+
+" ale {{{
+let g:ale_lint_on_save = 1
 " }}}
 
 if exists("g:is_at_work")
