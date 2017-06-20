@@ -14,12 +14,13 @@ export HISTIGNORE="ls:exit:pwd:clear"
 export PROMPT_DIRTRIM=2
 export EDITOR=vim
 
-pathadd "${HOME}/bin"
+export PATH="${HOME}/bin:${PATH}"
 pathadd "${HOME}/.cabal/bin"
 
 export PYTHONPATH=$PYTHONPATH:~/python-modules
 
-export GOPATH="${HOME}/go"
+export GOPATH=$(readlink -f "${HOME}/go")
+export GOBIN=$(readlink -f "${HOME}/go/bin")
 pathadd "${GOPATH}/bin"
 
 alias "x=xclip -selection clipboard"
@@ -29,7 +30,10 @@ export PYTHONSTARTUP=$HOME/.pythonrc.py
 
 export MLR_CSV_DEFAULT_RS=lf
 
-export MODELS_PATH=~/models
+export MODELS_PATH=~/ravelinml
+
+export CORE=$HOME/go/src/github.com/unravelin/core
+export CDPATH=".:${CORE}"
 
 alias mlr_csv="mlr -icsv --rs lf"
 

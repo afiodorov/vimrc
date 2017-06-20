@@ -122,6 +122,7 @@ Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
 Plugin 'godlygeek/tabular'
+Plugin 'fisadev/vim-isort'
 
 if !exists("g:is_at_work")
 	" Haskell
@@ -477,6 +478,11 @@ nnoremap <C-x> :CtrlPCmdPalette<CR>
 
 " ale {{{
 let g:ale_lint_on_save = 1
+" }}}
+"
+" isort {{{
+let g:vim_isort_map = '<C-i>'
+let g:vim_isort_python_version = 'python3'
 " }}}
 
 if exists("g:is_at_work")
