@@ -2,6 +2,7 @@ set nocompatible
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,~/.vim/after
 set autoread
 set backspace=indent,eol,start
+syntax on
 
 " when scrolling, keep cursor 1 lines away from screen border
 set scrolloff=1
@@ -26,6 +27,10 @@ map Q <Nop>
 if filereadable(expand('~/workrc/vimrc.vim'))
 	source ~/workrc/vimrc.vim
 	let g:is_at_work = 1
+endif
+
+if exists("g:is_at_work")
+	let g:pymode_python = 'python3'
 endif
 
 " remember more commands {{{
@@ -122,7 +127,6 @@ Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
 Plugin 'godlygeek/tabular'
-Plugin 'fisadev/vim-isort'
 
 if !exists("g:is_at_work")
 	" Haskell
@@ -148,8 +152,6 @@ Plugin 'klen/python-mode'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
-" Go
-Plugin 'fatih/vim-go'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -224,6 +226,11 @@ augroup sh
     "smart indent really only for C like languages
     autocmd FileType sh set nosmartindent autoindent
 augroup END
+" }}}
+
+" Common file type settings {{{
+autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 " }}}
 
 " save read-only files as root {{{
@@ -479,13 +486,3 @@ nnoremap <C-x> :CtrlPCmdPalette<CR>
 " ale {{{
 let g:ale_lint_on_save = 1
 " }}}
-"
-" isort {{{
-let g:vim_isort_map = '<C-i>'
-let g:vim_isort_python_version = 'python3'
-" }}}
-
-if exists("g:is_at_work")
-	let g:ycm_python_binary_path = '/usr/bin/python3'
-	let g:pymode_python = 'python3'
-endif
