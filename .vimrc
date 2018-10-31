@@ -119,14 +119,14 @@ Plugin 'vim-scripts/taglist.vim'
 Plugin 'vim-scripts/Gundo'
 Plugin 'majutsushi/tagbar'
 Plugin 'plasticboy/vim-markdown'
-Plugin 'jelera/vim-javascript-syntax'
 Plugin 'vim-scripts/JavaScript-Indent'
-Plugin 'pangloss/vim-javascript'
 Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
 Plugin 'godlygeek/tabular'
+Plugin 'leafgarland/typescript-vim'
+Plugin 'jelera/vim-javascript-syntax'
 
 if !exists("g:is_at_work")
 	" Haskell
@@ -138,7 +138,6 @@ if !exists("g:is_at_work")
 	Plugin 'tpope/vim-abolish'
 	Plugin 'tpope/vim-eunuch'
 	" Typescript
-	Plugin 'leafgarland/typescript-vim'
 	Plugin 'jason0x43/vim-js-indent'
 	" C sharp
 	Plugin 'OmniSharp/omnisharp-vim'
@@ -231,6 +230,7 @@ augroup END
 " Common file type settings {{{
 autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+autocmd FileType typescript setlocal ts=4 sts=4 sw=4 expandtab
 " }}}
 
 " save read-only files as root {{{
