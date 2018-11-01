@@ -7,6 +7,8 @@ pathadd() {
 	fi
 }
 
+export PATH=~/.npm-global/bin:$PATH
+
 shopt -s histappend
 export HISTCONTROL=erasedups:ignoreboth
 export HISTIGNORE="ls:exit:pwd:clear"
