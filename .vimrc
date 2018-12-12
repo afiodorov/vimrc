@@ -29,9 +29,7 @@ if filereadable(expand('~/workrc/vimrc.vim'))
 	let g:is_at_work = 1
 endif
 
-if exists("g:is_at_work")
-	let g:pymode_python = 'python3'
-endif
+let g:pymode_python = 'python3'
 
 " remember more commands {{{
 set history=1000
@@ -146,6 +144,8 @@ Plugin 'w0rp/ale'
 Plugin 'godlygeek/tabular'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'jelera/vim-javascript-syntax'
+Plugin 'python-mode/python-mode'
+Plugin 'fisadev/vim-isort'
 
 if !exists("g:is_at_work")
 	" Haskell
@@ -166,7 +166,6 @@ if !exists("g:is_at_work")
 	Plugin 'jcfaria/Vim-R-plugin'
 endif
 " Python
-Plugin 'klen/python-mode'
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
@@ -305,7 +304,7 @@ let g:pymode_rope_completion = 0
 let g:pymode_rope_lookup_project = 0
 
 " Linting
-let g:pymode_lint = 1
+let g:pymode_lint = 0
 let g:pymode_lint_on_write = 1
 let g:pymode_lint_cwindow = 0
 let g:pymode_lint_checker=['pep8', 'pylint', 'pep257', 'pyflakes']
