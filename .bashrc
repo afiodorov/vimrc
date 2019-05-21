@@ -18,12 +18,8 @@ export EDITOR=vim
 export PATH="${HOME}/bin:${PATH}"
 
 alias grepc="grep --color=always"
-alias c="conda activate model"
+alias py37="source ~/p/py37/bin/activate"
 alias ipython="ipython --TerminalInteractiveShell.editing_mode=vi"
-
-export MLR_CSV_DEFAULT_RS=lf
-
-alias mlr_csv="mlr -icsv --rs lf"
 
 if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
 	source /usr/share/fzf/shell/key-bindings.bash

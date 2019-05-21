@@ -117,14 +117,14 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
+Plugin 'vim-scripts/vis'
+Plugin 'vim-scripts/ReplaceWithRegister'
 Plugin 'chrisbra/csv.vim'
-" Plugin 'vim-scripts/gitignore'
 Plugin 'sukima/xmledit'
 Plugin 'gregsexton/MatchTag'
 Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
-Plugin 'gregsexton/gitv'
 Plugin 'tpope/vim-surround'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'kien/ctrlp.vim'
@@ -143,9 +143,9 @@ Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
-Plugin 'godlygeek/tabular'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'jelera/vim-javascript-syntax'
+Plugin 'fisadev/vim-isort'
 
 if !exists("g:is_at_work")
 	" Haskell
