@@ -432,5 +432,5 @@ let g:ale_lint_on_save = 1
 " }}}
 
 " execute {{{
-nnoremap <leader>e :exe getline(line('.'))<cr>
+nnoremap <leader>ex :exe getline(line('.'))<cr>
 " }}}
