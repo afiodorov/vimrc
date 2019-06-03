@@ -1,4 +1,5 @@
 set nocompatible
+set lazyredraw
 set runtimepath=~/.vim,$VIM/vimfiles,$VIMRUNTIME,~/.vim/after
 set autoread
 set backspace=indent,eol,start
@@ -29,7 +30,7 @@ if filereadable(expand('~/workrc/vimrc.vim'))
 	let g:is_at_work = 1
 endif
 
-let g:pymode_python = 'python3'
+" let g:pymode_python = 'python3'
 
 " remember more commands {{{
 set history=1000
@@ -144,25 +145,9 @@ Plugin 'w0rp/ale'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'jelera/vim-javascript-syntax'
 Plugin 'fisadev/vim-isort'
-
-if !exists("g:is_at_work")
-	" Haskell
-	Plugin 'bitc/vim-hdevtools'
-	Plugin 'eagletmt/neco-ghc'
-	Plugin 'Shougo/vimproc'
-	Plugin 'eagletmt/ghcmod-vim'
-	Plugin 'lukerandall/haskellmode-vim'
-	Plugin 'tpope/vim-abolish'
-	Plugin 'tpope/vim-eunuch'
-	" Typescript
-	Plugin 'jason0x43/vim-js-indent'
-	" C sharp
-	Plugin 'OmniSharp/omnisharp-vim'
-	" Scala
-	Plugin 'derekwyatt/vim-scala'
-	" R
-	Plugin 'jcfaria/Vim-R-plugin'
-endif
+Plugin 'python-mode/python-mode'
+Plugin 'machakann/vim-swap'
+"
 " Python
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
@@ -179,10 +164,6 @@ inoremap <Space> <Space><C-g>u
 " for latex
 inoremap , ,<C-g>u
 inoremap ` `<C-g>u
-" }}}
-
-" System register {{{
-"set clipboard=unnamedplus
 " }}}
 
 set viminfo='10,\"100,:20,%,n~/viminfo
@@ -382,53 +363,6 @@ let g:ctrlp_max_height=35
 let g:ctrlp_switch_buffer= ''
 " }}}
 
-" {{{ Stab
-" put all this in your .vimrc or a plugin file
-command! -nargs=* Stab call Stab()
-function! Stab()
-  let l:tabstop = 1 * input('set shiftwidth=')
-
-  if l:tabstop > 0
-    " do we want expandtab as well?
-    let l:expandtab = confirm('set expandtab?', "&Yes\n&No\n&Cancel")
-    if l:expandtab == 3
-      " abort?
-      return
-    endif
-
-    let &l:sts = l:tabstop
-    let &l:ts = l:tabstop
-    let &l:sw = l:tabstop
-
-    if l:expandtab == 1
-      setlocal expandtab
-    else
-      setlocal noexpandtab
-    endif
-  endif
-
-  " show the selected options
-  try
-    echohl ModeMsg
-    echon 'set tabstop='
-    echohl Question
-    echon &l:ts
-    echohl ModeMsg
-    echon ' shiftwidth='
-    echohl Question
-    echon &l:sw
-    echohl ModeMsg
-    echon ' sts='
-    echohl Question
-    echon &l:sts . ' ' . (&l:et ? '  ' : 'no')
-    echohl ModeMsg
-    echon 'expandtab'
-  finally
-    echohl None
-  endtry
-endfunction
-" }}}
-
 " Vim-airline {{{
 " Always show statusline
 set laststatus=2
@@ -466,14 +400,8 @@ let g:ycm_complete_in_comments = 1
 
 " {{{ Vim-slime
 let g:slime_target = "tmux"
-let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
-" }}}
-
-" Haskell {{{
-let g:haddock_browser = "/usr/bin/google-chrome"
-let g:haddock_docdir = "/home/tom/.cabal/share/doc"
-let g:ghc = "/usr/bin/ghc"
+let g:slime_default_config = {"socket_name": "default", "target_pane": "{down-of}"}
 " }}}
 
 " Move the preview window to the bottom of the screen {{{
@@ -501,4 +429,8 @@ nnoremap <C-x> :CtrlPCmdPalette<CR>
 
 " ale {{{
 let g:ale_lint_on_save = 1
+" }}}
+
+" execute {{{
+nnoremap <leader>e :exe getline(line('.'))<cr>
 " }}}
