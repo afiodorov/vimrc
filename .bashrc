@@ -25,3 +25,7 @@ alias pytest="PYTHONPATH=/home/tom/nstack/models/base-python python -m pytest"
 if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
 	source /usr/share/fzf/shell/key-bindings.bash
 fi
+
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
