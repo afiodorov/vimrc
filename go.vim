@@ -1,8 +1,3 @@
-nmap <buffer> <leader>zr <Plug>(go-run)
-nmap <buffer> <leader>zb <Plug>(go-build)
-nmap <buffer> <leader>zt <Plug>(go-test)
-nmap <buffer> <leader>zc <Plug>(go-coverage)
-
 " You can also open the definition/declaration, in a new vertical, horizontal,
 " or tab, for the word under your cursor
 nmap <buffer> <leader>ds <Plug>(go-def-split)
@@ -23,7 +18,7 @@ nmap <buffer> <leader>gt <Plug>(go-info)
 nmap <buffer> <leader>gr <Plug>(go-rename)
 
 
-setlocal textwidth=79
+setlocal textwidth=120
 setlocal tabstop=4                   "A tab is 8 spaces
 setlocal shiftwidth=4                " size of indent
 setlocal noexpandtab

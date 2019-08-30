@@ -30,8 +30,6 @@ if filereadable(expand('~/workrc/vimrc.vim'))
 	let g:is_at_work = 1
 endif
 
-" let g:pymode_python = 'python3'
-
 " remember more commands {{{
 set history=1000
 " }}}
@@ -125,7 +123,6 @@ Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
-Plugin 'Lokaltog/vim-easymotion'
 Plugin 'kien/ctrlp.vim'
 Bundle 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'scrooloose/nerdtree.git'
@@ -138,13 +135,12 @@ Plugin 'vim-scripts/Gundo'
 Plugin 'majutsushi/tagbar'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'vim-scripts/JavaScript-Indent'
-Plugin 'digitaltoad/vim-jade'
 Plugin 'Raimondi/delimitMate'
 Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'jelera/vim-javascript-syntax'
-Plugin 'fisadev/vim-isort'
+" Plugin 'fisadev/vim-isort'
 Plugin 'python-mode/python-mode'
 Plugin 'machakann/vim-swap'
 "
@@ -153,6 +149,10 @@ Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
 Plugin 'fatih/vim-go'
+
+" SQL
+Plugin 'vim-scripts/dbext.vim'
+Plugin 'lifepillar/pgsql.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -421,7 +421,7 @@ nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
 
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_filepath_completion_use_working_dir = 1
-let g:ycm_always_populate_location_list = 1
+let g:ycm_always_populate_location_list = 0
 " }}}
 
 " CtrlP-CmdPallete {{{
@@ -432,6 +432,12 @@ nnoremap <C-x> :CtrlPCmdPalette<CR>
 let g:ale_lint_on_save = 1
 " }}}
 
-" execute {{{
-nnoremap <leader>ex :exe getline(line('.'))<cr>
+" airline {{{
+let g:airline#extensions#keymap#enabled = 0
+let g:airline_section_y = ''
+" }}}
+
+" xclip {{{
+nnoremap <silent> <leader>y V:w !xclip -sel c<CR><CR>
+xnoremap <silent> <leader>y :w !xclip -sel c<CR><CR>
 " }}}

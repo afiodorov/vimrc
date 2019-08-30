@@ -18,14 +18,17 @@ export EDITOR=vim
 export PATH="${HOME}/bin:${PATH}"
 
 alias py37="source ~/p/py37/bin/activate"
+alias dj="source ~/p/django/bin/activate"
 alias ipython="ipython --TerminalInteractiveShell.editing_mode=vi"
-alias ap="export PYTHONPATH=/home/tom/nstack/models/base-python"
-alias pytest="PYTHONPATH=/home/tom/nstack/models/base-python python -m pytest"
+alias g="cd ${HOME}/go/src/github.com/glassnode/"
 
 if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
 	source /usr/share/fzf/shell/key-bindings.bash
 fi
 
-export GOROOT=/usr/local/go
+export GOROOT=/snap/go/current
 export GOPATH=$HOME/go
 export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+
+alias kgn="kubectl -n glassnode"
+complete -o default -F __start_kubectl kgn
