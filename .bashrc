@@ -7,8 +7,6 @@ pathadd() {
 	fi
 }
 
-export PATH=~/.npm-global/bin:$PATH
-
 shopt -s histappend
 export HISTCONTROL=erasedups:ignoreboth
 export HISTIGNORE="ls:exit:pwd:clear"
@@ -18,13 +16,9 @@ export EDITOR=vim
 export PATH="${HOME}/bin:${PATH}"
 
 alias py37="source ~/p/py37/bin/activate"
-alias dj="source ~/p/django/bin/activate"
+alias gym="source ~/p/gym/bin/activate"
 alias ipython="ipython --TerminalInteractiveShell.editing_mode=vi"
-alias g="cd ${HOME}/go/src/github.com/glassnode/"
-
-if [ -f /usr/share/fzf/shell/key-bindings.bash ]; then
-	source /usr/share/fzf/shell/key-bindings.bash
-fi
+alias g="cd ${HOME}/go/src/gitlab.com/glassnode/"
 
 export GOROOT=/snap/go/current
 export GOPATH=$HOME/go
