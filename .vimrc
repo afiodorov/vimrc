@@ -53,7 +53,6 @@ set smartcase
 
 " my leader {{{
 let mapleader=","
-let g:Tex_Leader=','
 let maplocalleader='`'
 " }}}
 
@@ -159,10 +158,6 @@ filetype plugin indent on    " required
 " better undo {{{
 inoremap <C-w> <C-g>u<C-w>
 inoremap <Space> <Space><C-g>u
-
-" for latex
-inoremap , ,<C-g>u
-inoremap ` `<C-g>u
 " }}}
 
 set viminfo='10,\"100,:20,%,n~/viminfo
@@ -256,10 +251,6 @@ let g:lt_height = 10
 
 " set incsearch {{{
 set incsearch
-" }}}
-
-" cd to current directory {{{
-nnoremap <leader>cd :cd %:p:h<CR>
 " }}}
 
 " python mode {{{
@@ -373,8 +364,6 @@ let g:airline#extensions#tabline#enabled = 1
 set rtp+=~/.fzf
 set nowritebackup
 set colorcolumn=+1
-
-nnoremap <leader>rd :redraw!<CR>
 
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
