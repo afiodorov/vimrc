@@ -61,9 +61,7 @@ nnoremap <tab> :e#<CR>
 " }}}
 
 " ctags {{{
-let Tlist_Ctags_Cmd = "/usr/bin/ctags --fields=+l"
 let Tlist_WinWidth = 50
-map <silent> <f12> :!/usr/bin/ctags -R --c++-kinds=+p --fields=+iaS --extra=+q --exclude=.git --exclude=node_modules .<CR>
 map <F8> :TagbarToggle<cr>
 let g:tagbar_show_linenumbers = 1
 
@@ -140,12 +138,14 @@ Plugin 'jelera/vim-javascript-syntax'
 " Plugin 'fisadev/vim-isort'
 Plugin 'python-mode/python-mode'
 Plugin 'machakann/vim-swap'
+Plugin 'ludovicchabant/vim-gutentags'
 "
 " Python
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
 Plugin 'fatih/vim-go'
+Plugin 'mgedmin/python-imports.vim'
 
 " SQL
 Plugin 'vim-scripts/dbext.vim'
