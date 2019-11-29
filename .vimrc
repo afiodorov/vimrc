@@ -394,6 +394,7 @@ let g:slime_default_config = {"socket_name": "default", "target_pane": "{down-of
 
 " Move the preview window to the bottom of the screen {{{
 set splitbelow
+set splitright
 " }}}
 
 " delete dirs in netrw {{{
@@ -401,10 +402,10 @@ let g:netrw_localrmdir='rm -r'
 " }}}
 
 " YCM {{{
-nnoremap <leader>gd :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
 nnoremap K :YcmCompleter GetDoc<CR>
-nnoremap <leader>gc :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>gr :YcmCompleter GoToReferences<CR>
+nnoremap <leader>gvd :vsplit \| YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <leader>gsd :split \| YcmCompleter GoToDefinitionElseDeclaration<CR>
 
 let g:ycm_collect_identifiers_from_tags_files = 1
 let g:ycm_filepath_completion_use_working_dir = 1
