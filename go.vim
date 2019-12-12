@@ -23,3 +23,5 @@ setlocal tabstop=4                   "A tab is 8 spaces
 setlocal shiftwidth=4                " size of indent
 setlocal noexpandtab
 setlocal autoindent
+
+let g:ale_linters = {'go': ['gofmt', 'golint', 'govet', 'gobuild']}

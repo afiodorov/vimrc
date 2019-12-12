@@ -126,7 +126,6 @@ Plugin 'scrooloose/nerdtree.git'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
-Plugin 'vim-scripts/Gundo'
 Plugin 'majutsushi/tagbar'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'vim-scripts/JavaScript-Indent'
@@ -139,6 +138,7 @@ Plugin 'jelera/vim-javascript-syntax'
 Plugin 'python-mode/python-mode'
 Plugin 'machakann/vim-swap'
 Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'tommcdo/vim-exchange'
 "
 " Python
 Plugin 'kana/vim-textobj-user'
@@ -428,4 +428,13 @@ let g:airline_section_y = ''
 " xclip {{{
 nnoremap <silent> <leader>y V:w !xclip -sel c<CR><CR>
 xnoremap <silent> <leader>y :w !xclip -sel c<CR><CR>
+" }}}
+
+" edit in working dir {{{
+map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+" }}}
+
+" set wrap {{{
+command! -nargs=* Wrap set wrap linebreak nolist
+command! -nargs=* NoWrap set nowrap nolinebreak
 " }}}

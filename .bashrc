@@ -16,7 +16,7 @@ export EDITOR=vim
 export PATH="${HOME}/bin:${PATH}"
 
 alias py37="source ~/p/py37/bin/activate"
-alias gym="source ~/p/gym/bin/activate"
+alias music="source ~/p/music/bin/activate"
 alias ipython="ipython --TerminalInteractiveShell.editing_mode=vi"
 alias g="cd ${HOME}/go/src/gitlab.com/glassnode/"
 
