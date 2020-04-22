@@ -24,4 +24,6 @@ setlocal shiftwidth=4                " size of indent
 setlocal noexpandtab
 setlocal autoindent
 
-let g:ale_linters = {'go': ['gofmt', 'golint', 'govet', 'gobuild']}
+" let g:ale_linters = {'go': ['gofmt', 'golint', 'govet', 'gobuild']}
+let g:ale_linters = {'go': ['gofmt', 'golint', 'golangci-lint', 'govet', 'gopls']}
+let g:go_rename_command = 'gopls'

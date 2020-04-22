@@ -121,7 +121,7 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-abolish'
 Plugin 'kien/ctrlp.vim'
-Bundle 'fisadev/vim-ctrlp-cmdpalette'
+Plugin 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'scrooloose/nerdtree.git'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Valloric/YouCompleteMe'
@@ -134,22 +134,26 @@ Plugin 'jpalardy/vim-slime'
 Plugin 'w0rp/ale'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'jelera/vim-javascript-syntax'
-" Plugin 'fisadev/vim-isort'
 Plugin 'python-mode/python-mode'
 Plugin 'machakann/vim-swap'
 Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'tommcdo/vim-exchange'
-"
+
 " Python
 Plugin 'kana/vim-textobj-user'
 Plugin 'kana/vim-textobj-indent'
 Plugin 'bps/vim-textobj-python'
-Plugin 'fatih/vim-go'
 Plugin 'mgedmin/python-imports.vim'
+
+" Go
+Plugin 'fatih/vim-go'
 
 " SQL
 Plugin 'vim-scripts/dbext.vim'
 Plugin 'lifepillar/pgsql.vim'
+
+" Rust
+Plugin 'rust-lang/rust.vim'
 
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -180,6 +184,8 @@ nnoremap <leader>sgo :source ~/.vim/after/ftplugin/go.vim<cr>
 nnoremap <leader>ego :vsplit ~/.vim/after/ftplugin/go.vim<cr>
 nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
+nnoremap <leader>srs :source ~/.vim/after/ftplugin/rust.vim<cr>
+nnoremap <leader>ers :vsplit ~/.vim/after/ftplugin/rust.vim<cr>
 " }}}
 
 " NERDtree {{{
@@ -379,6 +385,10 @@ set keymap=russian-jcukenwin
 set iminsert=0
 set imsearch=0
 highlight lCursor guifg=NONE guibg=Cyan
+" }}}
+
+" Select pasted {{{
+nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]''`]`'
 " }}}
 
 " {{{ Typescript
