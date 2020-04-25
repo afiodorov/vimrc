@@ -59,6 +59,6 @@ preexec() {
 }
 trap 'preexec' DEBUG
 
-if [[ -f "${HOME}/.bash_private" ]]; then
-	source "${HOME}/.bash_private"
-fi
+[[ -f "${HOME}/.bash_private" ]] && source "${HOME}/.bash_private"
+
+[[ -f "${HOME}/vimrc/z.sh" ]] && source "${HOME}/vimrc/z.sh"
