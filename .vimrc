@@ -467,8 +467,8 @@ function! Xclip(type, ...)
 endfunction
 
 nnoremap <silent> <leader>yy V:w !xclip -sel c<CR><CR>l
+nnoremap <silent> <leader>y :set opfunc=Xclip<CR>g@
 xnoremap <silent> <leader>y :<C-u>silent execute "!echo " . GetVisualSelection() . " \| xclip -sel c"<CR>:redraw!<CR>
-nmap <silent> <leader>y :set opfunc=Xclip<CR>g@
 " }}}
 
 " edit in working dir {{{
