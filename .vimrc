@@ -446,15 +446,11 @@ function! GetVisualSelection()
     endif
     let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][column_start - 1:]
-    for i in lines
-        let lines[i] = substitute(lines[i], '\\', '\\\\\\\\', 'g')
-        let lines[i] = substitute(lines[i], "'", "\\\\'", 'g')
-    endfor
-    return join(lines, "\\n")
+    return shellescape(join(lines, "\n"), 1)
 endfunction
 
 nnoremap <silent> <leader>y V:w !xclip -sel c<CR><CR>
-xnoremap <silent> <leader>y :<C-u>silent execute "!echo -e $'" . GetVisualSelection() . "' \| xclip -sel c"<CR>:redraw!<CR>
+xnoremap <silent> <leader>y :<C-u>silent execute "!echo " . GetVisualSelection() . " \| xclip -sel c"<CR>:redraw!<CR>
 " }}}
 
 " edit in working dir {{{
