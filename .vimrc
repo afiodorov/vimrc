@@ -442,15 +442,33 @@ function! GetVisualSelection()
     let [line_end, column_end] = getpos("'>")[1:2]
     let lines = getline(line_start, line_end)
     if len(lines) == 0
-        return ''
+	return ''
     endif
     let lines[-1] = lines[-1][: column_end - (&selection == 'inclusive' ? 1 : 2)]
     let lines[0] = lines[0][column_start - 1:]
     return shellescape(join(lines, "\n"), 1)
 endfunction
 
-nnoremap <silent> <leader>y V:w !xclip -sel c<CR><CR>
+function! Xclip(type, ...)
+  let sel_save = &selection
+  let &selection = "inclusive"
+  let reg_save = @@
+
+  if a:type == 'line'
+    silent exe "normal! '[V']y"
+  else
+    silent exe "normal! `[v`]y"
+  endif
+
+  call system('xclip -sel c', @@)
+
+  let &selection = sel_save
+  let @@ = reg_save
+endfunction
+
+nnoremap <silent> <leader>yy V:w !xclip -sel c<CR><CR>l
 xnoremap <silent> <leader>y :<C-u>silent execute "!echo " . GetVisualSelection() . " \| xclip -sel c"<CR>:redraw!<CR>
+nmap <silent> <leader>y :set opfunc=Xclip<CR>g@
 " }}}
 
 " edit in working dir {{{
