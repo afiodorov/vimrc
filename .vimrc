@@ -122,7 +122,6 @@ Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-abolish'
 Plugin 'kien/ctrlp.vim'
 Plugin 'fisadev/vim-ctrlp-cmdpalette'
-Plugin 'scrooloose/nerdtree.git'
 Plugin 'tpope/vim-commentary'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
@@ -138,6 +137,7 @@ Plugin 'python-mode/python-mode'
 Plugin 'machakann/vim-swap'
 Plugin 'ludovicchabant/vim-gutentags'
 Plugin 'tommcdo/vim-exchange'
+Plugin 'christoomey/vim-system-copy'
 
 " Python
 Plugin 'kana/vim-textobj-user'
@@ -186,10 +186,6 @@ nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>srs :source ~/.vim/after/ftplugin/rust.vim<cr>
 nnoremap <leader>ers :vsplit ~/.vim/after/ftplugin/rust.vim<cr>
-" }}}
-
-" NERDtree {{{
-nnoremap <F3> :NERDTreeToggle %:p:h<CR>
 " }}}
 
 " delete buffer, keep the split {{{
@@ -478,4 +474,10 @@ map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 " set wrap {{{
 command! -nargs=* Wrap set wrap linebreak nolist
 command! -nargs=* NoWrap set nowrap nolinebreak
+" }}}
+
+" {{{
+let g:system_copy#copy_command='xclip -sel clipboard'
+let g:system_copy#paste_command='xclip -sel clipboard -o'
+let g:system_copy_silent = 0
 " }}}
