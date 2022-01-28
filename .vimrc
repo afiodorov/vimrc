@@ -123,7 +123,6 @@ Plugin 'tpope/vim-abolish'
 Plugin 'kien/ctrlp.vim'
 Plugin 'fisadev/vim-ctrlp-cmdpalette'
 Plugin 'tpope/vim-commentary'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'Valloric/ListToggle'
 Plugin 'majutsushi/tagbar'
 Plugin 'plasticboy/vim-markdown'
@@ -387,11 +386,6 @@ highlight lCursor guifg=NONE guibg=Cyan
 nnoremap <expr> gp '`[' . strpart(getregtype(), 0, 1) . '`]''`]`'
 " }}}
 
-" {{{ Typescript
-let g:ycm_semantic_triggers = {'typescript': ['.'], 'haskell': ['.']}
-let g:ycm_complete_in_comments = 1
-" }}}
-
 " {{{ Vim-slime
 let g:slime_target = "tmux"
 let g:slime_python_ipython = 1
@@ -405,17 +399,6 @@ set splitright
 
 " delete dirs in netrw {{{
 let g:netrw_localrmdir='rm -r'
-" }}}
-
-" YCM {{{
-nnoremap <leader>gd :YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap K :YcmCompleter GetDoc<CR>
-nnoremap <leader>gvd :vsplit \| YcmCompleter GoToDefinitionElseDeclaration<CR>
-nnoremap <leader>gsd :split \| YcmCompleter GoToDefinitionElseDeclaration<CR>
-
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_filepath_completion_use_working_dir = 1
-let g:ycm_always_populate_location_list = 0
 " }}}
 
 " CtrlP-CmdPallete {{{

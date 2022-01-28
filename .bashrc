@@ -15,25 +15,10 @@ export PROMPT_DIRTRIM=2
 export EDITOR=vim
 export PATH="${HOME}/bin:${PATH}"
 
-alias utxo="source ~/p/utxo/bin/activate"
-alias py37="source ~/p/py37/bin/activate"
+alias py38="source ~/p/py38/bin/activate"
 alias ipython="ipython --TerminalInteractiveShell.editing_mode=vi"
 
-export GOROOT=/snap/go/current
-export GOPATH=$HOME/go
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
-
-complete -o default -F __start_kubectl kgn
-
-export SPARK_HOME=/opt/spark
-pathadd "$SPARK_HOME/bin"
-
-pathadd "/opt/hadoop/bin"
-
-export PYSPARK_DRIVER_PYTHON=jupyter
-export PYSPARK_DRIVER_PYTHON_OPTS='notebook'
-
-export JAVA_HOME=/usr
+pathadd "/usr/local/go/bin"
 
 function update-x11-forwarding
 {
