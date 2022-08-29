@@ -105,57 +105,52 @@ nnoremap <Space> ,
 " }}}
 
 " Vundle {{{
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-
-Plugin 'vim-scripts/ReplaceWithRegister'
-Plugin 'chrisbra/csv.vim'
-Plugin 'sukima/xmledit'
-Plugin 'gregsexton/MatchTag'
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'bling/vim-airline'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-abolish'
-Plugin 'kien/ctrlp.vim'
-Plugin 'fisadev/vim-ctrlp-cmdpalette'
-Plugin 'tpope/vim-commentary'
-Plugin 'Valloric/ListToggle'
-Plugin 'majutsushi/tagbar'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'vim-scripts/JavaScript-Indent'
-Plugin 'Raimondi/delimitMate'
-Plugin 'jpalardy/vim-slime'
-Plugin 'w0rp/ale'
-Plugin 'leafgarland/typescript-vim'
-Plugin 'jelera/vim-javascript-syntax'
-Plugin 'python-mode/python-mode'
-Plugin 'machakann/vim-swap'
-Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'tommcdo/vim-exchange'
-Plugin 'christoomey/vim-system-copy'
+call plug#begin()
+Plug 'dense-analysis/ale'
+Plug 'vim-scripts/ReplaceWithRegister'
+Plug 'chrisbra/csv.vim'
+Plug 'sukima/xmledit'
+Plug 'gregsexton/MatchTag'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-abolish'
+Plug 'kien/ctrlp.vim'
+Plug 'fisadev/vim-ctrlp-cmdpalette'
+Plug 'tpope/vim-commentary'
+Plug 'Valloric/ListToggle'
+Plug 'majutsushi/tagbar'
+Plug 'plasticboy/vim-markdown'
+Plug 'vim-scripts/JavaScript-Indent'
+Plug 'Raimondi/delimitMate'
+Plug 'jpalardy/vim-slime'
+Plug 'leafgarland/typescript-vim'
+Plug 'jelera/vim-javascript-syntax'
+Plug 'python-mode/python-mode'
+Plug 'machakann/vim-swap'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'tommcdo/vim-exchange'
+Plug 'christoomey/vim-system-copy'
 
 " Python
-Plugin 'kana/vim-textobj-user'
-Plugin 'kana/vim-textobj-indent'
-Plugin 'bps/vim-textobj-python'
-Plugin 'mgedmin/python-imports.vim'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-indent'
+Plug 'bps/vim-textobj-python'
+Plug 'mgedmin/python-imports.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " Go
-Plugin 'fatih/vim-go'
+Plug 'fatih/vim-go'
 
 " SQL
-Plugin 'vim-scripts/dbext.vim'
-Plugin 'lifepillar/pgsql.vim'
+Plug 'vim-scripts/dbext.vim'
+Plug 'lifepillar/pgsql.vim'
 
 " Rust
-Plugin 'rust-lang/rust.vim'
+Plug 'rust-lang/rust.vim'
 
-call vundle#end()            " required
-filetype plugin indent on    " required
+call plug#end()
 " }}}
 
 " better undo {{{
@@ -163,10 +158,8 @@ inoremap <C-w> <C-g>u<C-w>
 inoremap <Space> <Space><C-g>u
 " }}}
 
-set viminfo='10,\"100,:20,%,n~/viminfo
-
 " Editing VIMRC {{{
-nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
 nnoremap <leader>sl :source ~/.vim/after/ftplugin/tex.vim<cr>
 nnoremap <leader>sja :source ~/.vim/after/ftplugin/java.vim<cr>
@@ -439,15 +432,15 @@ function! Xclip(type, ...)
     silent exe "normal! `[v`]y"
   endif
 
-  call system('xclip -sel c', @@)
+  call system('pbcopy', @@)
 
   let &selection = sel_save
   let @@ = reg_save
 endfunction
 
-nnoremap <silent> <leader>yy V:w !xclip -sel c<CR><CR>l
+nnoremap <silent> <leader>yy V:w !pbcopy<CR><CR>l
 nnoremap <silent> <leader>y :set opfunc=Xclip<CR>g@
-xnoremap <silent> <leader>y :<C-u>silent execute "!echo " . GetVisualSelection() . " \| xclip -sel c"<CR>:redraw!<CR>
+xnoremap <silent> <leader>y :<C-u>silent execute "!echo " . GetVisualSelection() . " \| pbcopy"<CR>:redraw!<CR>
 " }}}
 
 " edit in working dir {{{
@@ -460,7 +453,7 @@ command! -nargs=* NoWrap set nowrap nolinebreak
 " }}}
 
 " {{{
-let g:system_copy#copy_command='xclip -sel clipboard'
-let g:system_copy#paste_command='xclip -sel clipboard -o'
-let g:system_copy_silent = 0
+" let g:system_copy#copy_command='pbcopy'
+" let g:system_copy#paste_command='pbpaste'
+" let g:system_copy_silent = 0
 " }}}
