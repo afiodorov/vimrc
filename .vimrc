@@ -75,24 +75,6 @@ let g:tagbar_type_mkd = {
 \ }
 let g:tagbar_width = 50
 
-let g:tagbar_type_typescript = {
-  \ 'ctagsbin' : 'tstags',
-  \ 'ctagsargs' : '-f-',
-  \ 'kinds': [
-    \ 'e:enums:0:1',
-    \ 'f:function:0:1',
-    \ 't:typealias:0:1',
-    \ 'M:Module:0:1',
-    \ 'I:import:0:1',
-    \ 'i:interface:0:1',
-    \ 'C:class:0:1',
-    \ 'm:method:0:1',
-    \ 'p:property:0:1',
-    \ 'v:variable:0:1',
-    \ 'c:const:0:1',
-  \ ],
-  \ 'sort' : 0
-\ }
 " }}}
 
 " catch trailing white spaces {{{
@@ -107,6 +89,7 @@ nnoremap <Space> ,
 " Vundle {{{
 call plug#begin()
 Plug 'dense-analysis/ale'
+Plug 'vyperlang/vim-vyper'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'chrisbra/csv.vim'
 Plug 'sukima/xmledit'
@@ -125,7 +108,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'vim-scripts/JavaScript-Indent'
 Plug 'Raimondi/delimitMate'
 Plug 'jpalardy/vim-slime'
-Plug 'leafgarland/typescript-vim'
+"Plug 'leafgarland/typescript-vim'
 Plug 'jelera/vim-javascript-syntax'
 Plug 'python-mode/python-mode'
 Plug 'machakann/vim-swap'
@@ -178,6 +161,8 @@ nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>srs :source ~/.vim/after/ftplugin/rust.vim<cr>
 nnoremap <leader>ers :vsplit ~/.vim/after/ftplugin/rust.vim<cr>
+nnoremap <leader>svy :source ~/.vim/after/ftplugin/vyper.vim<cr>
+nnoremap <leader>evy :vsplit ~/.vim/after/ftplugin/vyper.vim<cr>
 " }}}
 
 " delete buffer, keep the split {{{
@@ -215,7 +200,6 @@ augroup END
 " Common file type settings {{{
 autocmd FileType make setlocal ts=8 sts=8 sw=8 noexpandtab
 autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
-autocmd FileType typescript setlocal ts=4 sts=4 sw=4 expandtab
 " }}}
 
 " save read-only files as root {{{
@@ -456,4 +440,23 @@ command! -nargs=* NoWrap set nowrap nolinebreak
 " let g:system_copy#copy_command='pbcopy'
 " let g:system_copy#paste_command='pbpaste'
 " let g:system_copy_silent = 0
+" }}}
+"
+" coc {{{
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1):
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 " }}}

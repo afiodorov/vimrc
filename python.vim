@@ -2,10 +2,6 @@ setlocal textwidth=100
 let g:pymode_options_max_line_length=100
 let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_length}
 
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
 set signcolumn=yes
