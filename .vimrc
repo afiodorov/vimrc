@@ -108,7 +108,6 @@ Plug 'plasticboy/vim-markdown'
 Plug 'vim-scripts/JavaScript-Indent'
 Plug 'Raimondi/delimitMate'
 Plug 'jpalardy/vim-slime'
-"Plug 'leafgarland/typescript-vim'
 Plug 'jelera/vim-javascript-syntax'
 Plug 'python-mode/python-mode'
 Plug 'machakann/vim-swap'
@@ -441,7 +440,7 @@ command! -nargs=* NoWrap set nowrap nolinebreak
 " let g:system_copy#paste_command='pbpaste'
 " let g:system_copy_silent = 0
 " }}}
-"
+
 " coc {{{
 
 " Use tab for trigger completion with characters ahead and navigate.
