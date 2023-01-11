@@ -143,23 +143,14 @@ inoremap <Space> <Space><C-g>u
 " Editing VIMRC {{{
 nnoremap <leader>ev :vsplit ~/.vimrc<cr>
 nnoremap <leader>sv :source $MYVIMRC<cr>
-nnoremap <leader>sl :source ~/.vim/after/ftplugin/tex.vim<cr>
-nnoremap <leader>sja :source ~/.vim/after/ftplugin/java.vim<cr>
-nnoremap <leader>eja :vsplit ~/.vim/after/ftplugin/java.vim<cr>
 nnoremap <leader>sjs :source ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>ejs :vsplit ~/.vim/after/ftplugin/javascript.vim<cr>
 nnoremap <leader>sts :source ~/.vim/after/ftplugin/typescript.vim<cr>
 nnoremap <leader>ets :vsplit ~/.vim/after/ftplugin/typescript.vim<cr>
-nnoremap <leader>shs :source ~/.vim/after/ftplugin/haskell.vim<cr>
-nnoremap <leader>ehs :vsplit ~/.vim/after/ftplugin/haskell.vim<cr>
-nnoremap <leader>scs :source ~/.vim/after/ftplugin/cs.vim<cr>
-nnoremap <leader>ecs :vsplit ~/.vim/after/ftplugin/cs.vim<cr>
 nnoremap <leader>sgo :source ~/.vim/after/ftplugin/go.vim<cr>
 nnoremap <leader>ego :vsplit ~/.vim/after/ftplugin/go.vim<cr>
 nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
-nnoremap <leader>srs :source ~/.vim/after/ftplugin/rust.vim<cr>
-nnoremap <leader>ers :vsplit ~/.vim/after/ftplugin/rust.vim<cr>
 nnoremap <leader>svy :source ~/.vim/after/ftplugin/vyper.vim<cr>
 nnoremap <leader>evy :vsplit ~/.vim/after/ftplugin/vyper.vim<cr>
 " }}}
