@@ -1,8 +1,9 @@
+plugins=(git fzf z macos)
+
+# Enable vi mode
 bindkey -v
+bindkey -M vicmd v edit-command-line
 
-path=('/Users/artiomfiodorov/bin' $path)
-export PATH
-
-alias py38="source ~/py38/bin/activate"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+alias py11='source ~/py11/bin/activate'
+alias c='cd ~/code'
+path+=$HOME/bin
