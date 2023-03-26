@@ -73,6 +73,16 @@ let g:tagbar_type_mkd = {
 		\ 'k:Heading_L3'
 	\ ]
 \ }
+let g:tagbar_type_solidity = {
+    \ 'ctagstype': 'solidity',
+    \ 'kinds' : [
+        \ 'c:contracts',
+        \ 'e:events',
+        \ 'f:functions',
+        \ 'm:mappings',
+        \ 'v:varialbes',
+    \ ]
+\ }
 let g:tagbar_width = 50
 
 " }}}
@@ -342,7 +352,7 @@ fun! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 
-" autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " Cyrril {{{
 set keymap=russian-jcukenwin
