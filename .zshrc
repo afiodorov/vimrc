@@ -1,4 +1,4 @@
-plugins=(git fzf z macos)
+plugins=(git fzf z macos fzf-zsh-plugin fzf-tab)
 
 # Enable vi mode
 bindkey -v
