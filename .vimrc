@@ -153,6 +153,8 @@ nnoremap <leader>spy :source ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>epy :vsplit ~/.vim/after/ftplugin/python.vim<cr>
 nnoremap <leader>svy :source ~/.vim/after/ftplugin/vyper.vim<cr>
 nnoremap <leader>evy :vsplit ~/.vim/after/ftplugin/vyper.vim<cr>
+nnoremap <leader>sso :source ~/.vim/after/ftplugin/solidity.vim<cr>
+nnoremap <leader>eso :vsplit ~/.vim/after/ftplugin/solidity.vim<cr>
 " }}}
 
 " delete buffer, keep the split {{{
@@ -340,7 +342,7 @@ fun! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 
-autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+" autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 " Cyrril {{{
 set keymap=russian-jcukenwin
