@@ -1,5 +1,4 @@
 inoremap <buffer> <leader>f function
-inoremap <buffer> <leader>r require
 
 setlocal textwidth=100
 

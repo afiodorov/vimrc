@@ -98,7 +98,6 @@ nnoremap <Space> ,
 
 " Vundle {{{
 call plug#begin()
-Plug 'dense-analysis/ale'
 Plug 'vyperlang/vim-vyper'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'chrisbra/csv.vim'
@@ -119,11 +118,11 @@ Plug 'vim-scripts/JavaScript-Indent'
 Plug 'Raimondi/delimitMate'
 Plug 'jpalardy/vim-slime'
 Plug 'jelera/vim-javascript-syntax'
-"Plug 'python-mode/python-mode'
 Plug 'machakann/vim-swap'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'tommcdo/vim-exchange'
 Plug 'christoomey/vim-system-copy'
+Plug 'iden3/vim-circom-syntax'
 
 " Python
 Plug 'kana/vim-textobj-user'
@@ -132,17 +131,18 @@ Plug 'bps/vim-textobj-python'
 Plug 'mgedmin/python-imports.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" Go
-Plug 'fatih/vim-go'
-
-" SQL
-Plug 'vim-scripts/dbext.vim'
-Plug 'lifepillar/pgsql.vim'
-
-" Rust
-Plug 'rust-lang/rust.vim'
+Plug 'pangloss/vim-javascript'    " JavaScript support
+Plug 'leafgarland/typescript-vim' " TypeScript syntax
+Plug 'maxmellon/vim-jsx-pretty'   " JS and JSX syntax
+Plug 'jparise/vim-graphql'        " GraphQL syntax
 
 call plug#end()
+" }}}
+
+" colors {{{
+set background=light
+hi CocFloating ctermfg=0 ctermbg=7
+hi CocHintFloat ctermfg=0 ctermbg=7
 " }}}
 
 " better undo {{{
@@ -310,18 +310,6 @@ nnoremap <leader>ep :profile pause<CR>:noautocmd qall!<CR>
 let g:vim_markdown_folding_disabled=1
 " }}}
 
-" terminal settings {{{
-set t_Co=256
-if !&diff
-    set background=light
-endif
-
-if &diff
-	highlight DiffAdd    cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
-	highlight DiffDelete cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
-	highlight DiffChange cterm=bold ctermfg=10 ctermbg=17 gui=none guifg=bg guibg=Red
-	highlight DiffText   cterm=bold ctermfg=10 ctermbg=88 gui=none guifg=bg guibg=Red
-endif
 set mouse=a
 
 " }}}
