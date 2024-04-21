@@ -98,7 +98,6 @@ nnoremap <Space> ,
 
 " Vundle {{{
 call plug#begin()
-Plug 'vyperlang/vim-vyper'
 Plug 'vim-scripts/ReplaceWithRegister'
 Plug 'chrisbra/csv.vim'
 Plug 'sukima/xmledit'
@@ -117,24 +116,21 @@ Plug 'plasticboy/vim-markdown'
 Plug 'vim-scripts/JavaScript-Indent'
 Plug 'Raimondi/delimitMate'
 Plug 'jpalardy/vim-slime'
-Plug 'jelera/vim-javascript-syntax'
 Plug 'machakann/vim-swap'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'tommcdo/vim-exchange'
 Plug 'christoomey/vim-system-copy'
-Plug 'iden3/vim-circom-syntax'
 
 " Python
-Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-indent'
-Plug 'bps/vim-textobj-python'
-Plug 'mgedmin/python-imports.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'pangloss/vim-javascript'    " JavaScript support
 Plug 'leafgarland/typescript-vim' " TypeScript syntax
-Plug 'maxmellon/vim-jsx-pretty'   " JS and JSX syntax
 Plug 'jparise/vim-graphql'        " GraphQL syntax
+
+" scala
+Plug 'nvim-lua/plenary.nvim'
+Plug 'scalameta/nvim-metals'
 
 call plug#end()
 " }}}
@@ -233,62 +229,6 @@ let g:lt_height = 10
 set incsearch
 " }}}
 
-" python mode {{{
-" Activate rope
-" Keys:
-" K             Show python docs
-" <Ctrl-Space>  Rope autocomplete
-" <Ctrl-c>g     Rope goto definition
-" <Ctrl-c>d     Rope show documentation
-" <Ctrl-c>f     Rope find occurrences
-" <Leader>b     Set, unset breakpoint (g:pymode_breakpoint enabled)
-" [[            Jump on previous class or function (normal, visual, operator modes)
-" ]]            Jump on next class or function (normal, visual, operator modes)
-" [M            Jump on previous class or method (normal, visual, operator modes)
-" ]M            Jump on next class or method (normal, visual, operator modes)
-let g:pymode = 1
-let g:pymode_rope = 1
-let g:pymode_rope_completion = 0
-" vim hangs without
-let g:pymode_rope_lookup_project = 0
-
-" Linting
-let g:pymode_lint = 0
-let g:pymode_lint_on_write = 1
-let g:pymode_lint_cwindow = 0
-let g:pymode_lint_checker=['pep8', 'pylint', 'pep257', 'pyflakes']
-let g:pymode_lint_signs = 1
-
-let g:pymode_doc = 1
-let g:pymode_doc_bind = '<leader>K'
-
-" Auto check on save
-let g:pymode_lint_write = 1
-
-" Support virtualenv
-let g:pymode_virtualenv = 1
-
-" Enable breakpoints plugin
-let g:pymode_breakpoint = 1
-let g:pymode_breakpoint_key = '<leader>dp'
-
-" syntax highlighting
-let g:pymode_syntax = 1
-let g:pymode_syntax_all = 1
-let g:pymode_syntax_slow_sync = 1
-let g:pymode_syntax_indent_errors = g:pymode_syntax_all
-let g:pymode_syntax_space_errors = g:pymode_syntax_all
-
-" Don't autofold code
-let g:pymode_folding = 0
-
-" Debugger
-let g:pymode_breakpoint_bind = '<leader>v'
-
-let g:pymode_motion = 1
-
-" }}}
-
 " quick resize {{{
 if bufwinnr(1)
   nnoremap + <C-W>+
@@ -312,8 +252,6 @@ let g:vim_markdown_folding_disabled=1
 
 set mouse=a
 
-" }}}
-"
 " ctrlp {{{
 nnoremap <leader>b :CtrlPBuffer<CR>
 let g:ctrlp_map = '<leader>t'
@@ -425,3 +363,5 @@ map <leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 command! -nargs=* Wrap set wrap linebreak nolist
 command! -nargs=* NoWrap set nowrap nolinebreak
 " }}}
+
+lua require('vimrc')
