@@ -310,10 +310,6 @@ let g:netrw_localrmdir='rm -r'
 nnoremap <C-x> :CtrlPCmdPalette<CR>
 " }}}
 
-" ale {{{
-let g:ale_lint_on_save = 1
-" }}}
-
 " airline {{{
 let g:airline#extensions#keymap#enabled = 0
 let g:airline_section_y = ''
@@ -365,3 +361,5 @@ command! -nargs=* NoWrap set nowrap nolinebreak
 " }}}
 
 lua require('vimrc')
+
+command! W execute 'silent !mkdir -p %:h' | w
