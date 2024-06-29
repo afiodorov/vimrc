@@ -126,7 +126,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'pangloss/vim-javascript'    " JavaScript support
 Plug 'leafgarland/typescript-vim' " TypeScript syntax
-Plug 'jparise/vim-graphql'        " GraphQL syntax
 
 " scala
 Plug 'nvim-lua/plenary.nvim'
