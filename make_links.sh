@@ -25,7 +25,7 @@ map_files[".bashrc"]=".bash_aliases"
 map_files["init.lua"]=".config/nvim/init.lua"
 map_files["bat_config"]=".config/bat/config"
 map_files["coc-settings.json"]=".config/nvim/coc-settings.json"
-declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
+declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1)
 
 for file in "${DIR}"/*
 do

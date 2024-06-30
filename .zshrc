@@ -12,3 +12,25 @@ alias py11='source ~/py11/bin/activate'
 alias c='cd ~/code'
 export PATH="$HOME/bin:$PATH"
 path+="$HOME/.cargo/bin"
+path+="$HOME/.local/bin"
+
+export EDITOR=vim
+unsetopt BEEP
+
+function find_and_activate_venv() {
+	current_dir=$PWD
+
+	while [ "$current_dir" != "/" ]; do
+		if [ -d "$current_dir/.venv" ]; then
+			source "$current_dir/.venv/bin/activate"
+			return
+		fi
+		current_dir=$(dirname "$current_dir")
+	done
+
+	echo "No .venv folder found."
+}
+
+alias v=find_and_activate_venv
+
+export PYTHON_KEYRING_BACKEND=keybring.backends.fail.Keyring
