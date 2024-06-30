@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -ex
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 vimpath="${HOME}/.vim/after/ftplugin"
@@ -21,9 +22,10 @@ done
 
 declare -A map_files
 map_files[".bashrc"]=".bash_aliases"
+map_files["init.lua"]=".config/nvim/init.lua"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
 
-for file in "${DIR}"/.*
+for file in "${DIR}"/*
 do
 	if [ ! -f "$file" ]; then
 		continue

@@ -362,3 +362,5 @@ command! -nargs=* NoWrap set nowrap nolinebreak
 lua require('vimrc')
 
 command! W execute 'silent !mkdir -p %:h' | w
+
+xnoremap <leader>p "_dP
