@@ -1,3 +1,10 @@
+vim.keymap.set('n', '<leader>v', 'Obreakpoint()<Esc>', {
+	buffer = true,
+	noremap = true,
+	silent = true,
+	desc = "Insert breakpoint() on the line above"
+})
+
 -- https://raw.githubusercontent.com/neoclide/coc.nvim/master/doc/coc-example-config.lua
 
 -- Some servers have issues with backup files, see #649
