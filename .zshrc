@@ -1,3 +1,5 @@
+export FZF_DEFAULT_COMMAND='fd'
+
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
