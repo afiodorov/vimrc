@@ -23,6 +23,8 @@ done
 declare -A map_files
 map_files[".bashrc"]=".bash_aliases"
 map_files["init.lua"]=".config/nvim/init.lua"
+map_files["bat_config"]=".config/bat/config"
+map_files["coc-settings.json"]=".config/nvim/coc-settings.json"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1)
 
 for file in "${DIR}"/*

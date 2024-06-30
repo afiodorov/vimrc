@@ -110,3 +110,4 @@ bindkey -M vicmd v edit-command-line
 alias py11='source ~/py11/bin/activate'
 alias c='cd ~/code'
 export PATH="$HOME/bin:$PATH"
+path+="$HOME/.cargo/bin"
