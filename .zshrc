@@ -3,7 +3,7 @@ export FZF_DEFAULT_COMMAND='fd'
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
-plugins=(git fzf z macos fzf-zsh-plugin fzf-tab)
+plugins=(git fzf z macos fzf-zsh-plugin fzf-tab pass)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -36,3 +36,9 @@ function find_and_activate_venv() {
 alias v=find_and_activate_venv
 
 export PYTHON_KEYRING_BACKEND=keybring.backends.fail.Keyring
+
+export GPG_TTY=$(tty)
+
+if [ -f "$HOME/.zshrc_work" ]; then
+    source "$HOME/.zshrc_work"
+fi
