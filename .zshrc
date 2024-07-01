@@ -43,3 +43,19 @@ export GPG_TTY=$(tty)
 if [ -f "$HOME/.zshrc_work" ]; then
     source "$HOME/.zshrc_work"
 fi
+
+
+gitroot() {
+  local current_dir="$PWD"
+  while [[ "$current_dir" != "/" ]]; do
+    if [[ -d "$current_dir/.git" ]]; then
+      echo "$current_dir"
+      return 0
+    fi
+    current_dir="$(dirname "$current_dir")"
+  done
+  echo "Not inside a git repository" >&2
+  return 1
+}
+
+alias cr='cd "$(gitroot)"'
