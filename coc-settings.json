@@ -11,10 +11,9 @@
     "go",
     "lua"
   ],
-  "python.formatting.provider": "black",
   "python.linting.mypyEnabled": true,
   "python.linting.ruffEnabled": true,
-  "python.formatting.provider": "ruff",
+  "python.formatting.provider": "black",
 
   "Lua.workspace.library": {
     "/opt/homebrew/Cellar/neovim/0.9.4/share/nvim/runtime/lua": true,
