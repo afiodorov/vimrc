@@ -15,6 +15,7 @@ alias c='cd ~/code'
 export PATH="$HOME/bin:$PATH"
 path+="$HOME/.cargo/bin"
 path+="$HOME/.local/bin"
+path+="$PATH:/opt/nvim-linux64/bin"
 
 export EDITOR=vim
 unsetopt BEEP
