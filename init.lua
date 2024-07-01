@@ -25,9 +25,12 @@ vim.opt.errorbells = false
 vim.opt.tags = "./tags"
 
 -- Backup and swap directories
-vim.fn.system("mkdir -p ~/tmp")
-vim.opt.backupdir = "~/tmp/"
-vim.opt.directory = "~/tmp/"
+local home = vim.fn.expand('$HOME')
+local tmp_dir = home .. '/tmp'
+
+vim.fn.system('mkdir -p ' .. tmp_dir)
+vim.opt.backupdir = tmp_dir .. '//'
+vim.opt.directory = tmp_dir .. '//'
 
 -- Disable Ctrl-j in C files
 vim.g.C_Ctrl_j = 'off'
@@ -297,3 +300,16 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		trim_trailing_whitespace()
 	end,
 })
+
+
+_G.copy_visual_selection_to_clipboard = function()
+    local old_reg = vim.fn.getreg('"')
+    local old_regtype = vim.fn.getregtype('"')
+    vim.cmd([[normal! `<v`>y]])
+    local selection = vim.fn.getreg('"')
+    vim.fn.setreg('"', old_reg, old_regtype)
+    vim.fn.system('pbcopy', selection)
+    print("Selection copied to clipboard")
+end
+
+vim.api.nvim_set_keymap('v', '<leader>y', [[:lua copy_visual_selection_to_clipboard()<CR>]], { noremap = true, silent = true })
