@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -ex
+set -e
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 declare -A map_files
@@ -9,7 +9,7 @@ map_files["coc-settings.json"]=".config/nvim/coc-settings.json"
 map_files["python.lua"]=".config/nvim/after/ftplugin/python.lua"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1)
 
-for file in "${DIR}"/*
+for file in "${DIR}"/.*  "${DIR}"/*
 do
 	if [ ! -f "$file" ]; then
 		continue
@@ -27,5 +27,6 @@ do
 	target="${HOME}/$linkname"
 	mkdir -p $(dirname "${target}")
 	rm -f "${target}"
+	echo ln -s "${link}" "${target}"
 	ln -s "${link}" "${target}"
 done
