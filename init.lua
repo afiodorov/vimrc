@@ -109,6 +109,7 @@ require("lazy").setup({
 			vim.g.ctrlp_cmd = 'CtrlP'
 			vim.g.ctrlp_max_height = 35
 			vim.g.ctrlp_switch_buffer = ''
+			vim.g.ctrlp_user_command = {'.git', 'cd %s && git ls-files -co --exclude-standard'}
 
 			-- Add any other CtrlP settings you want here
 		end,

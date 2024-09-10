@@ -70,3 +70,4 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 alias python=python3
+unalias ls
