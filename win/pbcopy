@@ -1,0 +1,3 @@
+#!/bin/bash
+input=$(cat | base64 -w 0)  # Encode the input as a single line base64 string
+powershell.exe -command "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('$input')) | Set-Clipboard"
