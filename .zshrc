@@ -36,7 +36,8 @@ function find_and_activate_venv() {
 
 alias v=find_and_activate_venv
 
-export PYTHON_KEYRING_BACKEND=keybring.backends.fail.Keyring
+# export PYTHON_KEYRING_BACKEND=keybring.backends.fail.Keyring
+export PYTHON_KEYRING_BACKEND=keyring.backends.null.Keyring
 
 export GPG_TTY=$(tty)
 
@@ -71,3 +72,4 @@ eval "$(pyenv virtualenv-init -)"
 
 alias python=python3
 unalias ls
+export LOGURU_LEVEL=INFO
