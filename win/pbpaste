@@ -1,0 +1,2 @@
+#!/bin/bash
+powershell.exe -c 'Get-Clipboard' | remove_last_newline.py
