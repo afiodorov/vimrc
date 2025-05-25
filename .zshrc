@@ -46,29 +46,55 @@ fi
 
 
 gitroot() {
-  local current_dir="$PWD"
-  while [[ "$current_dir" != "/" ]]; do
-    if [[ -d "$current_dir/.git" ]]; then
-      echo "$current_dir"
+  local dir="$PWD"
+
+  while [[ "$dir" != "/" ]]; do
+    if [[ -d "$dir/.git" || -f "$dir/.git" ]]; then
+      # found either a .git directory or the .git “file” that points to
+      # the actual gitdir of a worktree
+      echo "$dir"
       return 0
     fi
-    current_dir="$(dirname "$current_dir")"
+    dir="$(dirname "$dir")"
   done
+
   echo "Not inside a git repository" >&2
   return 1
 }
 
 alias cr='cd "$(gitroot)"'
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
 export PYENV_ROOT="$HOME/.pyenv"
 [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+# eval "$(pyenv virtualenv-init -)"
 
 alias python=python3
 unalias ls
 export LOGURU_LEVEL=INFO
+
+
+# place this after nvm initialization!
+autoload -U add-zsh-hook
+
+load-nvmrc() {
+  local nvmrc_path
+  nvmrc_path="$(nvm_find_nvmrc)"
+
+  if [ -n "$nvmrc_path" ]; then
+    local nvmrc_node_version
+    nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+    if [ "$nvmrc_node_version" = "N/A" ]; then
+      nvm install
+    elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
+      nvm use
+    fi
+  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "Reverting to nvm default version"
+    nvm use default
+  fi
+}
+
+add-zsh-hook chpwd load-nvmrc
+load-nvmrc

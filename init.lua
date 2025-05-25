@@ -14,6 +14,8 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.cmd('filetype plugin indent on')
+
 -- General settings
 vim.opt.lazyredraw = true
 vim.opt.scrolloff = 1
@@ -53,7 +55,13 @@ vim.g.maplocalleader = "`"
 -- Quick buffer switching
 vim.api.nvim_set_keymap('n', '<tab>', ':e#<CR>', { noremap = true })
 
+local map = vim.keymap.set
+
+map('n', '<leader>ew', ':e <C-R>=expand("%:p:h") . "/" <CR>', { noremap = true })
+
+
 -- Plugin specifications
+
 require("lazy").setup({
 	-- UI
 	{ "vim-airline/vim-airline" },
@@ -79,23 +87,13 @@ require("lazy").setup({
 	{ "tpope/vim-surround" },
 	{ "tpope/vim-commentary" },
 	{ "Raimondi/delimitMate" },
-	{ "machakann/vim-swap" },
 	{ "tommcdo/vim-exchange" },
 	{ "christoomey/vim-system-copy" },
 
 	-- File types
 	{ "chrisbra/csv.vim" },
 	{ "sukima/xmledit" },
-	{ "gregsexton/MatchTag" },
-	{
-		"plasticboy/vim-markdown",
-		config = function()
-			vim.g.vim_markdown_folding_disabled = 1
-		end,
-	},
-	{ "pangloss/vim-javascript" },
-	{ "leafgarland/typescript-vim" },
-
+	--
 	-- Navigation and search
 	{ "christoomey/vim-tmux-navigator" },
 	{
@@ -109,16 +107,12 @@ require("lazy").setup({
 			vim.g.ctrlp_cmd = 'CtrlP'
 			vim.g.ctrlp_max_height = 35
 			vim.g.ctrlp_switch_buffer = ''
-			vim.g.ctrlp_user_command = {'.git', 'cd %s && git ls-files -co --exclude-standard'}
+			vim.g.ctrlp_user_command = { '.git', 'cd %s && git ls-files -co --exclude-standard' }
 
 			-- Add any other CtrlP settings you want here
 		end,
 	},
-
-	-- Git
 	{ "tpope/vim-fugitive" },
-
-	-- Misc
 	{ "tpope/vim-abolish" },
 	{
 		"Valloric/ListToggle",
@@ -126,7 +120,6 @@ require("lazy").setup({
 			vim.g.lt_height = 10
 		end,
 	},
-	{ "vim-scripts/JavaScript-Indent" },
 	{
 		"jpalardy/vim-slime",
 		config = function()
@@ -135,11 +128,295 @@ require("lazy").setup({
 			vim.g.slime_default_config = { socket_name = "default", target_pane = "{down-of}" }
 		end,
 	},
-	{ "ludovicchabant/vim-gutentags" },
+	{
+		"neoclide/coc.nvim",
+		branch = "release",
+	},
+	{
+		'neovim/nvim-lspconfig',
+		dependencies = {
+			'williamboman/mason.nvim',
+			'williamboman/mason-lspconfig.nvim',
+		},
+		config = function()
+			-- 1️⃣ Install mason + mason-lspconfig
+			require('mason').setup()
+			require('mason-lspconfig').setup({
+				ensure_installed = { 'lua_ls' }, -- or 'sumneko_lua' if you prefer older name
+			})
 
-	-- LSP and completion
-	{ "neoclide/coc.nvim",            branch = "release" },
+			-- 2️⃣ Configure lua_ls
+			local lspconfig = require('lspconfig')
+			local augroup = vim.api.nvim_create_augroup
+			local fmt_group = augroup('LspFormatting', {})
+
+			lspconfig.lua_ls.setup({
+				settings = {
+					Lua = {
+						formatting = {
+							enable = true,
+							-- you can add more stylua-style options here if you like
+						}
+					}
+				},
+				on_attach = function(client, bufnr)
+					-- only if the server supports formatting
+					if client.server_capabilities.documentFormattingProvider then
+						-- clear any existing formatting autocmds on this buffer
+						vim.api.nvim_clear_autocmds({ group = fmt_group, buffer = bufnr })
+						vim.api.nvim_create_autocmd('BufWritePre', {
+							group = fmt_group,
+							buffer = bufnr,
+							callback = function()
+								vim.lsp.buf.format({ bufnr = bufnr, async = false })
+							end,
+						})
+					end
+				end,
+			})
+		end,
+	},
+	-- Completion Engine
+	{
+		"hrsh7th/nvim-cmp",
+		event = "InsertEnter",
+		dependencies = {
+			"hrsh7th/cmp-nvim-lsp",
+			"hrsh7th/cmp-buffer",
+			"hrsh7th/cmp-path",
+			"hrsh7th/cmp-cmdline", -- ← add this!
+		},
+		config = function()
+			local cmp = require("cmp")
+
+			cmp.setup({
+				snippet = { expand = function() end },
+				mapping = cmp.mapping.preset.insert({
+					["<Tab>"]   = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_next_item()
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+					["<S-Tab>"] = cmp.mapping(function(fallback)
+						if cmp.visible() then
+							cmp.select_prev_item()
+						else
+							fallback()
+						end
+					end, { "i", "s" }),
+					["<CR>"]    = cmp.mapping.confirm({ select = true }),
+				}),
+				sources = {
+					{ name = "nvim_lsp" },
+					{ name = "buffer" },
+					{ name = "path" },
+				},
+			})
+
+			-- `/` search in buffer
+			cmp.setup.cmdline("/", {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = { { name = "buffer" } },
+			})
+
+			-- `:` commands + file-paths
+			cmp.setup.cmdline(":", {
+				mapping = cmp.mapping.preset.cmdline(),
+				-- you can swap the order here if you prefer file-paths first:
+				sources = cmp.config.sources(
+					{ { name = "cmdline" } }, -- complete :commands, :help, etc.
+					{ { name = "path" } } -- then complete file-paths for args
+				),
+			})
+		end,
+	},
+	{
+		"scalameta/nvim-metals",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			{
+				"j-hui/fidget.nvim",
+				opts = {},
+			},
+			{
+				"mfussenegger/nvim-dap",
+				config = function(self, opts)
+					-- Debug settings if you're using nvim-dap
+					local dap = require("dap")
+
+					dap.configurations.scala = {
+						{
+							type = "scala",
+							request = "launch",
+							name = "RunOrTest",
+							metals = {
+								runType = "runOrTestFile",
+								--args = { "firstArg", "secondArg", "thirdArg" }, -- here just as an example
+							},
+						},
+						{
+							type = "scala",
+							request = "launch",
+							name = "Test Target",
+							metals = {
+								runType = "testTarget",
+							},
+						},
+					}
+				end
+			},
+			{ "neovim/nvim-lspconfig" },
+		},
+		ft = { "scala", "sbt", "java" },
+		opts = function()
+			local metals_config = require("metals").bare_config()
+			-- Example of settings
+			metals_config.settings = {
+				showImplicitArguments = true,
+				excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+			}
+
+			-- *READ THIS*
+			-- I *highly* recommend setting statusBarProvider to either "off" or "on"
+			--
+			-- "off" will enable LSP progress notifications by Metals and you'll need
+			-- to ensure you have a plugin like fidget.nvim installed to handle them.
+			--
+			-- "on" will enable the custom Metals status extension and you *have* to have
+			-- a have settings to capture this in your statusline or else you'll not see
+			-- any messages from metals. There is more info in the help docs about this
+			metals_config.init_options.statusBarProvider = "off"
+
+			-- Example if you are using cmp how to make sure the correct capabilities for snippets are set
+			metals_config.capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
+				.make_client_capabilities())
+
+
+			metals_config.on_attach = function(client, bufnr)
+				require("metals").setup_dap()
+				--
+				-- LSP mappings
+				map("n", "gD", vim.lsp.buf.definition)
+				map("n", "K", vim.lsp.buf.hover)
+				map("n", "gi", vim.lsp.buf.implementation)
+				map("n", "gr", vim.lsp.buf.references)
+				map("n", "gds", vim.lsp.buf.document_symbol)
+				map("n", "gws", vim.lsp.buf.workspace_symbol)
+				map("n", "<leader>cl", vim.lsp.codelens.run)
+				map("n", "<leader>sh", vim.lsp.buf.signature_help)
+				map("n", "<leader>rn", vim.lsp.buf.rename)
+				map("n", "<leader>f", vim.lsp.buf.format)
+				map("n", "<leader>ca", vim.lsp.buf.code_action)
+
+				map("n", "<leader>ws", function()
+					require("metals").hover_worksheet()
+				end)
+
+				-- all workspace diagnostics
+				map("n", "<leader>aa", vim.diagnostic.setqflist)
+
+				-- all workspace errors
+				map("n", "<leader>ae", function()
+					vim.diagnostic.setqflist({ severity = "E" })
+				end)
+
+				-- all workspace warnings
+				map("n", "<leader>aw", function()
+					vim.diagnostic.setqflist({ severity = "W" })
+				end)
+
+				-- buffer diagnostics only
+				map("n", "<leader>d", vim.diagnostic.setloclist)
+
+				map("n", "[c", function()
+					vim.diagnostic.goto_prev({ wrap = false })
+				end)
+
+				map("n", "]c", function()
+					vim.diagnostic.goto_next({ wrap = false })
+				end)
+
+				-- Example mappings for usage with nvim-dap. If you don't use that, you can
+				-- skip these
+				map("n", "<leader>dc", function()
+					require("dap").continue()
+				end)
+
+				map("n", "<leader>dr", function()
+					require("dap").repl.toggle()
+				end)
+
+				map("n", "<leader>dK", function()
+					require("dap.ui.widgets").hover()
+				end)
+
+				map("n", "<leader>dt", function()
+					require("dap").toggle_breakpoint()
+				end)
+
+				map("n", "<leader>dso", function()
+					require("dap").step_over()
+				end)
+
+				map("n", "<leader>dsi", function()
+					require("dap").step_into()
+				end)
+
+				map("n", "<leader>dl", function()
+					require("dap").run_last()
+				end)
+			end
+
+			return metals_config
+		end,
+		config = function(self, metals_config)
+			local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = self.ft,
+				callback = function()
+					require("metals").initialize_or_attach(metals_config)
+				end,
+				group = nvim_metals_group,
+			})
+		end
+	},
+	{
+		"ruifm/gitlinker.nvim",
+		dependencies = { 'nvim-lua/plenary.nvim' },
+		config = function()
+			-- this only runs when lazy.nvim has added
+			-- gitlinker.nvim to runtimepath
+			require("gitlinker").setup({
+				remote                          = nil, -- force the use of a specific remote
+				add_current_line_on_normal_mode = true,
+				action_callback                 = require("gitlinker.actions").copy_to_clipboard,
+				print_url                       = true,
+
+				callbacks                       = {
+					["github.com"]             = require("gitlinker.hosts").get_github_type_url,
+					["gitlab.com"]             = require("gitlinker.hosts").get_gitlab_type_url,
+					["try.gitea.io"]           = require("gitlinker.hosts").get_gitea_type_url,
+					["codeberg.org"]           = require("gitlinker.hosts").get_gitea_type_url,
+					["bitbucket.org"]          = require("gitlinker.hosts").get_bitbucket_type_url,
+					["try.gogs.io"]            = require("gitlinker.hosts").get_gogs_type_url,
+					["git.sr.ht"]              = require("gitlinker.hosts").get_srht_type_url,
+					["git.launchpad.net"]      = require("gitlinker.hosts").get_launchpad_type_url,
+					["repo.or.cz"]             = require("gitlinker.hosts").get_repoorcz_type_url,
+					["git.kernel.org"]         = require("gitlinker.hosts").get_cgit_type_url,
+					["git.savannah.gnu.org"]   = require("gitlinker.hosts").get_cgit_type_url,
+					["kakarot%.chorse%.space"] = require("gitlinker.hosts").get_gitlab_type_url,
+				},
+
+				-- default mapping to call url generation with action_callback
+				mappings                        = "<leader>gy",
+			})
+		end,
+	},
 })
+
+vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 
 -- Whitespace visualization
 vim.opt.listchars = { tab = '>-', trail = '·', eol = '$' }
@@ -168,6 +445,8 @@ map_config_edit('v', '~/.config/nvim/init.lua')
 map_config_edit('js', '~/.config/nvim/after/ftplugin/javascript.lua')
 map_config_edit('ts', '~/.config/nvim/after/ftplugin/typescript.lua')
 map_config_edit('py', '~/.config/nvim/after/ftplugin/python.lua')
+map_config_edit('sql', '~/.config/nvim/after/ftplugin/sql.lua')
+map_config_edit('scala', '~/.config/nvim/after/ftplugin/scala.lua')
 
 -- Delete buffer, keep split
 vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true })
@@ -266,9 +545,6 @@ vim.api.nvim_set_keymap('n', '<C-x>', ':CtrlPCmdPalette<CR>', { noremap = true }
 vim.g['airline#extensions#keymap#enabled'] = 0
 vim.g.airline_section_y = ''
 
--- Edit in working directory
-vim.api.nvim_set_keymap('n', '<leader>ew', ':e <C-R>=expand("%:p:h") . "/" <CR>', { noremap = true })
-
 -- Wrap commands
 vim.cmd([[
 command! -nargs=* Wrap set wrap linebreak nolist
@@ -304,13 +580,93 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 
 
 _G.copy_visual_selection_to_clipboard = function()
-    local old_reg = vim.fn.getreg('"')
-    local old_regtype = vim.fn.getregtype('"')
-    vim.cmd([[normal! `<v`>y]])
-    local selection = vim.fn.getreg('"')
-    vim.fn.setreg('"', old_reg, old_regtype)
-    vim.fn.system('pbcopy', selection)
-    print("Selection copied to clipboard")
+	local old_reg = vim.fn.getreg('"')
+	local old_regtype = vim.fn.getregtype('"')
+	vim.cmd([[normal! `<v`>y]])
+	local selection = vim.fn.getreg('"')
+	vim.fn.setreg('"', old_reg, old_regtype)
+	vim.fn.system('pbcopy', selection)
+	print("Selection copied to clipboard")
 end
 
-vim.api.nvim_set_keymap('v', '<leader>y', [[:lua copy_visual_selection_to_clipboard()<CR>]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', '<leader>y', [[:lua copy_visual_selection_to_clipboard()<CR>]],
+	{ noremap = true, silent = true })
+
+
+-- Function to toggle between Scala main and test files
+_G.toggle_scala_test_file = function()
+	local current_path = vim.fn.expand('%:p')
+	local current_dir = vim.fn.expand('%:p:h')
+	local base_name = vim.fn.expand('%:t:r') -- Name without extension
+	local extension = ".scala"
+	local test_suffixes = { "Spec", "Test" } -- Common test suffixes
+
+	local target_path = nil
+
+	-- Try switching from main to test
+	if current_path:find("/src/main/scala/", 1, true) then
+		local test_dir = current_dir:gsub("/src/main/scala/", "/src/test/scala/", 1)
+		if test_dir == current_dir then
+			vim.notify("Not in a standard src/main/scala structure", vim.log.levels.WARN)
+			return
+		end
+		for _, suffix in ipairs(test_suffixes) do
+			local potential_test_file = test_dir .. "/" .. base_name .. suffix .. extension
+			if vim.fn.filereadable(potential_test_file) == 1 then
+				target_path = potential_test_file
+				break
+			end
+		end
+		if not target_path then
+			vim.notify(
+				"Corresponding test file (.." ..
+				table.concat(test_suffixes, "/") .. extension .. ") not found.",
+				vim.log.levels.WARN)
+			return
+		end
+
+		-- Try switching from test to main
+	elseif current_path:find("/src/test/scala/", 1, true) then
+		local main_dir = current_dir:gsub("/src/test/scala/", "/src/main/scala/", 1)
+		if main_dir == current_dir then
+			vim.notify("Not in a standard src/test/scala structure", vim.log.levels.WARN)
+			return
+		end
+		local main_base_name = nil
+		for _, suffix in ipairs(test_suffixes) do
+			-- Check if base_name ends with the suffix
+			if #base_name > #suffix and base_name:sub(- #suffix) == suffix then
+				main_base_name = base_name:sub(1, - #suffix - 1)
+				break
+			end
+		end
+
+		if not main_base_name then
+			vim.notify(
+				"Test filename doesn't end with standard suffix (" ..
+				table.concat(test_suffixes, "/") .. ").",
+				vim.log.levels.WARN)
+			return
+		end
+
+		local potential_main_file = main_dir .. "/" .. main_base_name .. extension
+		if vim.fn.filereadable(potential_main_file) == 1 then
+			target_path = potential_main_file
+		else
+			vim.notify("Corresponding main file (" .. main_base_name .. extension .. ") not found.",
+				vim.log.levels.WARN)
+			return
+		end
+	else
+		vim.notify("File is not in src/main/scala or src/test/scala.", vim.log.levels.WARN)
+		return
+	end
+
+	-- If a target path was found, edit it
+	if target_path then
+		vim.cmd('edit ' .. vim.fn.fnameescape(target_path))
+	end
+end
+
+vim.api.nvim_set_keymap('n', '<leader>et', '<Cmd>lua _G.toggle_scala_test_file()<CR>',
+	{ noremap = true, silent = true, desc = "Toggle Scala Test/Main File" })
