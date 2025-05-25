@@ -64,14 +64,8 @@ gitroot() {
 
 alias cr='cd "$(gitroot)"'
 
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-# eval "$(pyenv virtualenv-init -)"
-
 alias python=python3
 unalias ls
-export LOGURU_LEVEL=INFO
 
 
 # place this after nvm initialization!
