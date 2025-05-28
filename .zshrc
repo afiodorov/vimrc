@@ -68,7 +68,11 @@ alias python=python3
 unalias ls
 
 
-# place this after nvm initialization!
+# 1. Load NVM (must be before anything that uses nvm commands/functions)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# 2. Now load your load-nvmrc logic
 autoload -U add-zsh-hook
 
 load-nvmrc() {
@@ -79,13 +83,13 @@ load-nvmrc() {
     local nvmrc_node_version
     nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
 
-    if [ "$nvmrc_node_version" = "N/A" ]; then
+    if [ "$nvmrc_node_version" = "n/a" ]; then
       nvm install
     elif [ "$nvmrc_node_version" != "$(nvm version)" ]; then
       nvm use
     fi
-  elif [ -n "$(PWD=$OLDPWD nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
-    echo "Reverting to nvm default version"
+  elif [ -n "$(pwd=$oldpwd nvm_find_nvmrc)" ] && [ "$(nvm version)" != "$(nvm version default)" ]; then
+    echo "reverting to nvm default version"
     nvm use default
   fi
 }
