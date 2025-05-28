@@ -16,6 +16,8 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.cmd('filetype plugin indent on')
 
+vim.opt.shell = vim.fn.exepath('bash')
+
 -- General settings
 vim.opt.lazyredraw = true
 vim.opt.scrolloff = 1

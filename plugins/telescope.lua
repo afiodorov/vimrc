@@ -2,7 +2,7 @@
 
 return {
 	'nvim-telescope/telescope.nvim',
-	dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+	dependencies = { 'nvim-lua/plenary.nvim', { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' } },
 	config = function()
 		require('telescope').setup {
 			pickers = {
@@ -11,7 +11,12 @@ return {
 					theme = "ivy",
 				}
 			},
+			extensions = {
+				fzf = {}
+			}
 		}
+
+		require('telescope').load_extension('fzf')
 
 		vim.keymap.set("n", "<leader>ec", function()
 			require('telescope.builtin').find_files {
