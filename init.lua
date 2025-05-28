@@ -153,10 +153,6 @@ require("lazy").setup({
 			lspconfig.lua_ls.setup({
 				settings = {
 					Lua = {
-
-						diagnostics = {
-							globals = { "vim" }
-						},
 						formatting = {
 							enable = true,
 							-- you can add more stylua-style options here if you like
