@@ -296,11 +296,6 @@ local function map_config_edit(key, file)
 end
 
 map_config_edit('v', '~/.config/nvim/init.lua')
-map_config_edit('js', '~/.config/nvim/after/ftplugin/javascript.lua')
-map_config_edit('ts', '~/.config/nvim/after/ftplugin/typescript.lua')
-map_config_edit('py', '~/.config/nvim/after/ftplugin/python.lua')
-map_config_edit('sql', '~/.config/nvim/after/ftplugin/sql.lua')
-map_config_edit('scala', '~/.config/nvim/after/ftplugin/scala.lua')
 
 -- Delete buffer, keep split
 vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true })
