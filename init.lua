@@ -30,7 +30,24 @@ vim.cmd([[cabbr <expr> %% expand('%:p:h')]])
 
 -- Wildmenu and ignore patterns
 vim.opt.wildmode = "longest,list,full"
-vim.opt.wildignore = ".svn,CVS,.git,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif"
+vim.opt.wildignore = table.concat({
+	"*/.git/*", "*/.svn/*", "*/CVS/*",                              -- More robust with */ prefix
+	"*.swp",
+	"*.o", "*.obj", "*.a", "*.so", "*.dylib", "*.dll",              -- Common compiled
+	"*.class",                                                      -- Java
+	"__pycache__", "*.pyc", ".Python", "*.egg-info", "pip-wheel-metadata", -- Python
+	"node_modules", ".npm",                                         -- Node
+	"target",                                                       -- Rust
+	"build", "dist",                                                -- Common build output
+	".DS_Store", "*.orig",                                          -- OS specific / backups
+	".vscode", ".idea",                                             -- IDE
+	"*.zip", "*.gz", "*.bz2", "*.xz", "*.rar", "*.7z",              -- Archives
+	"*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.svg", "*.webp", -- Images
+	"*.pdf", "*.epub", "*.mobi",                                    -- Documents
+	"*.mp3", "*.ogg", "*.flac", "*.wav", "*.m4a",                   -- Audio
+	"*.mp4", "*.mkv", "*.webm", "*.mov", "*.avi",                   -- Video
+	"*.log"
+}, ",")
 
 -- Case sensitivity in search
 vim.opt.ignorecase = true
@@ -88,16 +105,12 @@ map_config_edit('v', '~/.config/nvim/init.lua')
 --    we originally intended to close).
 -- The overall effect is closing the current buffer and switching to the
 -- most recently used buffer before it.
-vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true, desc = "Close current buffer and switch to previous" })
+vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>',
+	{ noremap = true, desc = "Close current buffer and switch to previous" })
 
 vim.keymap.set("n", "<leader><leader>l", "<cmd>source %<CR>")
 vim.keymap.set("n", "<leader>l", ":.lua<CR>")
 vim.keymap.set("v", "<leader>l", ":lua<CR>")
-
--- Window navigation
-vim.api.nvim_set_keymap('n', '<C-w><C-w>', '<C-w>p', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-w><leader>l', '<C-w>200l', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-w><leader>h', '<C-w>200h', { noremap = true })
 
 -- Spell settings
 vim.opt.spelllang = "ru,en_gb"
@@ -148,9 +161,6 @@ vim.api.nvim_set_keymap('n', '-', '<C-W>-', { noremap = true })
 vim.opt.relativenumber = true
 vim.opt.number = true
 
--- FZF
-vim.opt.rtp:append("~/.fzf")
-
 -- Misc settings
 vim.opt.colorcolumn = "+1"
 
@@ -170,9 +180,6 @@ vim.opt.splitright = true
 
 -- Netrw settings
 vim.g.netrw_localrmdir = 'rm -r'
-
--- CtrlP-CmdPalette
-vim.api.nvim_set_keymap('n', '<C-x>', ':CtrlPCmdPalette<CR>', { noremap = true })
 
 -- Wrap commands
 vim.cmd([[
