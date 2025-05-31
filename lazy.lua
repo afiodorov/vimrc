@@ -63,23 +63,6 @@ require("lazy").setup({
 			}
 		end,
 	},
-	{
-		"majutsushi/tagbar",
-		config = function()
-			vim.g.tagbar_width = 50
-			vim.g.tagbar_show_linenumbers = 1
-			vim.api.nvim_set_keymap('n', '<F8>', ':TagbarToggle<CR>', { noremap = true, silent = true })
-			vim.g.tagbar_type_mkd = {
-				ctagstype = 'markdown',
-				kinds = { 'h:Heading_L1', 'i:Heading_L2', 'k:Heading_L3' }
-			}
-			vim.g.tagbar_type_solidity = {
-				ctagstype = 'solidity',
-				kinds = { 'c:contracts', 'e:events', 'f:functions', 'm:mappings', 'v:varialbes' }
-			}
-		end,
-	},
-
 	-- Edit enhancements
 	{ "vim-scripts/ReplaceWithRegister" },
 	{ "tpope/vim-surround" },

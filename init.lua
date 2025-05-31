@@ -13,7 +13,6 @@ vim.opt.title = true
 vim.opt.copyindent = true
 vim.opt.visualbell = true
 vim.opt.errorbells = false
-vim.opt.tags = "./tags"
 
 -- Backup and swap directories
 local home = vim.fn.expand('$HOME')
@@ -80,8 +79,16 @@ end
 
 map_config_edit('v', '~/.config/nvim/init.lua')
 
--- Delete buffer, keep split
-vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true })
+-- Keymap to "kill" the current buffer:
+-- 1. :bp (bprevious) - Switches to the previous buffer in the bufferlist.
+--    This makes the original current buffer (the one we want to kill)
+--    the "alternate buffer" (referred to by '#').
+-- 2. | - Command separator.
+-- 3. :bd # (bdelete #) - Deletes the alternate buffer (which is the one
+--    we originally intended to close).
+-- The overall effect is closing the current buffer and switching to the
+-- most recently used buffer before it.
+vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true, desc = "Close current buffer and switch to previous" })
 
 vim.keymap.set("n", "<leader><leader>l", "<cmd>source %<CR>")
 vim.keymap.set("n", "<leader>l", ":.lua<CR>")
