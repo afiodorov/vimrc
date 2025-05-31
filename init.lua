@@ -65,8 +65,54 @@ map('n', '<leader>ew', ':e <C-R>=expand("%:p:h") . "/" <CR>', { noremap = true }
 -- Plugin specifications
 
 require("lazy").setup({
-	-- UI
-	{ "vim-airline/vim-airline" },
+	{
+		'nvim-lualine/lualine.nvim',
+		dependencies = { 'nvim-tree/nvim-web-devicons', opt = true }, -- Optional: for file icons
+		config = function()
+			require('lualine').setup {
+				options = {
+					theme = 'auto', -- Or your preferred theme (e.g., 'tokyonight', 'onedark', etc.)
+					component_separators = { left = '', right = '' },
+					section_separators = { left = '', right = '' },
+					disabled_filetypes = {
+						statusline = {},
+						winbar = {},
+					},
+					icons_enabled = true, -- Set to false if you don't have/want nvim-web-devicons
+					always_divide_middle = true,
+					globalstatus = false, -- Set to true if you want the statusline to be global
+				},
+				sections = {
+					lualine_a = { 'mode' },
+					lualine_b = { 'branch', 'diff', 'diagnostics' },
+					lualine_c = {
+						{
+							'filename',
+							path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path (deprecated, use 'absolute')
+							-- For explicit absolute path:
+							-- path = 'absolute',
+							shorting_rule = 'minimal', -- Other options: ' ञ ', '….', nil
+						}
+					},
+					lualine_x = { 'encoding', 'fileformat', 'filetype' },
+					lualine_y = { 'progress' },
+					lualine_z = { 'location' }
+				},
+				inactive_sections = {
+					lualine_a = {},
+					lualine_b = {},
+					lualine_c = { { 'filename', path = 1, shorting_rule = 'minimal' } }, -- or path = 'absolute'
+					lualine_x = { 'location' },
+					lualine_y = {},
+					lualine_z = {}
+				},
+				tabline = {},
+				winbar = {},
+				inactive_winbar = {},
+				extensions = {}
+			}
+		end,
+	},
 	{
 		"majutsushi/tagbar",
 		config = function()
@@ -359,11 +405,6 @@ vim.api.nvim_set_keymap('n', '<leader>sp', ':profile start profile.log<CR>:profi
 	{ noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>ep', ':profile pause<CR>:noautocmd qall!<CR>', { noremap = true })
 
--- Vim-airline settings
-vim.g['airline#extensions#tabline#enabled'] = 0
-vim.g['airline#extensions#ale#enabled'] = 1
-vim.g['airline#extensions#tabline#enabled'] = 1
-
 -- FZF
 vim.opt.rtp:append("~/.fzf")
 
@@ -389,10 +430,6 @@ vim.g.netrw_localrmdir = 'rm -r'
 
 -- CtrlP-CmdPalette
 vim.api.nvim_set_keymap('n', '<C-x>', ':CtrlPCmdPalette<CR>', { noremap = true })
-
--- Airline settings
-vim.g['airline#extensions#keymap#enabled'] = 0
-vim.g.airline_section_y = ''
 
 -- Wrap commands
 vim.cmd([[
