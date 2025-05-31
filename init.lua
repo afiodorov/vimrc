@@ -346,6 +346,10 @@ map_config_edit('v', '~/.config/nvim/init.lua')
 -- Delete buffer, keep split
 vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>', { noremap = true })
 
+vim.keymap.set("n", "<leader><leader>l", "<cmd>source %<CR>")
+vim.keymap.set("n", "<leader>l", ":.lua<CR>")
+vim.keymap.set("v", "<leader>l", ":lua<CR>")
+
 -- Window navigation
 vim.api.nvim_set_keymap('n', '<C-w><C-w>', '<C-w>p', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-w><leader>l', '<C-w>200l', { noremap = true })

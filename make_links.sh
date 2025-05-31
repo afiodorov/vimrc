@@ -9,7 +9,7 @@ map_files["coc-settings.json"]=".config/nvim/coc-settings.json"
 map_files["python.lua"]=".config/nvim/after/ftplugin/python.lua"
 map_files["exa_config"]=".config/exa/config"
 map_files["plugins"]=".config/nvim/lua/plugins"
-declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1)
+declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1)
 
 for file in "${DIR}"/.*  "${DIR}"/*
 do
