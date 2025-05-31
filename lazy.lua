@@ -230,8 +230,7 @@ require("lazy").setup({
 			})
 		end,
 	},
-	{ import = "plugins.metals" },
-	{ import = "plugins.telescope" },
+	{ import = "plugins" },
 	{
 		"ruifm/gitlinker.nvim",
 		dependencies = { 'nvim-lua/plenary.nvim' },
