@@ -63,7 +63,6 @@ gitroot() {
 
 alias cr='cd "$(gitroot)"'
 
-alias python=python3
 unalias ls
 
 
