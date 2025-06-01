@@ -107,61 +107,6 @@ require("lazy").setup({
       vim.g.slime_default_config = { socket_name = "default", target_pane = "{down-of}" }
     end,
   },
-  {
-    "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    dependencies = {
-      "hrsh7th/cmp-nvim-lsp",
-      "hrsh7th/cmp-buffer",
-      "hrsh7th/cmp-path",
-      "hrsh7th/cmp-cmdline",
-    },
-    config = function()
-      local cmp = require("cmp")
-
-      cmp.setup({
-        snippet = { expand = function() end },
-        mapping = cmp.mapping.preset.insert({
-          ["<Tab>"]   = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_next_item()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<S-Tab>"] = cmp.mapping(function(fallback)
-            if cmp.visible() then
-              cmp.select_prev_item()
-            else
-              fallback()
-            end
-          end, { "i", "s" }),
-          ["<CR>"]    = cmp.mapping.confirm({ select = true }),
-        }),
-        sources = {
-          { name = "nvim_lsp" },
-          { name = "buffer" },
-          { name = "path" },
-        },
-      })
-
-      -- `/` search in buffer
-      cmp.setup.cmdline("/", {
-        mapping = cmp.mapping.preset.cmdline(),
-        sources = { { name = "buffer" } },
-      })
-
-      -- `:` commands + file-paths
-      cmp.setup.cmdline(":", {
-        mapping = cmp.mapping.preset.cmdline(),
-        -- you can swap the order here if you prefer file-paths first:
-        sources = cmp.config.sources(
-          { { name = "cmdline" } }, -- complete :commands, :help, etc.
-          { { name = "path" } }     -- then complete file-paths for args
-        ),
-      })
-    end,
-  },
   { import = "plugins" },
   {
     "ruifm/gitlinker.nvim",
@@ -212,5 +157,16 @@ require("lazy").setup({
         desc = "Buffer Local Keymaps (which-key)",
       },
     },
+  },
+  {
+    'stevearc/oil.nvim',
+    ---@module 'oil'
+    ---@type oil.SetupOpts
+    opts = {},
+    -- Optional dependencies
+    dependencies = { { "echasnovski/mini.icons", opts = {} } },
+    -- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if you prefer nvim-web-devicons
+    -- Lazy loading is not recommended because it is very tricky to make it work correctly in all situations.
+    lazy = false,
   }
 })

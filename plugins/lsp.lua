@@ -3,6 +3,7 @@ return {
   dependencies = {
     'williamboman/mason.nvim',
     'williamboman/mason-lspconfig.nvim',
+    'saghen/blink.cmp',
     {
       "folke/lazydev.nvim",
       ft = "lua", -- only load on lua files
@@ -51,6 +52,7 @@ return {
     local lspconfig = require('lspconfig')
     local augroup = vim.api.nvim_create_augroup
     local fmt_group = augroup('LspFormatting', {})
+    local capabilities = require('blink.cmp').get_lsp_capabilities()
 
 
     vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
@@ -85,7 +87,8 @@ return {
           }
         },
       },
-      on_attach = on_attach_common
+      on_attach = on_attach_common,
+      capabilities = capabilities,
     })
 
     lspconfig.pyright.setup({
@@ -100,6 +103,7 @@ return {
           }
         }
       },
+      capabilities = capabilities,
     })
 
     lspconfig.ruff.setup({
@@ -112,7 +116,8 @@ return {
           -- Enable linting (default)
           lint = { args = {} },
         }
-      }
+      },
+      capabilities = capabilities,
     })
   end,
 }
