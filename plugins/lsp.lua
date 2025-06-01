@@ -32,17 +32,20 @@ return {
       },
     },
   },
-  opts = {
-    diagnostics = {
-      virtual_text = true,
-    },
-  },
   config = function()
     -- 1️⃣ Install mason + mason-lspconfig
     require('mason').setup()
     require('mason-lspconfig').setup({
       ensure_installed = { 'lua_ls' },
       automatic_enable = true,
+    })
+
+    vim.diagnostic.config({
+      virtual_text = true,
+      signs = true,
+      underline = true,
+      update_in_insert = false,
+      severity_sort = true,
     })
 
     -- 2️⃣ Configure lua_ls
@@ -72,18 +75,9 @@ return {
             end,
           })
         end
-
-
-        vim.api.nvim_create_autocmd('CursorHold', {
-          buffer = bufnr,
-          callback = function()
-            vim.diagnostic.open_float(nil, {
-              focusable = false, -- Don't focus the float window
-              scope = "cursor" -- Show diagnostics for the cursor position
-            })
-          end
-        })
       end,
+
+      vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
     })
   end,
 }
