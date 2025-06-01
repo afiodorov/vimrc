@@ -1,6 +1,3 @@
----@diagnostic disable: undefined-global
-
-
 vim.cmd('filetype plugin indent on')
 
 vim.opt.shell = vim.fn.exepath('bash')
@@ -13,6 +10,7 @@ vim.opt.title = true
 vim.opt.copyindent = true
 vim.opt.visualbell = true
 vim.opt.errorbells = false
+vim.opt.updatetime = 300
 
 -- Backup and swap directories
 local home = vim.fn.expand('$HOME')
@@ -31,22 +29,22 @@ vim.cmd([[cabbr <expr> %% expand('%:p:h')]])
 -- Wildmenu and ignore patterns
 vim.opt.wildmode = "longest,list,full"
 vim.opt.wildignore = table.concat({
-	"*/.git/*", "*/.svn/*", "*/CVS/*",                              -- More robust with */ prefix
-	"*.swp",
-	"*.o", "*.obj", "*.a", "*.so", "*.dylib", "*.dll",              -- Common compiled
-	"*.class",                                                      -- Java
-	"__pycache__", "*.pyc", ".Python", "*.egg-info", "pip-wheel-metadata", -- Python
-	"node_modules", ".npm",                                         -- Node
-	"target",                                                       -- Rust
-	"build", "dist",                                                -- Common build output
-	".DS_Store", "*.orig",                                          -- OS specific / backups
-	".vscode", ".idea",                                             -- IDE
-	"*.zip", "*.gz", "*.bz2", "*.xz", "*.rar", "*.7z",              -- Archives
-	"*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.svg", "*.webp", -- Images
-	"*.pdf", "*.epub", "*.mobi",                                    -- Documents
-	"*.mp3", "*.ogg", "*.flac", "*.wav", "*.m4a",                   -- Audio
-	"*.mp4", "*.mkv", "*.webm", "*.mov", "*.avi",                   -- Video
-	"*.log"
+  "*/.git/*", "*/.svn/*", "*/CVS/*",                                     -- More robust with */ prefix
+  "*.swp",
+  "*.o", "*.obj", "*.a", "*.so", "*.dylib", "*.dll",                     -- Common compiled
+  "*.class",                                                             -- Java
+  "__pycache__", "*.pyc", ".Python", "*.egg-info", "pip-wheel-metadata", -- Python
+  "node_modules", ".npm",                                                -- Node
+  "target",                                                              -- Rust
+  "build", "dist",                                                       -- Common build output
+  ".DS_Store", "*.orig",                                                 -- OS specific / backups
+  ".vscode", ".idea",                                                    -- IDE
+  "*.zip", "*.gz", "*.bz2", "*.xz", "*.rar", "*.7z",                     -- Archives
+  "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.svg", "*.webp",       -- Images
+  "*.pdf", "*.epub", "*.mobi",                                           -- Documents
+  "*.mp3", "*.ogg", "*.flac", "*.wav", "*.m4a",                          -- Audio
+  "*.mp4", "*.mkv", "*.webm", "*.mov", "*.avi",                          -- Video
+  "*.log"
 }, ",")
 
 -- Case sensitivity in search
@@ -89,13 +87,6 @@ hi CocHintFloat ctermfg=0 ctermbg=7
 vim.api.nvim_set_keymap('i', '<C-w>', '<C-g>u<C-w>', { noremap = true })
 vim.api.nvim_set_keymap('i', '<Space>', '<Space><C-g>u', { noremap = true })
 
--- Quick edit configurations
-local function map_config_edit(key, file)
-	vim.api.nvim_set_keymap('n', '<leader>e' .. key, ':vsplit ' .. file .. '<CR>', { noremap = true })
-end
-
-map_config_edit('v', '~/.config/nvim/init.lua')
-
 -- Keymap to "kill" the current buffer:
 -- 1. :bp (bprevious) - Switches to the previous buffer in the bufferlist.
 --    This makes the original current buffer (the one we want to kill)
@@ -106,9 +97,9 @@ map_config_edit('v', '~/.config/nvim/init.lua')
 -- The overall effect is closing the current buffer and switching to the
 -- most recently used buffer before it.
 vim.api.nvim_set_keymap('n', '<leader>x', ':bp|bd #<CR>',
-	{ noremap = true, desc = "Close current buffer and switch to previous" })
+  { noremap = true, desc = "Close current buffer and switch to previous" })
 
-vim.keymap.set("n", "<leader><leader>l", "<cmd>source %<CR>")
+vim.keymap.set("n", "<leader>sv", "<cmd>source %<CR>")
 vim.keymap.set("n", "<leader>l", ":.lua<CR>")
 vim.keymap.set("v", "<leader>l", ":lua<CR>")
 
@@ -195,35 +186,35 @@ vim.api.nvim_set_keymap('x', '<leader>p', '"_dP', { noremap = true })
 
 
 local function trim_trailing_whitespace()
-	local save = vim.fn.winsaveview()
-	for i = 1, vim.api.nvim_buf_line_count(0) do
-		local line = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
-		local trimmed = line:gsub("%s+$", "")
-		if line ~= trimmed then
-			vim.api.nvim_buf_set_lines(0, i - 1, i, false, { trimmed })
-		end
-	end
-	vim.fn.winrestview(save)
+  local save = vim.fn.winsaveview()
+  for i = 1, vim.api.nvim_buf_line_count(0) do
+    local line = vim.api.nvim_buf_get_lines(0, i - 1, i, false)[1]
+    local trimmed = line:gsub("%s+$", "")
+    if line ~= trimmed then
+      vim.api.nvim_buf_set_lines(0, i - 1, i, false, { trimmed })
+    end
+  end
+  vim.fn.winrestview(save)
 end
 
 vim.api.nvim_create_autocmd("BufWritePre", {
-	group = augroup,
-	pattern = "*",
-	callback = function()
-		trim_trailing_whitespace()
-	end,
+  group = augroup,
+  pattern = "*",
+  callback = function()
+    trim_trailing_whitespace()
+  end,
 })
 
 
 _G.copy_visual_selection_to_clipboard = function()
-	local old_reg = vim.fn.getreg('"')
-	local old_regtype = vim.fn.getregtype('"')
-	vim.cmd([[normal! `<v`>y]])
-	local selection = vim.fn.getreg('"')
-	vim.fn.setreg('"', old_reg, old_regtype)
-	vim.fn.system('pbcopy', selection)
-	print("Selection copied to clipboard")
+  local old_reg = vim.fn.getreg('"')
+  local old_regtype = vim.fn.getregtype('"')
+  vim.cmd([[normal! `<v`>y]])
+  local selection = vim.fn.getreg('"')
+  vim.fn.setreg('"', old_reg, old_regtype)
+  vim.fn.system('pbcopy', selection)
+  print("Selection copied to clipboard")
 end
 
 vim.api.nvim_set_keymap('v', '<leader>y', [[:lua copy_visual_selection_to_clipboard()<CR>]],
-	{ noremap = true, silent = true })
+  { noremap = true, silent = true })

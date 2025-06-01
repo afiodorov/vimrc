@@ -10,6 +10,7 @@ map_files["exa_config"]=".config/exa/config"
 map_files["plugins"]=".config/nvim/lua/plugins"
 map_files["ftplugin"]=".config/nvim/after/ftplugin"
 map_files["lazy.lua"]=".config/nvim/lua/config/lazy.lua"
+map_files[".editorconfig"]=".config/nvim/.editorconfig"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1)
 
 for file in "${DIR}"/.*  "${DIR}"/*
