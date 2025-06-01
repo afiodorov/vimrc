@@ -5,7 +5,6 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 declare -A map_files
 map_files["init.lua"]=".config/nvim/init.lua"
 map_files["bat_config"]=".config/bat/config"
-map_files["coc-settings.json"]=".config/nvim/coc-settings.json"
 map_files["exa_config"]=".config/exa/config"
 map_files["plugins"]=".config/nvim/lua/plugins"
 map_files["ftplugin"]=".config/nvim/after/ftplugin"
