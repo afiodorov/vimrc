@@ -108,10 +108,6 @@ require("lazy").setup({
     end,
   },
   {
-    "neoclide/coc.nvim",
-    branch = "release",
-  },
-  {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     dependencies = {

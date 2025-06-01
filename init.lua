@@ -78,10 +78,6 @@ vim.api.nvim_set_keymap('n', '<Space>', ',', { noremap = true })
 
 -- Color settings
 vim.opt.background = "light"
-vim.cmd([[
-hi CocFloating ctermfg=0 ctermbg=7
-hi CocHintFloat ctermfg=0 ctermbg=7
-]])
 
 -- Better undo in insert mode
 vim.api.nvim_set_keymap('i', '<C-w>', '<C-g>u<C-w>', { noremap = true })

@@ -33,10 +33,9 @@ return {
     },
   },
   config = function()
-    -- 1️⃣ Install mason + mason-lspconfig
     require('mason').setup()
     require('mason-lspconfig').setup({
-      ensure_installed = { 'lua_ls' },
+      ensure_installed = { 'lua_ls', 'pyright', 'ruff' },
       automatic_enable = true,
     })
 
@@ -53,31 +52,67 @@ return {
     local augroup = vim.api.nvim_create_augroup
     local fmt_group = augroup('LspFormatting', {})
 
+
+    vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
+
+    local on_attach_common = function(client, bufnr)
+      -- only if the server supports formatting
+      if client.server_capabilities.documentFormattingProvider then
+        -- clear any existing formatting autocmds on this buffer
+        vim.api.nvim_clear_autocmds({ group = fmt_group, buffer = bufnr })
+        vim.api.nvim_create_autocmd('BufWritePre', {
+          group = fmt_group,
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format({ bufnr = bufnr, async = false })
+          end,
+        })
+      end
+
+      local map = function(mode, keys, func, desc)
+        vim.keymap.set(mode, keys, func, { buffer = bufnr, noremap = true, silent = true, desc = desc })
+      end
+
+      map('n', 'gd', vim.lsp.buf.definition, 'Go to definition')
+      map('n', 'gD', vim.lsp.buf.declaration, 'Go to declaration')
+    end
+
     lspconfig.lua_ls.setup({
       settings = {
         Lua = {
           formatting = {
             enable = true,
-            -- you can add more stylua-style options here if you like
+          }
+        },
+      },
+      on_attach = on_attach_common
+    })
+
+    lspconfig.pyright.setup({
+      on_attach = on_attach_common,
+      settings = {
+        python = {
+          analysis = {
+            -- typeCheckingMode = "basic", // "off", "basic", or "strict"
+            -- useLibraryCodeForTypes = true,
+            -- autoSearchPaths = true,
+            -- diagnosticMode = "workspace", // analyze all files in workspace
           }
         }
       },
-      on_attach = function(client, bufnr)
-        -- only if the server supports formatting
-        if client.server_capabilities.documentFormattingProvider then
-          -- clear any existing formatting autocmds on this buffer
-          vim.api.nvim_clear_autocmds({ group = fmt_group, buffer = bufnr })
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            group = fmt_group,
-            buffer = bufnr,
-            callback = function()
-              vim.lsp.buf.format({ bufnr = bufnr, async = false })
-            end,
-          })
-        end
-      end,
+    })
 
-      vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
+    lspconfig.ruff.setup({
+      on_attach = on_attach_common,
+      init_options = {
+        settings = {
+          -- args = {}, -- You can pass command line arguments to ruff here if needed
+          -- To enable ruff as a formatter (it needs to be configured in your ruff.toml for this to be effective):
+          -- format = { args = {} } -- This signals to ruff_lsp to offer formatting
+          -- Enable linting (default)
+          lint = { args = {} },
+        }
+      }
     })
   end,
 }
