@@ -22,6 +22,13 @@ return {
       }
     end)
 
+    vim.keymap.set("n", "<leader>ep", function()
+      require('telescope.builtin').find_files {
+        cwd = vim.fs.joinpath(vim.fn.stdpath("data"), "lazy")
+      }
+    end)
+
     vim.keymap.set("n", "<leader>ht", require('telescope.builtin').help_tags)
+    vim.keymap.set("n", "<leader>gg", require "plugins.telescope.multigrep".setup)
   end
 }
