@@ -2,12 +2,28 @@ return {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
     "nvim-treesitter/nvim-treesitter-textobjects",
+    {
+      "lukas-reineke/indent-blankline.nvim",
+      tag = "v2.20.8",        -- ⟵ pin to v2
+      event = "BufReadPost",
+      config = function()
+        vim.opt.list = true
+        require("indent_blankline").setup {
+          space_char_blankline      = " ",
+          show_current_context      = true,
+          show_current_context_start = true,
+        }
+      end,
+    },
+    "kiyoon/treesitter-indent-object.nvim",
   },
   branch = 'master',
   lazy = false,
   build = ":TSUpdate",
   config = function()
     require 'nvim-treesitter.configs'.setup {
+      ignore_install = {},    -- list of parser names to skip, if any
+      modules        = {},
       -- A list of parser names, or "all" (the listed parsers MUST always be installed)
       ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python" },
 
@@ -30,6 +46,9 @@ return {
         end,
         additional_vim_regex_highlighting = false,
       },
+      indent = {
+        enable = true,   -- turns on `nvim_treesitter#indent()`  [oai_citation:0‡dynamiteFrog](https://dynamitefrog.com/posts/treesitter-neovim-config-cheatsheet/?utm_source=chatgpt.com)
+      },
       textobjects = {
         select = {
           enable = true,
@@ -44,6 +63,8 @@ return {
             -- You can also add parameter textobjects
             ["ap"] = "@parameter.outer",
             ["ip"] = "@parameter.inner",
+            ["ii"] = "@indent.inner",
+            ["ai"] = "@indent.outer",
           },
         },
         move = {
@@ -68,5 +89,23 @@ return {
         },
       },
     }
+
+      require("treesitter_indent_object").setup()
+
+      local tsio = require("treesitter_indent_object.textobj")
+      vim.keymap.set({ "x", "o" }, "ii", function()
+        tsio.select_indent_inner()
+      end, { desc = "Select indent-inner block" })
+      vim.keymap.set({ "x", "o" }, "iI", function()
+        tsio.select_indent_inner(true, "V")
+      end, { desc = "Select indent-inner (whole lines)" })
+
+      vim.keymap.set({ "x", "o" }, "ai", function()
+        tsio.select_indent_outer()
+      end, { desc = "Select indent-outer block" })
+      vim.keymap.set({ "x", "o" }, "aI", function()
+        tsio.select_indent_outer(true)
+      end, { desc = "Select indent-outer (whole lines)" })
+
   end
 }
