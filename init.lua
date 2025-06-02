@@ -193,6 +193,7 @@ local function trim_trailing_whitespace()
   vim.fn.winrestview(save)
 end
 
+local augroup = vim.api.nvim_create_augroup("TrimWhitespace", { clear = true })
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = augroup,
   pattern = "*",
