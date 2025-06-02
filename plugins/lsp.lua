@@ -41,83 +41,21 @@ return {
     })
 
     vim.diagnostic.config({
-      virtual_text = true,
+      virtual_text = {
+        format = function(diagnostic)
+          local msg = diagnostic.message:gsub("\n", " ") -- single‐line
+          local src = diagnostic.source or "unknown"
+          return string.format("%s [%s]", msg, src)
+        end,
+      },
       signs = true,
       underline = true,
       update_in_insert = false,
       severity_sort = true,
     })
 
-    -- 2️⃣ Configure lua_ls
-    local lspconfig = require('lspconfig')
-    local augroup = vim.api.nvim_create_augroup
-    local fmt_group = augroup('LspFormatting', {})
-    local capabilities = require('blink.cmp').get_lsp_capabilities()
-
-
     vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
-
-    local on_attach_common = function(client, bufnr)
-      -- only if the server supports formatting
-      if client.server_capabilities.documentFormattingProvider then
-        -- clear any existing formatting autocmds on this buffer
-        vim.api.nvim_clear_autocmds({ group = fmt_group, buffer = bufnr })
-        vim.api.nvim_create_autocmd('BufWritePre', {
-          group = fmt_group,
-          buffer = bufnr,
-          callback = function()
-            vim.lsp.buf.format({ bufnr = bufnr, async = false })
-          end,
-        })
-      end
-
-      local map = function(mode, keys, func, desc)
-        vim.keymap.set(mode, keys, func, { buffer = bufnr, noremap = true, silent = true, desc = desc })
-      end
-
-      map('n', 'gd', vim.lsp.buf.definition, 'Go to definition')
-      map('n', 'gD', vim.lsp.buf.declaration, 'Go to declaration')
-    end
-
-    lspconfig.lua_ls.setup({
-      settings = {
-        Lua = {
-          formatting = {
-            enable = true,
-          }
-        },
-      },
-      on_attach = on_attach_common,
-      capabilities = capabilities,
-    })
-
-    lspconfig.pyright.setup({
-      on_attach = on_attach_common,
-      settings = {
-        python = {
-          analysis = {
-            -- typeCheckingMode = "basic", // "off", "basic", or "strict"
-            -- useLibraryCodeForTypes = true,
-            -- autoSearchPaths = true,
-            -- diagnosticMode = "workspace", // analyze all files in workspace
-          }
-        }
-      },
-      capabilities = capabilities,
-    })
-
-    lspconfig.ruff.setup({
-      on_attach = on_attach_common,
-      init_options = {
-        settings = {
-          -- args = {}, -- You can pass command line arguments to ruff here if needed
-          -- To enable ruff as a formatter (it needs to be configured in your ruff.toml for this to be effective):
-          -- format = { args = {} } -- This signals to ruff_lsp to offer formatting
-          -- Enable linting (default)
-          lint = { args = {} },
-        }
-      },
-      capabilities = capabilities,
-    })
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
   end,
 }
