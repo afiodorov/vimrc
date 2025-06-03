@@ -2,3 +2,9 @@
 	recurse = true
 [push]
 	recurseSubmodules = on-demand
+	autoSetupRemote = true
+# Work-specific config (if ~/.gitconfig-work exists)
+[includeIf "gitdir:~/work/"]
+	path = ~/.gitconfig-work
+[includeIf "gitdir:~/code/work/"]
+	path = ~/.gitconfig-work
