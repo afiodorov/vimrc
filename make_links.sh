@@ -11,7 +11,7 @@ map_files["ftplugin"]=".config/nvim/after/ftplugin"
 map_files["lazy.lua"]=".config/nvim/lua/config/lazy.lua"
 map_files[".editorconfig"]=".config/nvim/.editorconfig"
 map_files["gitconfig"]=".gitconfig"
-declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1 [".claude"]=1)
+declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1 [".claude"]=1 ["."]=1 [".."]=1 ["~"]=1)
 
 for file in "${DIR}"/.*  "${DIR}"/*
 do
@@ -25,8 +25,16 @@ do
 
 	link="${DIR}/${filename}"
 	target="${HOME}/$linkname"
+
+	if [[ ! -e "$link" ]]; then
+		echo "Warning: Source file $link does not exist, skipping"
+		continue
+	fi
+
 	mkdir -p $(dirname "${target}")
 	rm -f "${target}"
 	echo ln -s "${link}" "${target}"
-	ln -s "${link}" "${target}"
+	if ! ln -s "${link}" "${target}"; then
+		echo "Error: Failed to create symlink $target"
+	fi
 done
