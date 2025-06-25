@@ -57,9 +57,11 @@ return {
       -- any messages from metals. There is more info in the help docs about this
       metals_config.init_options.statusBarProvider = "off"
 
-      -- Example if you are using cmp how to make sure the correct capabilities for snippets are set
-      metals_config.capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
-        .make_client_capabilities())
+      -- The following line is commented out because you switched to blink.cmp,
+      -- which doesn't use cmp_nvim_lsp. Completion capabilities should be
+      -- handled automatically by blink.cmp.
+      -- metals_config.capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol
+      --   .make_client_capabilities())
 
 
       metals_config.on_attach = function(client, bufnr)

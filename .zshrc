@@ -94,3 +94,5 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+export JAVA_HOME=/opt/homebrew/opt/openjdk
+export PATH="$JAVA_HOME/bin:$PATH"
