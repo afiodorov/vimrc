@@ -3,6 +3,10 @@
 [push]
 	recurseSubmodules = on-demand
 	autoSetupRemote = true
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true
 # Include work config if it exists
 [include]
 	path = ~/.gitconfig-work

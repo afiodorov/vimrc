@@ -3,7 +3,7 @@ export FZF_DEFAULT_COMMAND='fd'
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
-plugins=(git fzf z macos fzf-zsh-plugin fzf-tab pass)
+plugins=(git fzf z macos fzf-zsh-plugin fzf-tab pass direnv)
 
 source $ZSH/oh-my-zsh.sh
 
