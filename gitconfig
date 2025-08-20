@@ -6,7 +6,9 @@
 [commit]
 	gpgsign = true
 [tag]
-	gpgsign = true
+	gpgSign = true
 # Include work config if it exists
 [include]
 	path = ~/.gitconfig-work
+[init]
+	defaultBranch = main

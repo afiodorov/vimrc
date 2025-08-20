@@ -1,5 +1,3 @@
-local map = vim.keymap.set
-
 return {
     "scalameta/nvim-metals",
     dependencies = {
@@ -65,7 +63,11 @@ return {
 
 
       metals_config.on_attach = function(client, bufnr)
-        require("metals").setup_dap()
+        local map = vim.keymap.set
+        local dap_ok, _ = pcall(require, "dap")
+        if dap_ok then
+          require("metals").setup_dap()
+        end
         --
         -- LSP mappings
         map("n", "gD", vim.lsp.buf.definition)
