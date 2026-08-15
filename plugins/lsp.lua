@@ -57,5 +57,7 @@ return {
     vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float)
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
+    -- reverse of gd: who calls this? (gc is vim-commentary)
+    vim.keymap.set('n', 'gC', vim.lsp.buf.incoming_calls)
   end,
 }
