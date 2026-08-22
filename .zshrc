@@ -94,3 +94,8 @@ load-nvmrc() {
 
 add-zsh-hook chpwd load-nvmrc
 load-nvmrc
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+alias claude1="CLAUDE_CONFIG_DIR=~/.claude-account1 claude --allow-dangerously-skip-permissions --chrome"
+alias claude2="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+alias claude="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"

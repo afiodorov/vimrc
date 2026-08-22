@@ -1,3 +1,115 @@
+-- Compatibility shim for nvim-treesitter (master branch) on Neovim >= 0.12.
+--
+-- Neovim 0.12 removed the `all = false` option from
+-- `vim.treesitter.query.add_predicate` / `add_directive`: handlers are now
+-- always called with `match` as `table<integer, TSNode[]>` (a list of nodes per
+-- capture) instead of `table<integer, TSNode>`. nvim-treesitter's master branch
+-- still registers single-node handlers, so e.g. opening a markdown file with a
+-- fenced code block blows up in `set-lang-from-info-string!` with
+--   treesitter.lua:197: attempt to call method 'range' (a nil value)
+--
+-- Re-register the affected handlers, unwrapping the node list first.
+local function fix_query_handlers()
+  -- Load nvim-treesitter's own versions first, so ours override them.
+  pcall(require, "nvim-treesitter.query_predicates")
+
+  local query = require "vim.treesitter.query"
+  local opts = { force = true, all = true }
+
+  ---@param nodes TSNode|TSNode[]|nil
+  ---@return TSNode|nil
+  local function first(nodes)
+    if type(nodes) == "table" then
+      return nodes[1]
+    end
+    return nodes
+  end
+
+  local html_script_type_languages = {
+    ["importmap"] = "json",
+    ["module"] = "javascript",
+    ["application/ecmascript"] = "javascript",
+    ["text/ecmascript"] = "javascript",
+  }
+
+  local injection_language_aliases = {
+    ex = "elixir",
+    pl = "perl",
+    sh = "bash",
+    uxn = "uxntal",
+    ts = "typescript",
+  }
+
+  local function lang_from_markdown_info_string(alias)
+    return vim.filetype.match { filename = "a." .. alias }
+      or injection_language_aliases[alias]
+      or alias
+  end
+
+  query.add_predicate("nth?", function(match, _pattern, _bufnr, pred)
+    local node = first(match[pred[2]])
+    local n = tonumber(pred[3])
+    if node and n and node:parent() and node:parent():named_child_count() > n then
+      return node:parent():named_child(n) == node
+    end
+    return false
+  end, opts)
+
+  query.add_predicate("is?", function(match, _pattern, bufnr, pred)
+    -- Avoid circular dependencies
+    local locals = require "nvim-treesitter.locals"
+    local node = first(match[pred[2]])
+    if not node then
+      return true
+    end
+    local _, _, kind = locals.find_definition(node, bufnr)
+    return vim.tbl_contains({ unpack(pred, 3) }, kind)
+  end, opts)
+
+  query.add_predicate("kind-eq?", function(match, _pattern, _bufnr, pred)
+    local node = first(match[pred[2]])
+    if not node then
+      return true
+    end
+    return vim.tbl_contains({ unpack(pred, 3) }, node:type())
+  end, opts)
+
+  query.add_directive("set-lang-from-mimetype!", function(match, _, bufnr, pred, metadata)
+    local node = first(match[pred[2]])
+    if not node then
+      return
+    end
+    local type_attr_value = vim.treesitter.get_node_text(node, bufnr)
+    local configured = html_script_type_languages[type_attr_value]
+    if configured then
+      metadata["injection.language"] = configured
+    else
+      local parts = vim.split(type_attr_value, "/", {})
+      metadata["injection.language"] = parts[#parts]
+    end
+  end, opts)
+
+  query.add_directive("set-lang-from-info-string!", function(match, _, bufnr, pred, metadata)
+    local node = first(match[pred[2]])
+    if not node then
+      return
+    end
+    local alias = vim.treesitter.get_node_text(node, bufnr):lower()
+    metadata["injection.language"] = lang_from_markdown_info_string(alias)
+  end, opts)
+
+  query.add_directive("downcase!", function(match, _, bufnr, pred, metadata)
+    local id = pred[2]
+    local node = first(match[id])
+    if not node then
+      return
+    end
+    local text = vim.treesitter.get_node_text(node, bufnr, { metadata = metadata[id] }) or ""
+    metadata[id] = metadata[id] or {}
+    metadata[id].text = string.lower(text)
+  end, opts)
+end
+
 return {
   "nvim-treesitter/nvim-treesitter",
   dependencies = {
@@ -21,11 +133,13 @@ return {
   lazy = false,
   build = ":TSUpdate",
   config = function()
+    fix_query_handlers()
+
     require 'nvim-treesitter.configs'.setup {
       ignore_install = {},    -- list of parser names to skip, if any
       modules        = {},
       -- A list of parser names, or "all" (the listed parsers MUST always be installed)
-      ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python" },
+      ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "typescript", "tsx" },
 
       -- Install parsers synchronously (only applied to `ensure_installed`)
       sync_install = false,
