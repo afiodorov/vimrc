@@ -111,7 +111,13 @@ if [[ "$OSTYPE" == darwin* ]]; then
     # persistent session: attaches tmux `main` if it exists, else creates it
     alias dev='mosh linuxbox -- tmux new-session -A -s main'
     # mosh cannot forward ports, so tunnels are a separate connection
-    alias devports='autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+    # ControlMaster=no/ControlPath=none: keep this ssh in the FOREGROUND as autossh's
+    # child. With the mux on, ControlPersist forks ssh into the background, it
+    # exits 0 in <1s, autossh reads that as a first-run failure (30s gate) and
+    # quits -- leaving an orphaned tunnel with no supervisor. See ~/.ssh/config.
+    alias devports='autossh -M 0 -N \
+        -o ControlMaster=no -o ControlPath=none \
+        -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
         -D 1080 \
         -R 2489:localhost:2489 \
         -L 3000:localhost:3000 \
