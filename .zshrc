@@ -3,7 +3,8 @@ export FZF_DEFAULT_COMMAND='fd'
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="robbyrussell"
 
-plugins=(git fzf z macos fzf-zsh-plugin fzf-tab pass direnv)
+plugins=(git fzf z fzf-zsh-plugin fzf-tab pass direnv)
+[[ "$OSTYPE" == darwin* ]] && plugins+=(macos)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -98,4 +99,40 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 alias claude1="CLAUDE_CONFIG_DIR=~/.claude-account1 claude --allow-dangerously-skip-permissions --chrome"
 alias claude2="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
-alias claude="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+if [[ "$OSTYPE" == darwin* ]]; then
+    alias claude="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+else
+    # Linux box: Chrome runs on the VNC display :1, so point DISPLAY at it.
+    alias claude="DISPLAY=\${DISPLAY:-:1} CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+fi
+
+# --- remote dev box (Mac only; host `linuxbox` lives in ~/.ssh/config) ---
+if [[ "$OSTYPE" == darwin* ]]; then
+    # persistent session: attaches tmux `main` if it exists, else creates it
+    alias dev='mosh linuxbox -- tmux new-session -A -s main'
+    # mosh cannot forward ports, so tunnels are a separate connection
+    alias devports='autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+        -L 3000:localhost:3000 \
+        -L 16686:localhost:16686 \
+        -L 6379:localhost:6379 \
+        -L 5901:localhost:5901 linuxbox'
+fi
+
+# --- XQuartz (Mac only): put xauth on PATH and point DISPLAY at the X server ---
+if [[ "$OSTYPE" == darwin* ]] && [[ -d /opt/X11/bin ]]; then
+    path+=/opt/X11/bin
+    [[ -e /tmp/.X11-unix/X0 ]] && export DISPLAY="${DISPLAY:-:0}"
+fi
+# --- run a GUI app from the box on this Mac's screen (X11, needs XQuartz) ---
+if [[ "$OSTYPE" == darwin* ]]; then
+    rx() {
+        # usage: rx gitk --all           (runs in ~/code/vhv-demo by default)
+        #        rx -d ~/code/vimrc gitk (pick the remote directory)
+        local dir="$HOME/code/vhv-demo"
+        if [[ "$1" == "-d" ]]; then dir="$2"; shift 2; fi
+        pgrep -x Xquartz >/dev/null || { open -a XQuartz; sleep 3; }
+        [[ -e /tmp/.X11-unix/X0 ]] && export DISPLAY="${DISPLAY:-:0}"
+        ssh -X -f linuxbox-x "cd ${dir} && $*"
+    }
+    alias rgitk='rx gitk --all'
+fi
