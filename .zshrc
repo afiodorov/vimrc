@@ -191,3 +191,16 @@ fi
 if [[ "$OSTYPE" == linux* ]] && [[ -e /tmp/.X11-unix/X1 ]]; then
     export DISPLAY="${DISPLAY:-:1}"
 fi
+
+# --- VNC to the box, sharp (needs `devports` for :5901) -----------------------
+# TigerVNC.app had NSHighResolutionCapable=false, so macOS rendered it at 1x and
+# upscaled to Retina -- that was the blur. Flag flipped + app ad-hoc re-signed.
+# NoJPEG kills the lossy-compression softness on text; the link is fast enough.
+if [[ "$OSTYPE" == darwin* ]]; then
+    devvnc() {
+        nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer \
+            -NoJPEG=1 -CompressLevel=1 -RemoteResize=1 \
+            "${1:-localhost:5901}" >/dev/null 2>&1 &
+        disown 2>/dev/null
+    }
+fi
