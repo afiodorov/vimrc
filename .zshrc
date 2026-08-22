@@ -156,3 +156,28 @@ if [[ "$OSTYPE" == darwin* ]]; then
     # socks5h = resolve hostnames on the BOX, so `localhost` means the box.
     dcurl() { curl --proxy socks5h://localhost:1080 "$@"; }
 fi
+
+# --- ad-hoc port forwards, when SOCKS is not enough --------------------------
+# Uses `ssh -O forward` to add the forward to the ALREADY-RUNNING master
+# connection (ControlMaster), so there is no second ssh process and no restart
+# of `devports`. Takes effect immediately.
+#   fwd 5432 8080     -> localhost:5432 and :8080 now hit the box
+#   unfwd 5432        -> stop forwarding that one
+if [[ "$OSTYPE" == darwin* ]]; then
+    fwd() {
+        local p
+        for p in "$@"; do
+            ssh -O forward -L "${p}:localhost:${p}" linuxbox 2>/dev/null \
+                || { ssh -N -f linuxbox 2>/dev/null; ssh -O forward -L "${p}:localhost:${p}" linuxbox; } \
+                || { echo "fwd: could not forward ${p}" >&2; continue; }
+            echo "forwarding localhost:${p} -> box:${p}"
+        done
+    }
+    unfwd() {
+        local p
+        for p in "$@"; do
+            ssh -O cancel -L "${p}:localhost:${p}" linuxbox 2>/dev/null \
+                && echo "stopped localhost:${p}" || echo "unfwd: ${p} was not forwarded" >&2
+        done
+    }
+fi
