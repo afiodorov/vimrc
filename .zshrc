@@ -182,3 +182,12 @@ if [[ "$OSTYPE" == darwin* ]]; then
         done
     }
 fi
+
+# --- Linux box: point DISPLAY at the VNC desktop -----------------------------
+# Without this, DISPLAY is unset in a mosh/tmux shell and xdg-open silently
+# falls through to text browsers that are not installed -- and still exits 0,
+# so callers (Claude Code opening a link, `gh browse`, etc.) think it worked.
+# Respects an existing DISPLAY, so ssh -X sessions are unaffected.
+if [[ "$OSTYPE" == linux* ]] && [[ -e /tmp/.X11-unix/X1 ]]; then
+    export DISPLAY="${DISPLAY:-:1}"
+fi
