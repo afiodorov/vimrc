@@ -113,6 +113,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     # mosh cannot forward ports, so tunnels are a separate connection
     alias devports='autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
         -D 1080 \
+        -R 2489:localhost:2489 \
         -L 3000:localhost:3000 \
         -L 16686:localhost:16686 \
         -L 6379:localhost:6379 \
