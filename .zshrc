@@ -196,11 +196,15 @@ fi
 # TigerVNC.app had NSHighResolutionCapable=false, so macOS rendered it at 1x and
 # upscaled to Retina -- that was the blur. Flag flipped + app ad-hoc re-signed.
 # NoJPEG kills the lossy-compression softness on text; the link is fast enough.
+# Settings live in ~/.vnc/dev.tigervnc; the password is ~/.vnc/passwd (vncpasswd
+# format -- it cannot go in the .tigervnc file, TigerVNC only takes it as -passwd).
+# Pass a host as $1 to connect somewhere else instead of loading the config.
 if [[ "$OSTYPE" == darwin* ]]; then
     devvnc() {
         nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer \
             -NoJPEG=1 -CompressLevel=1 -RemoteResize=0 \
-            "${1:-localhost:5901}" >/dev/null 2>&1 &
+            -passwd "$HOME/.vnc/passwd" \
+            "${1:-$HOME/.vnc/dev.tigervnc}" >/dev/null 2>&1 &
         disown 2>/dev/null
     }
 fi
