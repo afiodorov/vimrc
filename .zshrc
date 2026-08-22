@@ -199,7 +199,7 @@ fi
 if [[ "$OSTYPE" == darwin* ]]; then
     devvnc() {
         nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer \
-            -NoJPEG=1 -CompressLevel=1 -RemoteResize=0 -FullScreen=1 \
+            -NoJPEG=1 -CompressLevel=1 -RemoteResize=1 \
             "${1:-localhost:5901}" >/dev/null 2>&1 &
         disown 2>/dev/null
     }
