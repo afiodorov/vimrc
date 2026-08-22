@@ -112,6 +112,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     alias dev='mosh linuxbox -- tmux new-session -A -s main'
     # mosh cannot forward ports, so tunnels are a separate connection
     alias devports='autossh -M 0 -N -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+        -D 1080 \
         -L 3000:localhost:3000 \
         -L 16686:localhost:16686 \
         -L 6379:localhost:6379 \
@@ -135,4 +136,23 @@ if [[ "$OSTYPE" == darwin* ]]; then
         ssh -X -f linuxbox-x "cd ${dir} && $*"
     }
     alias rgitk='rx gitk --all'
+fi
+
+# --- browse the box's ports with no per-port forwarding (needs `devports`) ---
+if [[ "$OSTYPE" == darwin* ]]; then
+    # Chrome in its own profile, routed through the SOCKS tunnel. In THIS window
+    # `localhost` means the BOX, so http://localhost:<anyport> just works.
+    # Normal Chrome is untouched.
+    devchrome() {
+        # <-loopback> removes Chrome's built-in "never proxy localhost" rule,
+        # which would otherwise send localhost to THIS Mac instead of the box.
+        open -na "Google Chrome" --args \
+            --proxy-server="socks5://localhost:1080" \
+            --proxy-bypass-list="<-loopback>" \
+            --user-data-dir="$HOME/.chrome-devbox" \
+            "${@:-http://localhost:3000}"
+    }
+    # curl anything on the box: dcurl http://localhost:8899/ [curl args...]
+    # socks5h = resolve hostnames on the BOX, so `localhost` means the box.
+    dcurl() { curl --proxy socks5h://localhost:1080 "$@"; }
 fi
