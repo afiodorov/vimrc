@@ -115,15 +115,77 @@ if [[ "$OSTYPE" == darwin* ]]; then
     # child. With the mux on, ControlPersist forks ssh into the background, it
     # exits 0 in <1s, autossh reads that as a first-run failure (30s gate) and
     # quits -- leaving an orphaned tunnel with no supervisor. See ~/.ssh/config.
-    alias devports='autossh -M 0 -N \
-        -o ControlMaster=no -o ControlPath=none \
-        -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
-        -D 1080 \
-        -R 2489:localhost:2489 \
-        -L 3000:localhost:3000 \
-        -L 16686:localhost:16686 \
-        -L 6379:localhost:6379 \
-        -L 5901:localhost:5901 linuxbox'
+    # -R 2490 is the return path: `grab` on the box pushes files back into this
+    # Mac's ~/Downloads. `grabd` listens on 127.0.0.1 only, so the tunnel is the
+    # only way in; it is started here so the two always come up together.
+    devports() {
+        if ! nc -z 127.0.0.1 2490 2>/dev/null; then
+            mkdir -p "$HOME/.cache"
+            nohup "$HOME/.local/bin/grabd" >>"$HOME/.cache/grabd.log" 2>&1 &
+            disown 2>/dev/null
+        fi
+        autossh -M 0 -N \
+            -o ControlMaster=no -o ControlPath=none \
+            -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+            -D 1080 \
+            -R 2489:localhost:2489 \
+            -R 2490:localhost:2490 \
+            -L 3000:localhost:3000 \
+            -L 16686:localhost:16686 \
+            -L 6379:localhost:6379 \
+            -L 5901:localhost:5901 linuxbox
+    }
+fi
+
+# --- pull files off the box onto this Mac (box side; needs `devports`) -------
+# On the BOX:
+#   grab report.pdf          -> ~/Downloads/report.pdf on the Mac
+#   grab -o report.pdf       -> ... and open it there
+#   grab build/              -> ~/Downloads/build.tar.gz (directories are tarred)
+#   somecmd | grab -n out.csv
+# curl talks to 127.0.0.1:2490 on the box; ssh forwards that to `grabd` on the
+# Mac (see the devports function above). Nothing listens on a public interface.
+if [[ "$OSTYPE" == linux* ]]; then
+    grab() {
+        local url="http://127.0.0.1:2490/upload" open=0 name="" rc=0 p base
+        while [[ "$1" == -* ]]; do
+            case "$1" in
+                -o|--open) open=1; shift ;;
+                -n|--name) name="$2"; shift 2 ;;
+                -h|--help) echo "usage: grab [-o] [-n NAME] PATH...   |   CMD | grab [-o] -n NAME"; return 0 ;;
+                --) shift; break ;;
+                *) echo "grab: unknown option $1" >&2; return 2 ;;
+            esac
+        done
+
+        # _grab_put <name> [file]   -- no file means "read stdin" (curl -T -)
+        _grab_put() {
+            local hdrs=(-H "X-Grab-Name: $1")
+            (( open )) && hdrs+=(-H "X-Grab-Open: 1")
+            curl -sS --fail -T "${2:--}" "${hdrs[@]}" "$url" \
+                || { echo "grab: no receiver on :2490 -- is devports running on the Mac?" >&2; return 1; }
+        }
+
+        if (( $# == 0 )); then
+            [[ -t 0 ]] && { echo "grab: nothing to send" >&2; return 2; }
+            _grab_put "${name:-grab-$(date +%Y%m%d-%H%M%S).txt}"
+            return
+        fi
+
+        for p in "$@"; do
+            if [[ -d "$p" ]]; then
+                base=${${p%/}:t}
+                # -C the parent so the archive holds `base/...`, not the full path
+                tar czf - -C "${${p%/}:h}" "$base" | _grab_put "${name:-$base.tar.gz}" || rc=1
+            elif [[ -r "$p" ]]; then
+                _grab_put "${name:-${p:t}}" "$p" || rc=1
+            else
+                echo "grab: cannot read $p" >&2
+                rc=1
+            fi
+        done
+        return $rc
+    }
 fi
 
 # --- XQuartz (Mac only): put xauth on PATH and point DISPLAY at the X server ---

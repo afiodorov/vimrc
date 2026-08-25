@@ -11,6 +11,7 @@ map_files["ftplugin"]=".config/nvim/after/ftplugin"
 map_files["lazy.lua"]=".config/nvim/lua/config/lazy.lua"
 map_files[".editorconfig"]=".config/nvim/.editorconfig"
 map_files["gitconfig"]=".gitconfig"
+map_files["grabd"]=".local/bin/grabd"
 declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1 [".claude"]=1 ["."]=1 [".."]=1 ["~"]=1)
 
 for file in "${DIR}"/.*  "${DIR}"/*

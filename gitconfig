@@ -12,3 +12,7 @@
 	path = ~/.gitconfig-work
 [init]
 	defaultBranch = main
+[user]
+	name = Tom Artiom Fiodorov
+	email = artiom@fiodorov.es
+	signingkey = D768806B7C1ED48F00C6770440B980135B8B0F81

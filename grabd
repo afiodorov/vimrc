@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""grabd -- receive files pushed from the dev box, save them to ~/Downloads.
+
+Runs on the MAC. Listens on 127.0.0.1:2490 only; the box reaches it through the
+reverse tunnel that `devports` sets up (-R 2490:localhost:2490), so nothing is
+exposed on any network interface on either side. Started automatically by
+`devports`; see the `grab` function in .zshrc for the box side.
+
+Protocol is deliberately dumb so the client is one curl call:
+    PUT /upload  body = file bytes
+    X-Grab-Name: <filename>   (raw UTF-8 bytes, header is read back as latin-1)
+    X-Grab-Open: 1            (optional: `open` the file after saving)
+Replies with the saved path in plain text.
+
+Anyone with a shell on the box can write into ~/Downloads while the tunnel is
+up -- same trust level as the box itself.
+"""
+
+import argparse
+import os
+import subprocess
+import sys
+import tempfile
+import time
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+CHUNK = 1 << 16
+DEST = os.path.expanduser("~/Downloads")
+
+
+def log(msg):
+    print(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {msg}", flush=True)
+
+
+def safe_name(raw):
+    """Header bytes -> a plain filename that cannot escape the destination."""
+    if raw:
+        # http.client decodes headers as latin-1; undo that to get the UTF-8 back.
+        name = raw.encode("latin-1", "replace").decode("utf-8", "replace")
+    else:
+        name = ""
+    name = os.path.basename(name.replace("\\", "/")).strip()
+    if name in ("", ".", ".."):
+        name = time.strftime("grab-%Y%m%d-%H%M%S")
+    return name
+
+
+def unique_path(directory, name):
+    """~/Downloads/foo.tar.gz -> foo-1.tar.gz -> foo-2.tar.gz ... never clobber."""
+    stem, ext = os.path.splitext(name)
+    if stem.endswith(".tar"):  # keep .tar.gz together
+        stem, ext = stem[:-4], ".tar" + ext
+    candidate = os.path.join(directory, name)
+    n = 0
+    while os.path.exists(candidate):
+        n += 1
+        candidate = os.path.join(directory, f"{stem}-{n}{ext}")
+    return candidate
+
+
+def notify(title, text):
+    """Best effort -- osascript may be denied notification permission."""
+    try:
+        subprocess.run(
+            ["osascript", "-e",
+             f'display notification {text!r} with title {title!r}'],
+            check=False, capture_output=True, timeout=5,
+        )
+    except Exception:
+        pass
+
+
+class Handler(BaseHTTPRequestHandler):
+    server_version = "grabd/1.0"
+    protocol_version = "HTTP/1.1"
+
+    def log_message(self, fmt, *args):  # quieter than the default access log
+        pass
+
+    def _body(self):
+        """Yield the request body. curl uses chunked when the size is unknown
+        (`tar ... | curl -T -`), which BaseHTTPRequestHandler will not decode."""
+        if "chunked" in self.headers.get("Transfer-Encoding", "").lower():
+            while True:
+                line = self.rfile.readline(CHUNK).split(b";")[0].strip()
+                size = int(line, 16)
+                if size == 0:
+                    while self.rfile.readline(CHUNK) not in (b"\r\n", b"\n", b""):
+                        pass  # trailers
+                    return
+                while size:
+                    buf = self.rfile.read(min(CHUNK, size))
+                    if not buf:
+                        raise EOFError("truncated chunk")
+                    yield buf
+                    size -= len(buf)
+                self.rfile.read(2)  # CRLF after the chunk
+        else:
+            left = int(self.headers.get("Content-Length") or 0)
+            while left > 0:
+                buf = self.rfile.read(min(CHUNK, left))
+                if not buf:
+                    raise EOFError("truncated body")
+                yield buf
+                left -= len(buf)
+
+    def _reply(self, code, text):
+        payload = text.encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "text/plain; charset=utf-8")
+        self.send_header("Content-Length", str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
+    def do_PUT(self):
+        name = safe_name(self.headers.get("X-Grab-Name"))
+        os.makedirs(self.server.dest, exist_ok=True)
+        fd, tmp = tempfile.mkstemp(dir=self.server.dest, prefix=".grab-")
+        total = 0
+        try:
+            with os.fdopen(fd, "wb") as out:
+                for buf in self._body():
+                    out.write(buf)
+                    total += len(buf)
+            path = unique_path(self.server.dest, name)
+            os.replace(tmp, path)
+            os.chmod(path, 0o644)
+        except Exception as exc:
+            os.unlink(tmp)
+            log(f"FAILED {name}: {exc}")
+            self._reply(500, f"grabd: {exc}\n")
+            return
+
+        log(f"{path} ({total} bytes)")
+        notify("grab", f"{os.path.basename(path)} ({total // 1024 or 1} KB)")
+        if self.headers.get("X-Grab-Open") == "1":
+            subprocess.run(["open", path], check=False)
+        self._reply(200, path + "\n")
+
+    do_POST = do_PUT
+
+
+def main():
+    ap = argparse.ArgumentParser(description="receive files pushed from the dev box")
+    ap.add_argument("-p", "--port", type=int, default=2490)
+    ap.add_argument("-d", "--dir", default=DEST, help="where to save (default ~/Downloads)")
+    args = ap.parse_args()
+
+    try:
+        srv = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    except OSError as exc:
+        log(f"not starting: port {args.port} is busy ({exc})")
+        return 0 if exc.errno in (48, 98) else 1  # already running is fine
+    srv.dest = os.path.expanduser(args.dir)
+    log(f"listening on 127.0.0.1:{args.port}, saving to {srv.dest}")
+    try:
+        srv.serve_forever()
+    except KeyboardInterrupt:
+        pass
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
