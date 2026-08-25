@@ -276,3 +276,5 @@ if [[ "$OSTYPE" == darwin* ]]; then
         disown 2>/dev/null
     }
 fi
+
+source "$HOME/.railway/env"
