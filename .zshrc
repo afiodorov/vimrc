@@ -277,4 +277,4 @@ if [[ "$OSTYPE" == darwin* ]]; then
     }
 fi
 
-source "$HOME/.railway/env"
+[ -f "$HOME/.railway/env" ] && source "$HOME/.railway/env"
