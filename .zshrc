@@ -278,3 +278,39 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 [ -f "$HOME/.railway/env" ] && source "$HOME/.railway/env"
+
+# --- "reboot needed" nag (Debian boxes only) ----------------------------------
+# unattended-upgrades applies security fixes nightly but is configured never to
+# reboot on its own, so a fresh kernel just sits staged in GRUB until I do it by
+# hand. needrestart drops /var/run/reboot-required as the flag and lists what is
+# waiting in the .pkgs file beside it. Surface that here rather than relying on
+# me to remember to cat it. Neither file exists on macOS, so this is a no-op.
+#
+# Rate-limited to once every 6h via a stamp file -- without that, every new tmux
+# pane and every mosh reconnect would repeat the same line all day and I would
+# start ignoring it. (Nmh+6) is a zsh glob qualifier meaning "exists and mtime
+# is older than 6 hours", which keeps the common case fork-free.
+if [[ -e /var/run/reboot-required ]]; then
+    () {
+        local stamp=${XDG_CACHE_HOME:-$HOME/.cache}/reboot-nag
+        local -a due=( ${stamp}(Nmh+6) )
+        [[ -e $stamp && $#due -eq 0 ]] && return
+        mkdir -p ${stamp:h} 2>/dev/null && : >| $stamp
+
+        # The flag file itself is empty; the package names are next door.
+        local -a pkgs=( ${(f)"$(</var/run/reboot-required.pkgs)"} )
+
+        # How long it has been owed -- "2d" vs "17d" is the difference between a
+        # shrug and actually rebooting.
+        local age
+        zmodload -F zsh/stat b:zstat 2>/dev/null
+        zmodload zsh/datetime 2>/dev/null
+        local -a st
+        if zstat -A st +mtime /var/run/reboot-required 2>/dev/null; then
+            local -i d=$(( (EPOCHSECONDS - st[1]) / 86400 ))
+            (( d > 0 )) && age=", pending ${d}d"
+        fi
+
+        print -P "%F{yellow}⟳ reboot needed%f: ${(j:, :)pkgs:-staged updates}${age}"
+    }
+fi
