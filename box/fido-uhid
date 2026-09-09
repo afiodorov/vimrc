@@ -29,6 +29,7 @@ import grp
 import logging
 import os
 import pwd
+import select
 import socket
 import struct
 import sys
@@ -117,7 +118,17 @@ class Uhid:
         """Deliver a 64-byte input report -- i.e. the key answering Chrome."""
         os.write(self.fd, struct.pack("<IH", UHID_INPUT2, len(data)) + data)
 
-    def read_event(self):
+    def read_event(self, timeout=0.5):
+        """Wait for one uhid event, giving up after `timeout` seconds.
+
+        The timeout is the whole point: a blocking os.read() here parks forever
+        when Chrome is idle, so nothing would notice that the Mac had gone away
+        and the virtual key would outlive the connection feeding it. Returns
+        (None, None) on timeout so the caller can re-check whether to stop.
+        """
+        ready, _, _ = select.select([self.fd], [], [], timeout)
+        if not ready:
+            return None, None
         buf = os.read(self.fd, EVENT_SIZE)
         if len(buf) < 4:
             return None, b""
@@ -237,6 +248,8 @@ def serve_once(args):
     try:
         while not stop.is_set():
             etype, buf = dev.read_event()
+            if buf is None:
+                continue  # nothing happened; loop round and re-check `stop`
             if etype is None:
                 break
             if etype == UHID_START:

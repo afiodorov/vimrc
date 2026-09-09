@@ -48,6 +48,9 @@ log = logging.getLogger("fidod")
 # would interleave CTAPHID transactions and corrupt both.
 _lock = threading.Lock()
 
+# Why we last turned the box away, so the retry loop does not spam the log.
+_last_refusal = None
+
 
 def find_key():
     """Return the descriptor of the FIDO key to lend, or None if none is plugged in."""
@@ -92,26 +95,37 @@ def pump_key_to_socket(conn, descriptor, sock, stop):
     nothing to report, which is the normal idle case -- not an error.
     """
     idle = 0
-    while not stop.is_set():
-        try:
-            packet = conn.read_packet()
-            idle = 0
-        except OSError:
-            idle += 1
-            if idle >= IDLE_READS_BEFORE_PRESENCE_CHECK:
+    try:
+        while not stop.is_set():
+            try:
+                packet = conn.read_packet()
                 idle = 0
-                if not still_present(descriptor):
-                    log.info("key was unplugged -- taking it back from the box")
-                    break
-            continue
-        except Exception:
-            log.exception("key read failed")
-            break
+            except OSError:
+                idle += 1
+                if idle >= IDLE_READS_BEFORE_PRESENCE_CHECK:
+                    idle = 0
+                    if not still_present(descriptor):
+                        log.info("key was unplugged -- taking it back from the box")
+                        break
+                continue
+            except Exception:
+                log.exception("key read failed")
+                break
+            try:
+                sock.sendall(packet)
+            except OSError:
+                break
+    finally:
+        stop.set()
+        # Setting `stop` is not enough: the main thread is parked in a blocking
+        # recv() that will never look at it. Shutting the socket down is what
+        # wakes it, and only that closes the connection the box is watching --
+        # without it an unplugged key leaves a virtual one live on the box that
+        # Chrome can see but that never answers.
         try:
-            sock.sendall(packet)
+            sock.shutdown(socket.SHUT_RDWR)
         except OSError:
-            break
-    stop.set()
+            pass
 
 
 class Handler(socketserver.BaseRequestHandler):
@@ -129,11 +143,17 @@ class Handler(socketserver.BaseRequestHandler):
             _lock.release()
 
     def serve(self, sock):
+        global _last_refusal
         descriptor = find_key()
         if descriptor is None:
-            log.warning("box connected but no FIDO key is plugged into this Mac")
+            # The box retries every few seconds, so say this once rather than
+            # writing the same line to the log all day.
+            if _last_refusal != "no key":
+                log.warning("box connected but no FIDO key is plugged into this Mac")
+                _last_refusal = "no key"
             sock.sendall(STATUS_NO_KEY)
             return
+        _last_refusal = None
 
         try:
             conn = open_connection(descriptor)
