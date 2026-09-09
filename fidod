@@ -1,0 +1,206 @@
+#!/Users/artiomfiodorov/.local/share/fidod-venv/bin/python3
+"""fidod -- lend this Mac's YubiKey to the dev box, so Chrome in VNC can use it.
+
+Runs on the MAC. Listens on 127.0.0.1:2491 only; the box reaches it through the
+reverse tunnel that `devports` sets up (-R 2491:localhost:2491), so nothing is
+exposed on any network interface on either side. The box side is `fido-uhid`,
+which turns these frames back into a virtual USB HID device that Chrome sees.
+
+What actually goes over the wire is CTAPHID -- the protocol Chrome speaks to a
+security key -- which is nothing but fixed 64-byte HID reports in each
+direction. So the framing is dumb on purpose:
+
+    Mac -> box, once, on connect:  1 status byte  (0x00 = key ready, 0x01 = no key)
+    then, both directions:         raw 64-byte frames, forever
+
+One connection at a time. The key is opened when the box connects and released
+when it disconnects, so you can unplug and replug it between sessions without
+restarting anything.
+
+Needs the `fido2` package, which is why the shebang points at a private venv
+rather than /usr/bin/env python3:
+
+    python3 -m venv ~/.local/share/fidod-venv
+    ~/.local/share/fidod-venv/bin/pip install fido2
+
+Every operation still requires a physical touch on the key, so nothing happens
+silently -- but while the tunnel is up, root on the box can ask this Mac's key
+for signatures, and it controls which origin your touch signs for. Same trust
+level as the box itself.
+"""
+
+import argparse
+import logging
+import socket
+import socketserver
+import sys
+import threading
+
+from fido2.hid import list_descriptors, open_connection
+
+PACKET_SIZE = 64
+STATUS_OK = b"\x00"
+STATUS_NO_KEY = b"\x01"
+
+log = logging.getLogger("fidod")
+
+# One key, one borrower. Two boxes pumping frames into the same authenticator
+# would interleave CTAPHID transactions and corrupt both.
+_lock = threading.Lock()
+
+
+def find_key():
+    """Return the descriptor of the FIDO key to lend, or None if none is plugged in."""
+    descriptors = list_descriptors()
+    if not descriptors:
+        return None
+    if len(descriptors) > 1:
+        names = ", ".join(d.product_name or "?" for d in descriptors)
+        log.warning("%d FIDO devices present (%s) -- using the first", len(descriptors), names)
+    return descriptors[0]
+
+
+def recv_exactly(sock, n):
+    """Read exactly n bytes, or return None if the peer hung up first."""
+    buf = bytearray()
+    while len(buf) < n:
+        chunk = sock.recv(n - len(buf))
+        if not chunk:
+            return None
+        buf += chunk
+    return bytes(buf)
+
+
+# How many consecutive idle reads to tolerate before checking the key is still
+# physically there. read_packet() cannot tell "nothing to say" from "device is
+# gone", so without this a key pulled out of the Mac would leave a virtual one
+# on the box that Chrome can see but that never answers.
+IDLE_READS_BEFORE_PRESENCE_CHECK = 5
+
+
+def still_present(descriptor):
+    try:
+        return any(d.path == descriptor.path for d in list_descriptors())
+    except Exception:
+        return False
+
+
+def pump_key_to_socket(conn, descriptor, sock, stop):
+    """Forward everything the key says back to the box.
+
+    read_packet() raises OSError when its internal run loop times out with
+    nothing to report, which is the normal idle case -- not an error.
+    """
+    idle = 0
+    while not stop.is_set():
+        try:
+            packet = conn.read_packet()
+            idle = 0
+        except OSError:
+            idle += 1
+            if idle >= IDLE_READS_BEFORE_PRESENCE_CHECK:
+                idle = 0
+                if not still_present(descriptor):
+                    log.info("key was unplugged -- taking it back from the box")
+                    break
+            continue
+        except Exception:
+            log.exception("key read failed")
+            break
+        try:
+            sock.sendall(packet)
+        except OSError:
+            break
+    stop.set()
+
+
+class Handler(socketserver.BaseRequestHandler):
+    def handle(self):
+        sock = self.request
+        sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+        if not _lock.acquire(blocking=False):
+            log.warning("refusing connection: the key is already lent out")
+            sock.sendall(STATUS_NO_KEY)
+            return
+        try:
+            self.serve(sock)
+        finally:
+            _lock.release()
+
+    def serve(self, sock):
+        descriptor = find_key()
+        if descriptor is None:
+            log.warning("box connected but no FIDO key is plugged into this Mac")
+            sock.sendall(STATUS_NO_KEY)
+            return
+
+        try:
+            conn = open_connection(descriptor)
+        except Exception:
+            log.exception("could not open %s", descriptor.product_name)
+            sock.sendall(STATUS_NO_KEY)
+            return
+
+        log.info("lending %s (serial %s)", descriptor.product_name, descriptor.serial_number)
+        sock.sendall(STATUS_OK)
+
+        stop = threading.Event()
+        reader = threading.Thread(
+            target=pump_key_to_socket, args=(conn, descriptor, sock, stop), daemon=True
+        )
+        reader.start()
+        try:
+            while not stop.is_set():
+                packet = recv_exactly(sock, PACKET_SIZE)
+                if packet is None:
+                    break
+                conn.write_packet(packet)
+        except OSError:
+            log.exception("key write failed")
+        finally:
+            stop.set()
+            try:
+                conn.close()
+            except Exception:
+                pass
+            log.info("returned %s", descriptor.product_name)
+
+
+class Server(socketserver.ThreadingTCPServer):
+    allow_reuse_address = True
+    daemon_threads = True
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--port", type=int, default=2491)
+    ap.add_argument("--host", default="127.0.0.1", help="do not change without good reason")
+    ap.add_argument("--list", action="store_true", help="list FIDO keys on this Mac and exit")
+    args = ap.parse_args()
+
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s fidod: %(message)s", datefmt="%H:%M:%S"
+    )
+
+    if args.list:
+        descriptors = list_descriptors()
+        if not descriptors:
+            print("no FIDO keys found -- is the YubiKey plugged in?")
+            return 1
+        for d in descriptors:
+            print(f"{d.product_name}  vid={d.vid:04x} pid={d.pid:04x} "
+                  f"serial={d.serial_number} reports={d.report_size_in}/{d.report_size_out}")
+        return 0
+
+    with Server((args.host, args.port), Handler) as server:
+        log.info("listening on %s:%d", args.host, args.port)
+        try:
+            server.serve_forever()
+        except KeyboardInterrupt:
+            log.info("bye")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
