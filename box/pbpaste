@@ -1,0 +1,12 @@
+#!/bin/bash
+# the Mac's clipboard -> stdout, via the reverse SSH tunnel; X clipboard as fallback.
+if { exec 3<>/dev/tcp/127.0.0.1/2489; } 2>/dev/null; then
+    printf 'PASTE\n' >&3
+    cat <&3
+    exec 3<&-
+    exit 0
+fi
+export DISPLAY="${DISPLAY:-:1}"
+if xset q >/dev/null 2>&1; then exec xclip -selection clipboard -o; fi
+echo "pbpaste: Mac bridge unreachable and no X display" >&2
+exit 1

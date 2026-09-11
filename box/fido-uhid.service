@@ -1,0 +1,21 @@
+[Unit]
+Description=Lend the Mac YubiKey to Chrome on this box (CTAPHID over the devports tunnel)
+Documentation=file:/home/artiom/bin/fido-uhid
+After=network.target
+
+[Service]
+Type=simple
+# --retry means this process rides out tunnel blips, a closed laptop lid and an
+# unplugged key on its own, so systemd is not restarting it every five seconds.
+ExecStart=/usr/local/bin/fido-uhid --retry --user artiom
+Restart=always
+RestartSec=5
+# It needs /dev/uhid and chown on the new hidraw node, so it runs as root, but
+# it has no business anywhere else on the filesystem.
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target

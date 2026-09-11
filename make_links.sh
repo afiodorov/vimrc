@@ -12,7 +12,8 @@ map_files["lazy.lua"]=".config/nvim/lua/config/lazy.lua"
 map_files[".editorconfig"]=".config/nvim/.editorconfig"
 map_files["gitconfig"]=".gitconfig"
 map_files["grabd"]=".local/bin/grabd"
-declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["make_links.sh"]=1 ["tags"]=1 [".git"]=1 [".claude"]=1 ["."]=1 [".."]=1 ["~"]=1)
+map_files["fidod"]=".local/bin/fidod"
+declare -A ignore_files=([".viminfo"]=1 [".vrapperrc"]=1 ["README.md"]=1 ["CLAUDE.md"]=1 ["make_links.sh"]=1 ["tags"]=1 ["box"]=1 ["win"]=1 [".gitignore"]=1 [".git"]=1 [".claude"]=1 ["."]=1 [".."]=1 ["~"]=1)
 
 for file in "${DIR}"/.*  "${DIR}"/*
 do

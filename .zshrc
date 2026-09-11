@@ -118,10 +118,18 @@ if [[ "$OSTYPE" == darwin* ]]; then
     # -R 2490 is the return path: `grab` on the box pushes files back into this
     # Mac's ~/Downloads. `grabd` listens on 127.0.0.1 only, so the tunnel is the
     # only way in; it is started here so the two always come up together.
+    # -R 2491 is the same trick for the YubiKey: `fidod` here lends this Mac's
+    # key to `sudo fido-uhid` on the box, which fakes a USB security key for
+    # Chrome in VNC. Nothing is lent unless fido-uhid is actually running.
     devports() {
         if ! nc -z 127.0.0.1 2490 2>/dev/null; then
             mkdir -p "$HOME/.cache"
             nohup "$HOME/.local/bin/grabd" >>"$HOME/.cache/grabd.log" 2>&1 &
+            disown 2>/dev/null
+        fi
+        if ! nc -z 127.0.0.1 2491 2>/dev/null; then
+            mkdir -p "$HOME/.cache"
+            nohup "$HOME/.local/bin/fidod" >>"$HOME/.cache/fidod.log" 2>&1 &
             disown 2>/dev/null
         fi
         autossh -M 0 -N \
@@ -130,6 +138,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
             -D 1080 \
             -R 2489:localhost:2489 \
             -R 2490:localhost:2490 \
+            -R 2491:localhost:2491 \
             -L 3000:localhost:3000 \
             -L 16686:localhost:16686 \
             -L 6379:localhost:6379 \
@@ -185,6 +194,27 @@ if [[ "$OSTYPE" == linux* ]]; then
             fi
         done
         return $rc
+    }
+fi
+
+# --- push files from this Mac onto the box (Mac only) -----------------------
+# On the MAC:
+#   dl notes.pdf src/   -> linuxbox:~/Downloads/  (directories go recursively)
+#   dl -g report.csv    <- linuxbox:~/Downloads/report.csv into $PWD
+# `grab` above is the same trip in reverse, run from the box. ~/d on the box is
+# a symlink to Downloads, for when you want to type the path by hand.
+if [[ "$OSTYPE" == darwin* ]]; then
+    dl() {
+        local f srcs=()
+        if [[ "$1" == -g ]]; then
+            shift
+            (( $# )) || { echo "usage: dl -g NAME..." >&2; return 2; }
+            for f in "$@"; do srcs+=("linuxbox:Downloads/$f"); done
+            scp -r "${srcs[@]}" .
+        else
+            (( $# )) || { echo "usage: dl PATH...   |   dl -g NAME..." >&2; return 2; }
+            scp -r "$@" linuxbox:Downloads/
+        fi
     }
 fi
 
@@ -266,11 +296,13 @@ fi
 # NoJPEG kills the lossy-compression softness on text; the link is fast enough.
 # Settings live in ~/.vnc/dev.tigervnc; the password is ~/.vnc/passwd (vncpasswd
 # format -- it cannot go in the .tigervnc file, TigerVNC only takes it as -passwd).
+# RemoteResize=1 makes the box's X desktop follow the viewer window size (the
+# server is Xtigervnc :1, so it has RandR and can actually do it).
 # Pass a host as $1 to connect somewhere else instead of loading the config.
 if [[ "$OSTYPE" == darwin* ]]; then
     devvnc() {
         nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer \
-            -NoJPEG=1 -CompressLevel=1 -RemoteResize=0 \
+            -NoJPEG=1 -CompressLevel=1 -RemoteResize=1 \
             -passwd "$HOME/.vnc/passwd" \
             "${1:-$HOME/.vnc/dev.tigervnc}" >/dev/null 2>&1 &
         disown 2>/dev/null

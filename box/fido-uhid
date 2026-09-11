@@ -1,0 +1,322 @@
+#!/usr/bin/env python3
+"""fido-uhid -- make the Mac's YubiKey appear as a real USB security key on this box.
+
+Runs on the BOX, as root (it needs /dev/uhid). Talks to `fidod` on the Mac at
+127.0.0.1:2491 through the reverse tunnel `devports` sets up, and uses the
+kernel's uhid facility to spin up a virtual HID device carrying the standard
+FIDO CTAPHID report descriptor. Chrome finds that device the same way it would
+find a key you plugged into this machine -- via udev, so it works even if
+Chrome is already running -- and every frame it writes is relayed to the real
+key sitting in the Mac's USB port. You tap the key on the Mac; the touch lands
+in the browser here.
+
+    Chrome -> /dev/hidrawN -> uhid -> this script -> :2491 -> tunnel -> fidod -> YubiKey
+
+Usage, with `devports` already running on the Mac:
+
+    sudo fido-uhid                 # hold the key here until ^C
+    sudo fido-uhid --user artiom   # whoever runs Chrome (default: $SUDO_USER)
+
+The virtual device lives exactly as long as this process; kill it and the key
+vanishes from Chrome, which is the point -- nothing is lent out when you are
+not asking for it.
+"""
+
+import argparse
+import errno
+import fcntl
+import grp
+import logging
+import os
+import pwd
+import select
+import socket
+import struct
+import sys
+import threading
+import time
+
+# linux/uhid.h -- event types we care about.
+UHID_DESTROY = 1
+UHID_START = 2
+UHID_STOP = 3
+UHID_OPEN = 4
+UHID_CLOSE = 5
+UHID_OUTPUT = 6
+UHID_GET_REPORT = 9
+UHID_GET_REPORT_REPLY = 10
+UHID_CREATE2 = 11
+UHID_INPUT2 = 12
+UHID_SET_REPORT = 13
+UHID_SET_REPORT_REPLY = 14
+
+# struct uhid_event is packed: __u32 type, then the union. The largest member is
+# uhid_create2_req at 4372 bytes, so a whole event is 4376.
+EVENT_SIZE = 4376
+BUS_USB = 0x03
+PACKET_SIZE = 64
+
+# The report descriptor every USB security key carries: usage page 0xF1D0
+# (FIDO Alliance), one 64-byte input report and one 64-byte output report, no
+# report IDs. This is what Chrome scans hidraw devices for.
+REPORT_DESCRIPTOR = bytes([
+    0x06, 0xD0, 0xF1,        # Usage Page (FIDO Alliance)
+    0x09, 0x01,              # Usage (CTAPHID Authenticator Device)
+    0xA1, 0x01,              # Collection (Application)
+    0x09, 0x20,              #   Usage (Input Report Data)
+    0x15, 0x00,              #   Logical Minimum (0)
+    0x26, 0xFF, 0x00,        #   Logical Maximum (255)
+    0x75, 0x08,              #   Report Size (8)
+    0x95, 0x40,              #   Report Count (64)
+    0x81, 0x02,              #   Input (Data, Var, Abs)
+    0x09, 0x21,              #   Usage (Output Report Data)
+    0x15, 0x00,              #   Logical Minimum (0)
+    0x26, 0xFF, 0x00,        #   Logical Maximum (255)
+    0x75, 0x08,              #   Report Size (8)
+    0x95, 0x40,              #   Report Count (64)
+    0x91, 0x02,              #   Output (Data, Var, Abs)
+    0xC0,                    # End Collection
+])
+
+log = logging.getLogger("fido-uhid")
+
+
+class Uhid:
+    """The virtual HID device, driven by writing structs to /dev/uhid."""
+
+    def __init__(self, name="Forwarded FIDO Key", vendor=0x1050, product=0x0407):
+        self.fd = os.open("/dev/uhid", os.O_RDWR)
+        self.name = name
+        self.vendor = vendor
+        self.product = product
+        self._warned_output_size = False
+
+    def create(self):
+        payload = struct.pack(
+            "<128s64s64sHHIIII4096s",
+            self.name.encode()[:127],
+            b"fidod",                       # phys
+            b"mac-usb-bridge",              # uniq
+            len(REPORT_DESCRIPTOR),
+            BUS_USB,
+            self.vendor,
+            self.product,
+            0,                              # version
+            0,                              # country
+            REPORT_DESCRIPTOR,
+        )
+        os.write(self.fd, struct.pack("<I", UHID_CREATE2) + payload)
+
+    def destroy(self):
+        try:
+            os.write(self.fd, struct.pack("<I", UHID_DESTROY))
+        except OSError:
+            pass
+        os.close(self.fd)
+
+    def send_input(self, data):
+        """Deliver a 64-byte input report -- i.e. the key answering Chrome."""
+        os.write(self.fd, struct.pack("<IH", UHID_INPUT2, len(data)) + data)
+
+    def read_event(self, timeout=0.5):
+        """Wait for one uhid event, giving up after `timeout` seconds.
+
+        The timeout is the whole point: a blocking os.read() here parks forever
+        when Chrome is idle, so nothing would notice that the Mac had gone away
+        and the virtual key would outlive the connection feeding it. Returns
+        (None, None) on timeout so the caller can re-check whether to stop.
+        """
+        ready, _, _ = select.select([self.fd], [], [], timeout)
+        if not ready:
+            return None, None
+        buf = os.read(self.fd, EVENT_SIZE)
+        if len(buf) < 4:
+            return None, b""
+        return struct.unpack_from("<I", buf, 0)[0], buf
+
+    def output_payload(self, buf):
+        """Pull the report bytes out of a UHID_OUTPUT event.
+
+        struct uhid_output_req is data[4096], then size, then rtype -- size
+        last, which is why this looks backwards. Our descriptor declares no
+        report IDs, but hidraw may or may not have stripped the leading zero
+        report-number byte depending on kernel version, so handle both.
+        """
+        size = struct.unpack_from("<H", buf, 4 + 4096)[0]
+        data = buf[4:4 + size]
+        if size == PACKET_SIZE + 1 and data[0] == 0x00:
+            data = data[1:]
+        elif size != PACKET_SIZE:
+            if not self._warned_output_size:
+                log.warning("unexpected output report size %d (want %d)", size, PACKET_SIZE)
+                self._warned_output_size = True
+            data = data[:PACKET_SIZE].ljust(PACKET_SIZE, b"\x00")
+        return data
+
+    def reply_get_report(self, buf, err=errno.EIO):
+        """Chrome should not need GET_REPORT, but an unanswered one stalls the kernel."""
+        rid = struct.unpack_from("<I", buf, 4)[0]
+        os.write(self.fd, struct.pack("<IIHH4096s", UHID_GET_REPORT_REPLY, rid, err, 0, b""))
+
+    def reply_set_report(self, buf, err=errno.EIO):
+        rid = struct.unpack_from("<I", buf, 4)[0]
+        os.write(self.fd, struct.pack("<IIH", UHID_SET_REPORT_REPLY, rid, err))
+
+
+def hidraw_nodes():
+    return {n for n in os.listdir("/dev") if n.startswith("hidraw")}
+
+
+def hand_node_to_user(before, username, timeout=3.0):
+    """Find the hidraw node uhid just created and give it to whoever runs Chrome.
+
+    Simpler and less brittle than a udev rule: we know exactly which node
+    appeared, because we snapshotted /dev before creating the device.
+    """
+    try:
+        user = pwd.getpwnam(username)
+    except KeyError:
+        log.error("no such user %r -- leaving the node owned by root", username)
+        return None
+
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        new = hidraw_nodes() - before
+        if new:
+            node = "/dev/" + sorted(new)[0]
+            os.chown(node, user.pw_uid, user.pw_gid)
+            os.chmod(node, 0o600)
+            log.info("%s is now %s's (that is what Chrome will open)", node, username)
+            return node
+        time.sleep(0.05)
+    log.warning("no new /dev/hidraw* appeared -- Chrome may not see the key")
+    return None
+
+
+def pump_socket_to_uhid(sock, dev, stop):
+    """Everything the real key says, replayed into the virtual one."""
+    buf = bytearray()
+    while not stop.is_set():
+        try:
+            chunk = sock.recv(4096)
+        except OSError:
+            break
+        if not chunk:
+            break
+        buf += chunk
+        while len(buf) >= PACKET_SIZE:
+            frame, buf = bytes(buf[:PACKET_SIZE]), buf[PACKET_SIZE:]
+            try:
+                dev.send_input(frame)
+            except OSError:
+                log.exception("uhid write failed")
+                stop.set()
+                return
+    stop.set()
+
+
+def serve_once(args):
+    """One session: hold the virtual key for as long as the Mac stays connected.
+
+    Returns a short reason string, so the retry loop can stay quiet while the
+    reason is unchanged instead of filling the journal with the same line.
+    """
+    try:
+        sock = socket.create_connection((args.host, args.port), timeout=10)
+    except OSError as e:
+        return f"cannot reach the Mac bridge on {args.host}:{args.port} ({e})"
+    sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+
+    try:
+        status = sock.recv(1)
+    except OSError as e:
+        sock.close()
+        return f"the Mac bridge hung up before saying hello ({e})"
+    if status != b"\x00":
+        sock.close()
+        return "the Mac has no FIDO key available (not plugged in, or already lent out)"
+    sock.settimeout(None)
+
+    before = hidraw_nodes()
+    dev = Uhid()
+    dev.create()
+
+    stop = threading.Event()
+    reader = threading.Thread(target=pump_socket_to_uhid, args=(sock, dev, stop), daemon=True)
+    reader.start()
+
+    try:
+        while not stop.is_set():
+            etype, buf = dev.read_event()
+            if buf is None:
+                continue  # nothing happened; loop round and re-check `stop`
+            if etype is None:
+                break
+            if etype == UHID_START:
+                hand_node_to_user(before, args.user)
+                log.info("virtual key is live -- touch the real one on the Mac when asked")
+            elif etype == UHID_OPEN:
+                log.info("Chrome opened the key")
+            elif etype == UHID_CLOSE:
+                log.info("Chrome closed the key")
+            elif etype == UHID_OUTPUT:
+                try:
+                    sock.sendall(dev.output_payload(buf))
+                except OSError:
+                    break
+            elif etype == UHID_GET_REPORT:
+                dev.reply_get_report(buf)
+            elif etype == UHID_SET_REPORT:
+                dev.reply_set_report(buf)
+            elif etype == UHID_STOP:
+                break
+    finally:
+        stop.set()
+        dev.destroy()
+        try:
+            sock.close()
+        except OSError:
+            pass
+    return "the Mac bridge went away"
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--port", type=int, default=2491)
+    ap.add_argument("--host", default="127.0.0.1")
+    ap.add_argument("--user", default=os.environ.get("SUDO_USER", "artiom"),
+                    help="user that runs Chrome and should own the hidraw node")
+    ap.add_argument("--retry", action="store_true",
+                    help="keep waiting for the Mac instead of exiting (for systemd)")
+    ap.add_argument("--retry-interval", type=float, default=5.0)
+    args = ap.parse_args()
+
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s fido-uhid: %(message)s", datefmt="%H:%M:%S"
+    )
+
+    if not os.access("/dev/uhid", os.R_OK | os.W_OK):
+        sys.exit("fido-uhid: need root for /dev/uhid -- try `sudo fido-uhid`")
+
+    if not args.retry:
+        reason = serve_once(args)
+        sys.exit(f"fido-uhid: {reason}")
+
+    # Under systemd this process is meant to outlive every tunnel blip, laptop
+    # lid close and unplugged key, so the loop is here rather than in
+    # Restart=always -- and it only speaks up when the situation changes.
+    last = None
+    try:
+        while True:
+            reason = serve_once(args)
+            if reason != last:
+                log.info("waiting: %s", reason)
+                last = reason
+            time.sleep(args.retry_interval)
+    except KeyboardInterrupt:
+        log.info("bye")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
