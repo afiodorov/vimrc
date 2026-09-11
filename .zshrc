@@ -97,13 +97,13 @@ add-zsh-hook chpwd load-nvmrc
 load-nvmrc
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
-alias claude1="CLAUDE_CONFIG_DIR=~/.claude-account1 claude --allow-dangerously-skip-permissions --chrome"
-alias claude2="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+alias claude1="CLAUDE_CONFIG_DIR=~/.claude-account1 command claude --allow-dangerously-skip-permissions --chrome"
+alias claude2="CLAUDE_CONFIG_DIR=~/.claude-account2 command claude --allow-dangerously-skip-permissions --chrome"
 if [[ "$OSTYPE" == darwin* ]]; then
-    alias claude="CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+    alias claude="CLAUDE_CONFIG_DIR=~/.claude-account2 command claude --allow-dangerously-skip-permissions --chrome"
 else
     # Linux box: Chrome runs on the VNC display :1, so point DISPLAY at it.
-    alias claude="DISPLAY=\${DISPLAY:-:1} CLAUDE_CONFIG_DIR=~/.claude-account2 claude --allow-dangerously-skip-permissions --chrome"
+    alias claude="DISPLAY=\${DISPLAY:-:1} CLAUDE_CONFIG_DIR=~/.claude-account2 command claude --allow-dangerously-skip-permissions --chrome"
 fi
 
 # --- remote dev box (Mac only; host `linuxbox` lives in ~/.ssh/config) ---
